@@ -1,16 +1,37 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from typing import Optional
+
 import fitz
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from pydantic import BaseModel
 
 from chunking import chunk_text
-from embeddings import create_embeddings
-from vector_store import create_collection, store_chunks
+from embeddings import create_embedding, create_embeddings
+from vector_store import (
+    create_collection,
+    store_chunks,
+    search_chunks,
+)
+from generation import generate_answer
 
+
+# --------------------------------------------------
+# FastAPI app
+# --------------------------------------------------
 
 app = FastAPI(
     title="DocLens API",
     description="Backend API for DocLens",
     version="0.1.0",
 )
+
+
+# --------------------------------------------------
+# Request models
+# --------------------------------------------------
+
+class AskRequest(BaseModel):
+    question: str
+    document_name: Optional[str] = None
 
 
 # --------------------------------------------------
@@ -56,8 +77,10 @@ async def extract_document(file: UploadFile = File(...)):
     pages = []
 
     # Extract every page separately
-    for page_number, page in enumerate(document, start=1):
-
+    for page_number, page in enumerate(
+        document,
+        start=1
+    ):
         text = page.get_text("text")
 
         pages.append({
@@ -109,8 +132,10 @@ async def process_document(file: UploadFile = File(...)):
     # Extract + chunk every page
     # --------------------------------------------------
 
-    for page_number, page in enumerate(document, start=1):
-
+    for page_number, page in enumerate(
+        document,
+        start=1
+    ):
         text = page.get_text("text")
 
         # Skip pages containing no usable text
@@ -128,8 +153,9 @@ async def process_document(file: UploadFile = File(...)):
             page_chunks,
             start=1
         ):
-
-            chunk_id = f"p{page_number}-c{chunk_number}"
+            chunk_id = (
+                f"p{page_number}-c{chunk_number}"
+            )
 
             chunks.append({
                 "text": chunk,
@@ -141,6 +167,13 @@ async def process_document(file: UploadFile = File(...)):
             })
 
     document.close()
+
+    # No usable text found
+    if not chunks:
+        raise HTTPException(
+            status_code=400,
+            detail="No extractable text was found in this PDF."
+        )
 
     # --------------------------------------------------
     # Create embeddings
@@ -172,4 +205,71 @@ async def process_document(file: UploadFile = File(...)):
         "filename": file.filename,
         "total_chunks": len(chunks),
         "indexed": True
+    }
+
+
+# --------------------------------------------------
+# Ask questions
+# --------------------------------------------------
+
+@app.post("/ask")
+def ask_question(request: AskRequest):
+
+    question = request.question.strip()
+
+    if not question:
+        raise HTTPException(
+            status_code=400,
+            detail="Question cannot be empty."
+        )
+
+    # --------------------------------------------------
+    # Embed the question
+    # --------------------------------------------------
+
+    question_embedding = create_embedding(
+        question
+    )
+
+    # --------------------------------------------------
+    # Retrieve relevant chunks
+    # --------------------------------------------------
+
+    results = search_chunks(
+        query_embedding=question_embedding,
+        limit=3,
+        document_name=request.document_name
+    )
+
+    # --------------------------------------------------
+    # Generate grounded answer
+    # --------------------------------------------------
+
+    answer = generate_answer(
+        question=question,
+        retrieved_chunks=results
+    )
+
+    # --------------------------------------------------
+    # Build citations from Qdrant metadata
+    # --------------------------------------------------
+
+    citations = []
+
+    for result in results:
+        payload = result.payload
+
+        citations.append({
+            "document_name": payload["document_name"],
+            "page_number": payload["page_number"],
+            "chunk_id": payload["chunk_id"]
+        })
+
+    # --------------------------------------------------
+    # Response
+    # --------------------------------------------------
+
+    return {
+        "answer": answer,
+        "citations": citations
     }
