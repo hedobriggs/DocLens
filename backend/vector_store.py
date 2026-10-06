@@ -3,6 +3,7 @@ from typing import Optional
 import re
 
 from rank_bm25 import BM25Okapi
+from sentence_transformers import CrossEncoder
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
@@ -15,21 +16,19 @@ from qdrant_client.models import (
     FilterSelector,
 )
 
-
 COLLECTION_NAME = "document_chunks"
 VECTOR_SIZE = 384
 
 client = QdrantClient(path="./qdrant_data")
 
+# Reranker
+reranker = CrossEncoder(
+    "cross-encoder/ms-marco-MiniLM-L-6-v2"
+)
 
-# --------------------------------------------------
-# Create collection
-# --------------------------------------------------
 
 def create_collection():
-
     if not client.collection_exists(COLLECTION_NAME):
-
         client.create_collection(
             collection_name=COLLECTION_NAME,
             vectors_config=VectorParams(
@@ -39,12 +38,7 @@ def create_collection():
         )
 
 
-# --------------------------------------------------
-# Delete existing document
-# --------------------------------------------------
-
 def delete_document(document_name: str):
-
     if not client.collection_exists(COLLECTION_NAME):
         return
 
@@ -65,15 +59,10 @@ def delete_document(document_name: str):
     )
 
 
-# --------------------------------------------------
-# Store chunks
-# --------------------------------------------------
-
 def store_chunks(
     chunks: list[dict],
     embeddings: list[list[float]]
 ):
-
     if len(chunks) != len(embeddings):
         raise ValueError(
             "Each chunk must have exactly one embedding."
@@ -82,7 +71,6 @@ def store_chunks(
     points = []
 
     for chunk, embedding in zip(chunks, embeddings):
-
         point = PointStruct(
             id=str(uuid4()),
             vector=embedding,
@@ -91,7 +79,6 @@ def store_chunks(
                 **chunk["metadata"]
             }
         )
-
         points.append(point)
 
     client.upsert(
@@ -100,20 +87,14 @@ def store_chunks(
     )
 
 
-# --------------------------------------------------
-# Dense vector search
-# --------------------------------------------------
-
 def search_chunks(
     query_embedding: list[float],
     limit: int = 3,
     document_name: Optional[str] = None
 ):
-
     query_filter = None
 
     if document_name:
-
         query_filter = Filter(
             must=[
                 FieldCondition(
@@ -135,32 +116,21 @@ def search_chunks(
     return results.points
 
 
-# --------------------------------------------------
-# BM25 tokenizer
-# --------------------------------------------------
-
 def tokenize(text: str) -> list[str]:
-
     return re.findall(
         r"\b\w+\b",
         text.lower()
     )
 
 
-# --------------------------------------------------
-# BM25 keyword search
-# --------------------------------------------------
-
 def search_chunks_bm25(
     query: str,
     limit: int = 3,
     document_name: Optional[str] = None
 ):
-
     query_filter = None
 
     if document_name:
-
         query_filter = Filter(
             must=[
                 FieldCondition(
@@ -176,7 +146,6 @@ def search_chunks_bm25(
     offset = None
 
     while True:
-
         batch, offset = client.scroll(
             collection_name=COLLECTION_NAME,
             scroll_filter=query_filter,
@@ -214,47 +183,49 @@ def search_chunks_bm25(
     return ranked[:limit]
 
 
-# --------------------------------------------------
-# Hybrid search: Dense + BM25 + RRF
-# --------------------------------------------------
-
 def hybrid_search(
     query: str,
     query_embedding: list[float],
     limit: int = 3,
     document_name: Optional[str] = None
 ):
-    """
-    Combine semantic vector search and BM25
-    keyword search using Reciprocal Rank Fusion.
-    """
-
     candidate_limit = 20
     rrf_k = 60
 
-    # Dense semantic search
+    dense_weight = 2.0
+    bm25_weight = 1.0
+
+    # --------------------------------------------
+    # Dense retrieval
+    # --------------------------------------------
+
     dense_results = search_chunks(
         query_embedding=query_embedding,
         limit=candidate_limit,
         document_name=document_name
     )
 
-    # BM25 keyword search
+    # --------------------------------------------
+    # BM25 retrieval
+    # --------------------------------------------
+
     bm25_results = search_chunks_bm25(
         query=query,
         limit=candidate_limit,
         document_name=document_name
     )
 
+    # --------------------------------------------
+    # Reciprocal Rank Fusion
+    # --------------------------------------------
+
     rrf_scores = {}
     points = {}
 
-    # Add dense rankings
     for rank, point in enumerate(
         dense_results,
         start=1
     ):
-
         key = (
             point.payload["document_name"],
             point.payload["chunk_id"]
@@ -264,15 +235,13 @@ def hybrid_search(
 
         rrf_scores[key] = (
             rrf_scores.get(key, 0)
-            + 1 / (rrf_k + rank)
+            + dense_weight / (rrf_k + rank)
         )
 
-    # Add BM25 rankings
     for rank, (point, _) in enumerate(
         bm25_results,
         start=1
     ):
-
         key = (
             point.payload["document_name"],
             point.payload["chunk_id"]
@@ -282,17 +251,46 @@ def hybrid_search(
 
         rrf_scores[key] = (
             rrf_scores.get(key, 0)
-            + 1 / (rrf_k + rank)
+            + bm25_weight / (rrf_k + rank)
         )
 
-    # Sort by combined RRF score
     ranked_keys = sorted(
         rrf_scores,
         key=rrf_scores.get,
         reverse=True
     )
 
-    return [
+    # Keep the best hybrid candidates for reranking
+    candidates = [
         points[key]
-        for key in ranked_keys[:limit]
+        for key in ranked_keys[:candidate_limit]
+    ]
+
+    if not candidates:
+        return []
+
+    # --------------------------------------------
+    # Cross-encoder reranking
+    # --------------------------------------------
+
+    pairs = [
+        (
+            query,
+            point.payload["text"]
+        )
+        for point in candidates
+    ]
+
+    rerank_scores = reranker.predict(pairs)
+
+    reranked = sorted(
+        zip(candidates, rerank_scores),
+        key=lambda item: float(item[1]),
+        reverse=True
+    )
+
+    # Return only the best final chunks
+    return [
+        point
+        for point, _ in reranked[:limit]
     ]

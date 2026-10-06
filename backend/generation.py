@@ -1,4 +1,5 @@
 import os
+import json
 
 from dotenv import load_dotenv
 from google import genai
@@ -34,14 +35,13 @@ client = genai.Client(
 def generate_answer(
     question: str,
     retrieved_chunks: list
-) -> str:
-    """
-    Generate an answer using only the retrieved
-    document chunks as context.
-    """
+) -> dict:
 
     if not retrieved_chunks:
-        return "I could not find relevant information in the documents."
+        return {
+            "answer": "I could not find relevant information in the documents.",
+            "source_ids": []
+        }
 
     context_parts = []
 
@@ -70,12 +70,23 @@ a document question-answering system.
 Answer the user's question using only the document
 context provided below.
 
+Return ONLY valid JSON in this exact format:
+
+{{
+  "answer": "your answer here",
+  "source_ids": [1, 2]
+}}
+
 Rules:
 - Do not use outside knowledge.
 - Do not invent information.
+- source_ids must contain only the source numbers
+  that directly support the answer.
+- Do not include irrelevant sources.
 - If the context does not contain enough information
   to answer the question, say that the answer could
-  not be found in the provided documents.
+  not be found in the provided documents and return
+  an empty source_ids list.
 - Keep the answer clear and concise.
 
 Question:
@@ -90,4 +101,18 @@ Document context:
         contents=prompt
     )
 
-    return response.text
+    response_text = response.text.strip()
+
+    if response_text.startswith("```"):
+        response_text = response_text.replace(
+            "```json", ""
+        ).replace(
+            "```", ""
+        ).strip()
+
+    result = json.loads(response_text)
+
+    return {
+        "answer": result["answer"],
+        "source_ids": result.get("source_ids", [])
+    }

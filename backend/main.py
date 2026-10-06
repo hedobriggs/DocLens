@@ -232,12 +232,13 @@ def ask_question(request: AskRequest):
     )
 
     # --------------------------------------------------
-    # Hybrid retrieval
+    # Hybrid retrieval + reranking
     #
     # Combines:
     # 1. Dense semantic search
     # 2. BM25 keyword search
     # 3. Reciprocal Rank Fusion (RRF)
+    # 4. Cross-encoder reranking
     # --------------------------------------------------
 
     results = hybrid_search(
@@ -249,7 +250,7 @@ def ask_question(request: AskRequest):
 
     # Temporary retrieval debugging
     print("\n------------------------------")
-    print("HYBRID RETRIEVAL")
+    print("HYBRID RETRIEVAL + RERANKING")
     print("QUESTION:", repr(question))
     print("DOCUMENT:", repr(request.document_name))
 
@@ -267,24 +268,39 @@ def ask_question(request: AskRequest):
 
     print("------------------------------\n")
 
-    # Generate grounded answer
-    answer = generate_answer(
+    # Generate grounded answer + sources actually used
+    generation_result = generate_answer(
         question=question,
         retrieved_chunks=results
     )
 
-    # Build citations
+    answer = generation_result["answer"]
+    source_ids = generation_result["source_ids"]
+
+    # --------------------------------------------------
+    # Build citations only from sources Gemini used
+    # --------------------------------------------------
+
     citations = []
 
-    for result in results:
+    for source_id in source_ids:
 
-        payload = result.payload
+        # Gemini source numbering starts at 1
+        result_index = source_id - 1
 
-        citations.append({
-            "document_name": payload["document_name"],
-            "page_number": payload["page_number"],
-            "chunk_id": payload["chunk_id"]
-        })
+        if 0 <= result_index < len(results):
+
+            payload = results[result_index].payload
+
+            citation = {
+                "document_name": payload["document_name"],
+                "page_number": payload["page_number"],
+                "chunk_id": payload["chunk_id"]
+            }
+
+            # Prevent duplicate citations
+            if citation not in citations:
+                citations.append(citation)
 
     return {
         "answer": answer,
