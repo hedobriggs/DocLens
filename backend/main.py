@@ -2,14 +2,16 @@ from typing import Optional
 
 import fitz
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from chunking import chunk_text
 from embeddings import create_embedding, create_embeddings
 from vector_store import (
     create_collection,
+    delete_document,
     store_chunks,
-    search_chunks,
+    hybrid_search,
 )
 from generation import generate_answer
 
@@ -22,6 +24,22 @@ app = FastAPI(
     title="DocLens API",
     description="Backend API for DocLens",
     version="0.1.0",
+)
+
+
+# --------------------------------------------------
+# CORS
+# --------------------------------------------------
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -52,14 +70,12 @@ def root():
 @app.post("/documents/extract")
 async def extract_document(file: UploadFile = File(...)):
 
-    # Only support PDFs for V1
     if file.content_type != "application/pdf":
         raise HTTPException(
             status_code=400,
             detail="Only PDF files are currently supported."
         )
 
-    # Read uploaded PDF
     pdf_bytes = await file.read()
 
     try:
@@ -76,7 +92,6 @@ async def extract_document(file: UploadFile = File(...)):
 
     pages = []
 
-    # Extract every page separately
     for page_number, page in enumerate(
         document,
         start=1
@@ -104,14 +119,12 @@ async def extract_document(file: UploadFile = File(...)):
 @app.post("/documents/process")
 async def process_document(file: UploadFile = File(...)):
 
-    # Only support PDFs for V1
     if file.content_type != "application/pdf":
         raise HTTPException(
             status_code=400,
             detail="Only PDF files are currently supported."
         )
 
-    # Read uploaded PDF
     pdf_bytes = await file.read()
 
     try:
@@ -128,17 +141,14 @@ async def process_document(file: UploadFile = File(...)):
 
     chunks = []
 
-    # --------------------------------------------------
-    # Extract + chunk every page
-    # --------------------------------------------------
-
+    # Extract and chunk each page
     for page_number, page in enumerate(
         document,
         start=1
     ):
+
         text = page.get_text("text")
 
-        # Skip pages containing no usable text
         if not text.strip():
             continue
 
@@ -148,11 +158,11 @@ async def process_document(file: UploadFile = File(...)):
             overlap=200
         )
 
-        # Attach metadata to every chunk
         for chunk_number, chunk in enumerate(
             page_chunks,
             start=1
         ):
+
             chunk_id = (
                 f"p{page_number}-c{chunk_number}"
             )
@@ -168,17 +178,13 @@ async def process_document(file: UploadFile = File(...)):
 
     document.close()
 
-    # No usable text found
     if not chunks:
         raise HTTPException(
             status_code=400,
             detail="No extractable text was found in this PDF."
         )
 
-    # --------------------------------------------------
     # Create embeddings
-    # --------------------------------------------------
-
     texts = [
         chunk["text"]
         for chunk in chunks
@@ -186,20 +192,17 @@ async def process_document(file: UploadFile = File(...)):
 
     embeddings = create_embeddings(texts)
 
-    # --------------------------------------------------
     # Store in Qdrant
-    # --------------------------------------------------
-
     create_collection()
+
+    # Prevent duplicate chunks when a document
+    # with the same filename is uploaded again.
+    delete_document(file.filename)
 
     store_chunks(
         chunks=chunks,
         embeddings=embeddings
     )
-
-    # --------------------------------------------------
-    # Response
-    # --------------------------------------------------
 
     return {
         "filename": file.filename,
@@ -223,40 +226,58 @@ def ask_question(request: AskRequest):
             detail="Question cannot be empty."
         )
 
-    # --------------------------------------------------
-    # Embed the question
-    # --------------------------------------------------
-
+    # Create semantic embedding for the question
     question_embedding = create_embedding(
         question
     )
 
     # --------------------------------------------------
-    # Retrieve relevant chunks
+    # Hybrid retrieval
+    #
+    # Combines:
+    # 1. Dense semantic search
+    # 2. BM25 keyword search
+    # 3. Reciprocal Rank Fusion (RRF)
     # --------------------------------------------------
 
-    results = search_chunks(
+    results = hybrid_search(
+        query=question,
         query_embedding=question_embedding,
         limit=3,
         document_name=request.document_name
     )
 
-    # --------------------------------------------------
-    # Generate grounded answer
-    # --------------------------------------------------
+    # Temporary retrieval debugging
+    print("\n------------------------------")
+    print("HYBRID RETRIEVAL")
+    print("QUESTION:", repr(question))
+    print("DOCUMENT:", repr(request.document_name))
 
+    for index, result in enumerate(
+        results,
+        start=1
+    ):
+        print(
+            index,
+            "Page:",
+            result.payload["page_number"],
+            "Chunk:",
+            result.payload["chunk_id"]
+        )
+
+    print("------------------------------\n")
+
+    # Generate grounded answer
     answer = generate_answer(
         question=question,
         retrieved_chunks=results
     )
 
-    # --------------------------------------------------
-    # Build citations from Qdrant metadata
-    # --------------------------------------------------
-
+    # Build citations
     citations = []
 
     for result in results:
+
         payload = result.payload
 
         citations.append({
@@ -264,10 +285,6 @@ def ask_question(request: AskRequest):
             "page_number": payload["page_number"],
             "chunk_id": payload["chunk_id"]
         })
-
-    # --------------------------------------------------
-    # Response
-    # --------------------------------------------------
 
     return {
         "answer": answer,
