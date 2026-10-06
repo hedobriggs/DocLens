@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 import fitz
@@ -14,6 +15,18 @@ from vector_store import (
     hybrid_search,
 )
 from generation import generate_answer
+
+
+# --------------------------------------------------
+# Logging
+# --------------------------------------------------
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+)
+
+logger = logging.getLogger("doclens")
 
 
 # --------------------------------------------------
@@ -248,25 +261,24 @@ def ask_question(request: AskRequest):
         document_name=request.document_name
     )
 
-    # Temporary retrieval debugging
-    print("\n------------------------------")
-    print("HYBRID RETRIEVAL + RERANKING")
-    print("QUESTION:", repr(question))
-    print("DOCUMENT:", repr(request.document_name))
+    # Log retrieval results without logging
+    # the user's full question.
+    logger.info(
+        "Retrieval completed | document=%s | results=%d",
+        request.document_name,
+        len(results)
+    )
 
     for index, result in enumerate(
         results,
         start=1
     ):
-        print(
+        logger.info(
+            "Retrieved result | rank=%d | page=%s | chunk=%s",
             index,
-            "Page:",
             result.payload["page_number"],
-            "Chunk:",
             result.payload["chunk_id"]
         )
-
-    print("------------------------------\n")
 
     # Generate grounded answer + sources actually used
     generation_result = generate_answer(
@@ -276,6 +288,12 @@ def ask_question(request: AskRequest):
 
     answer = generation_result["answer"]
     source_ids = generation_result["source_ids"]
+
+    logger.info(
+        "Answer generated | document=%s | sources_used=%d",
+        request.document_name,
+        len(source_ids)
+    )
 
     # --------------------------------------------------
     # Build citations only from sources Gemini used

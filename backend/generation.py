@@ -1,8 +1,16 @@
 import os
 import json
+import logging
 
 from dotenv import load_dotenv
 from google import genai
+
+
+# --------------------------------------------------
+# Logging
+# --------------------------------------------------
+
+logger = logging.getLogger("doclens")
 
 
 # --------------------------------------------------
@@ -96,23 +104,42 @@ Document context:
 {context}
 """.strip()
 
-    response = client.models.generate_content(
-        model="gemini-3.5-flash-lite",
-        contents=prompt
-    )
+    try:
+        response = client.models.generate_content(
+            model="gemini-3.5-flash-lite",
+            contents=prompt
+        )
 
-    response_text = response.text.strip()
+        response_text = response.text.strip()
 
-    if response_text.startswith("```"):
-        response_text = response_text.replace(
-            "```json", ""
-        ).replace(
-            "```", ""
-        ).strip()
+        if response_text.startswith("```"):
+            response_text = response_text.replace(
+                "```json", ""
+            ).replace(
+                "```", ""
+            ).strip()
 
-    result = json.loads(response_text)
+        result = json.loads(response_text)
 
-    return {
-        "answer": result["answer"],
-        "source_ids": result.get("source_ids", [])
-    }
+        return {
+            "answer": result["answer"],
+            "source_ids": result.get("source_ids", [])
+        }
+
+    except json.JSONDecodeError:
+        logger.exception(
+            "Gemini returned invalid JSON"
+        )
+
+        raise RuntimeError(
+            "The AI service returned an invalid response."
+        )
+
+    except Exception:
+        logger.exception(
+            "Gemini generation request failed"
+        )
+
+        raise RuntimeError(
+            "The AI service is temporarily unavailable."
+        )
