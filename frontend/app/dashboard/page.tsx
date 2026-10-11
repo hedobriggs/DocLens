@@ -10,6 +10,10 @@ import {
 import ReactMarkdown from "react-markdown";
 
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+
 type Document = {
   name: string;
   status: string;
@@ -100,7 +104,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/documents/process",
+        `${API_URL}/documents/process`,
         {
           method: "POST",
           body: formData,
@@ -189,7 +193,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/ask",
+        `${API_URL}/ask`,
         {
           method: "POST",
 
@@ -768,4 +772,3 @@ export default function Dashboard() {
     </main>
   );
 }
-
