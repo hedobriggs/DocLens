@@ -1,9 +1,13 @@
+
 import logging
+import os
+import secrets
 from typing import Optional
 
 import fitz
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
 
 from chunking import chunk_text
@@ -27,6 +31,32 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("doclens")
+
+
+# --------------------------------------------------
+# Internal API authentication
+# --------------------------------------------------
+
+def require_internal_auth(
+    x_doclens_internal_key: Optional[str] = Header(default=None),
+):
+    expected_key = os.getenv("DOCLENS_SESSION_SECRET")
+
+    if not expected_key:
+        logger.error("Backend authentication secret is not configured")
+        raise HTTPException(
+            status_code=503,
+            detail="Backend authentication is not configured."
+        )
+
+    if not x_doclens_internal_key or not secrets.compare_digest(
+        x_doclens_internal_key,
+        expected_key,
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized."
+        )
 
 
 # --------------------------------------------------
@@ -57,6 +87,21 @@ app.add_middleware(
 
 
 # --------------------------------------------------
+# Prometheus monitoring
+# --------------------------------------------------
+
+Instrumentator(
+    should_group_status_codes=False,
+    should_ignore_untemplated=True,
+    excluded_handlers=["/metrics"],
+).instrument(app).expose(
+    app,
+    endpoint="/metrics",
+    include_in_schema=False
+)
+
+
+# --------------------------------------------------
 # Request models
 # --------------------------------------------------
 
@@ -81,7 +126,10 @@ def root():
 # --------------------------------------------------
 
 @app.post("/documents/extract")
-async def extract_document(file: UploadFile = File(...)):
+async def extract_document(
+    file: UploadFile = File(...),
+    _: None = Depends(require_internal_auth),
+):
 
     if file.content_type != "application/pdf":
         raise HTTPException(
@@ -130,7 +178,10 @@ async def extract_document(file: UploadFile = File(...)):
 # --------------------------------------------------
 
 @app.post("/documents/process")
-async def process_document(file: UploadFile = File(...)):
+async def process_document(
+    file: UploadFile = File(...),
+    _: None = Depends(require_internal_auth),
+):
 
     if file.content_type != "application/pdf":
         raise HTTPException(
@@ -229,7 +280,10 @@ async def process_document(file: UploadFile = File(...)):
 # --------------------------------------------------
 
 @app.post("/ask")
-def ask_question(request: AskRequest):
+def ask_question(
+    request: AskRequest,
+    _: None = Depends(require_internal_auth),
+):
 
     question = request.question.strip()
 
@@ -324,3 +378,4 @@ def ask_question(request: AskRequest):
         "answer": answer,
         "citations": citations
     }
+

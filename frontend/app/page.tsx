@@ -1,8 +1,60 @@
+
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (isSubmitting) return;
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          setError("Invalid email or password.");
+        } else {
+          setError("Unable to sign in. Please try again.");
+        }
+        return;
+      }
+
+      router.replace("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Connection failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <div className="grid min-h-screen lg:grid-cols-2">
-
         {/* Left side — DocLens branding */}
         <section className="relative hidden overflow-hidden border-r border-white/10 lg:flex lg:flex-col lg:justify-between lg:p-12">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-cyan-400/10" />
@@ -54,7 +106,6 @@ export default function Home() {
         {/* Right side — Login */}
         <section className="flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md">
-
             {/* Mobile logo */}
             <div className="mb-10 flex items-center gap-3 lg:hidden">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 font-bold">
@@ -84,8 +135,7 @@ export default function Home() {
             </div>
 
             {/* Login form */}
-            <form className="space-y-5">
-
+            <form onSubmit={handleLogin} className="space-y-5">
               {/* Email */}
               <div>
                 <label
@@ -97,7 +147,12 @@ export default function Home() {
 
                 <input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="username"
+                  required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="you@example.com"
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
@@ -105,72 +160,53 @@ export default function Home() {
 
               {/* Password */}
               <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="text-sm font-medium text-slate-300"
-                  >
-                    Password
-                  </label>
-
-                  <button
-                    type="button"
-                    className="text-sm text-blue-400 transition hover:text-blue-300"
-                  >
-                    Forgot password?
-                  </button>
-                </div>
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-medium text-slate-300"
+                >
+                  Password
+                </label>
 
                 <input
                   id="password"
+                  name="password"
                   type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                   placeholder="Enter your password"
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
 
+              {/* Error message */}
+              {error && (
+                <p
+                  role="alert"
+                  className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+                >
+                  {error}
+                </p>
+              )}
+
               {/* Sign in */}
               <button
                 type="submit"
-                className="w-full rounded-xl bg-blue-500 px-4 py-3 font-medium text-white transition hover:bg-blue-400"
+                disabled={isSubmitting}
+                className="w-full rounded-xl bg-blue-500 px-4 py-3 font-medium text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Sign in
+                {isSubmitting ? "Signing in..." : "Sign in"}
               </button>
             </form>
 
-            {/* Divider */}
-            <div className="my-7 flex items-center gap-4">
-              <div className="h-px flex-1 bg-white/10" />
-
-              <span className="text-xs uppercase tracking-wider text-slate-600">
-                or
-              </span>
-
-              <div className="h-px flex-1 bg-white/10" />
-            </div>
-
-            {/* Google login */}
-            <button
-              type="button"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-medium text-slate-200 transition hover:bg-white/10"
-            >
-              Continue with Google
-            </button>
-
-            {/* Create account */}
-            <p className="mt-8 text-center text-sm text-slate-400">
-              Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                className="font-medium text-blue-400 transition hover:text-blue-300"
-              >
-                Create account
-              </button>
+            <p className="mt-8 text-center text-sm text-slate-500">
+              Secure access to your document workspace.
             </p>
-
           </div>
         </section>
       </div>
     </main>
   );
 }
+

@@ -1,3 +1,4 @@
+
 services:
   backend:
     build:
@@ -7,6 +8,7 @@ services:
       - "8000:8000"
     env_file:
       - ./backend/.env
+      - ./.env
     volumes:
       - qdrant_data:/app/qdrant_data
     restart: unless-stopped
@@ -19,9 +21,47 @@ services:
     container_name: doclens-frontend
     ports:
       - "3000:3000"
+    env_file:
+      - ./.env
     depends_on:
       - backend
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: doclens-prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    container_name: doclens-grafana
+    ports:
+      - "127.0.0.1:3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./monitoring/grafana/doclens.json:/etc/grafana/dashboards/doclens.json:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
 volumes:
   qdrant_data:
+  prometheus_data:
+  grafana_data:
+

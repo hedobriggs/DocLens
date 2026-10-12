@@ -104,7 +104,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        `${API_URL}/documents/process`,
+        "/api/documents/process",
         {
           method: "POST",
           body: formData,
@@ -193,7 +193,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        `${API_URL}/ask`,
+        "/api/ask",
         {
           method: "POST",
 
@@ -271,9 +271,21 @@ export default function Dashboard() {
 
         <button
           type="button"
+          onClick={async () => {
+            try {
+              const response = await fetch("/api/auth/logout", {
+                method: "POST",
+                credentials: "same-origin",
+              });
+              if (!response.ok) throw new Error("Logout failed");
+              window.location.replace("/");
+            } catch {
+              alert("Unable to log out. Please try again.");
+            }
+          }}
           className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10"
         >
-          Account
+          Log out
         </button>
 
       </header>
@@ -772,3 +784,4 @@ export default function Dashboard() {
     </main>
   );
 }
+
