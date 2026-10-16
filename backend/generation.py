@@ -1,7 +1,8 @@
-from observability import measure, TOKENS, COST
+from observability import measure, TOKENS, COST, COST_SKIPPED
 import os
 import json
 import logging
+import math
 
 from dotenv import load_dotenv
 from google import genai
@@ -24,6 +25,41 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Ingestion, health and metrics remain usable without a hosted-generation key.
 client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+
+
+def _record_usage(usage):
+    if usage is None:
+        COST_SKIPPED.labels("usage_unavailable").inc()
+        return
+    input_tokens = usage.prompt_token_count
+    output_tokens = usage.candidates_token_count
+    if input_tokens is not None:
+        TOKENS.labels("input").inc(input_tokens)
+    if output_tokens is not None:
+        TOKENS.labels("output").inc(output_tokens)
+    raw = [os.getenv("GEMINI_INPUT_USD_PER_MILLION"), os.getenv("GEMINI_OUTPUT_USD_PER_MILLION")]
+    if all(value is None for value in raw):
+        COST_SKIPPED.labels("not_configured").inc()
+        return
+    if any(value is None for value in raw):
+        COST_SKIPPED.labels("incomplete").inc()
+        return
+    try:
+        prices = [float(value) for value in raw]
+    except (ValueError, TypeError, OverflowError):
+        COST_SKIPPED.labels("invalid").inc()
+        return
+    if any(not math.isfinite(price) or price < 0 for price in prices):
+        COST_SKIPPED.labels("invalid").inc()
+        return
+    if input_tokens is None or output_tokens is None:
+        COST_SKIPPED.labels("usage_unavailable").inc()
+        return
+    cost = input_tokens / 1_000_000 * prices[0] + output_tokens / 1_000_000 * prices[1]
+    if not math.isfinite(cost):
+        COST_SKIPPED.labels("overflow").inc()
+        return
+    COST.labels("USD").inc(cost)
 
 
 # --------------------------------------------------
@@ -106,18 +142,7 @@ Document context:
             parsed = json.loads(raw)
             if not isinstance(parsed.get("answer"), str) or not isinstance(parsed.get("source_ids", []), list):
                 raise ValueError("Invalid Gemini response schema")
-        usage = response.usage_metadata
-        if usage is not None:
-            input_tokens = usage.prompt_token_count
-            output_tokens = usage.candidates_token_count
-            if input_tokens is not None:
-                TOKENS.labels("input").inc(input_tokens)
-            if output_tokens is not None:
-                TOKENS.labels("output").inc(output_tokens)
-            input_price = os.getenv("GEMINI_INPUT_USD_PER_MILLION")
-            output_price = os.getenv("GEMINI_OUTPUT_USD_PER_MILLION")
-            if input_price and output_price and input_tokens is not None and output_tokens is not None:
-                COST.labels("USD").inc((input_tokens * float(input_price) + output_tokens * float(output_price)) / 1_000_000)
+        _record_usage(response.usage_metadata)
 
         response_text = response.text.strip()
 
@@ -136,19 +161,19 @@ Document context:
         }
 
     except json.JSONDecodeError:
-        logger.exception(
+        logger.error(
             "Gemini returned invalid JSON"
         )
 
         raise RuntimeError(
             "The AI service returned an invalid response."
-        )
+        ) from None
 
     except Exception:
-        logger.exception(
+        logger.error(
             "Gemini generation request failed"
         )
 
         raise RuntimeError(
             "The AI service is temporarily unavailable."
-        )
+        ) from None

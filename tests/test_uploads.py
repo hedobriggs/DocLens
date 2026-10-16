@@ -20,7 +20,7 @@ class UploadTests(unittest.TestCase):
         modules = {}
         for name, functions in {
             'embeddings': ['create_embedding', 'create_embeddings'],
-            'vector_store': ['create_collection', 'delete_document', 'store_chunks', 'hybrid_search'],
+            'vector_store': ['replace_document', 'hybrid_search'],
             'generation': ['generate_answer'],
         }.items():
             module = ModuleType(name)
@@ -53,7 +53,7 @@ class UploadTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text)
         self.assertTrue(response.json()['indexed'])
         self.assertEqual(response.json()['total_chunks'], 1)
-        self.app_module.store_chunks.assert_called()
+        self.app_module.replace_document.assert_called()
 
     def test_health_responds_while_embedding_is_busy(self):
         started, release = threading.Event(), threading.Event()

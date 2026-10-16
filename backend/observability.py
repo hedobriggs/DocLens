@@ -11,6 +11,7 @@ DURATION = Histogram('doclens_operation_duration_seconds', 'Operation wall time'
 OPERATIONS = Counter('doclens_operations_total', 'Completed operations', ['operation', 'outcome'])
 TOKENS = Counter('doclens_gemini_tokens_total', 'Provider-reported tokens', ['direction'])
 COST = Counter('doclens_gemini_estimated_cost_usd_total', 'Estimated cost using configured per-million token prices', ['currency'])
+COST_SKIPPED = Counter('doclens_gemini_cost_estimate_skipped_total', 'Cost estimate omitted without affecting answers', ['reason'])
 DOCUMENTS = Gauge('doclens_documents', 'Distinct documents in the local collection', ['collection'])
 CHUNKS = Gauge('doclens_chunks', 'Points in the local collection', ['collection'])
 

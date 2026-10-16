@@ -14,9 +14,7 @@ from pydantic import BaseModel
 from chunking import chunk_text
 from embeddings import create_embedding, create_embeddings
 from vector_store import (
-    create_collection,
-    delete_document,
-    store_chunks,
+    replace_document,
     hybrid_search,
 )
 from generation import generate_answer
@@ -262,17 +260,7 @@ def process_document(
     embeddings = create_embeddings(texts)
 
     with measure("indexing"):
-        # Store in Qdrant
-        create_collection()
-
-        # Prevent duplicate chunks when a document
-        # with the same filename is uploaded again.
-        delete_document(file.filename)
-
-        store_chunks(
-            chunks=chunks,
-            embeddings=embeddings
-        )
+        replace_document(file.filename, chunks, embeddings)
 
     return {
         "filename": file.filename,
@@ -324,21 +312,9 @@ def ask_question(
     # Log retrieval results without logging
     # the user's full question.
     logger.info(
-        "Retrieval completed | document=%s | results=%d",
-        request.document_name,
+        "Retrieval completed | results=%d",
         len(results)
     )
-
-    for index, result in enumerate(
-        results,
-        start=1
-    ):
-        logger.info(
-            "Retrieved result | rank=%d | page=%s | chunk=%s",
-            index,
-            result.payload["page_number"],
-            result.payload["chunk_id"]
-        )
 
     # Generate grounded answer + sources actually used
     generation_result = generate_answer(
@@ -350,8 +326,7 @@ def ask_question(
     source_ids = generation_result["source_ids"]
 
     logger.info(
-        "Answer generated | document=%s | sources_used=%d",
-        request.document_name,
+        "Answer generated | sources_used=%d",
         len(source_ids)
     )
 
