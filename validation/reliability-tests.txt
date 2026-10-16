@@ -1,0 +1,46 @@
+test_absent (test_gemini_pricing.GeminiPricingTests.test_absent) ... ok
+test_empty (test_gemini_pricing.GeminiPricingTests.test_empty) ... ok
+test_incomplete (test_gemini_pricing.GeminiPricingTests.test_incomplete) ... ok
+test_malformed (test_gemini_pricing.GeminiPricingTests.test_malformed) ... ok
+test_nan (test_gemini_pricing.GeminiPricingTests.test_nan) ... ok
+test_negative_infinity (test_gemini_pricing.GeminiPricingTests.test_negative_infinity) ... ok
+test_negative_input (test_gemini_pricing.GeminiPricingTests.test_negative_input) ... ok
+test_negative_output (test_gemini_pricing.GeminiPricingTests.test_negative_output) ... ok
+test_overflow (test_gemini_pricing.GeminiPricingTests.test_overflow) ... ok
+test_positive_infinity (test_gemini_pricing.GeminiPricingTests.test_positive_infinity) ... ok
+test_provider_error_logs_do_not_expose_content (test_gemini_pricing.GeminiPricingTests.test_provider_error_logs_do_not_expose_content) ... ok
+test_valid (test_gemini_pricing.GeminiPricingTests.test_valid) ... ok
+test_zero_is_valid (test_gemini_pricing.GeminiPricingTests.test_zero_is_valid) ... ok
+test_provisioned_dashboards_and_datasources (test_monitoring.MonitoringTests.test_provisioned_dashboards_and_datasources) ... ok
+test_real_instrumentation_with_isolated_model_provider (test_monitoring.MonitoringTests.test_real_instrumentation_with_isolated_model_provider) ... ok
+test_dense_sixty_page_document (test_storage_reliability.StorageReliabilityTests.test_dense_sixty_page_document) ... ok
+test_eight_simultaneous_uploads_different_documents (test_storage_reliability.StorageReliabilityTests.test_eight_simultaneous_uploads_different_documents) ... ok
+test_eight_simultaneous_uploads_same_document (test_storage_reliability.StorageReliabilityTests.test_eight_simultaneous_uploads_same_document) ... ok
+test_existing_unversioned_data_is_preserved_then_replaced (test_storage_reliability.StorageReliabilityTests.test_existing_unversioned_data_is_preserved_then_replaced) ... ok
+test_failed_publication_preserves_previous_version (test_storage_reliability.StorageReliabilityTests.test_failed_publication_preserves_previous_version) ... ok
+test_partial_first_upload_stays_invisible (test_storage_reliability.StorageReliabilityTests.test_partial_first_upload_stays_invisible) ... ok
+test_partial_write_preserves_previous_publication (test_storage_reliability.StorageReliabilityTests.test_partial_write_preserves_previous_publication) ... ok
+test_retrieval_and_health_during_failed_replacement (test_storage_reliability.StorageReliabilityTests.test_retrieval_and_health_during_failed_replacement) ... ok
+test_retry_restart_counts_and_visibility (test_storage_reliability.StorageReliabilityTests.test_retry_restart_counts_and_visibility) ... ok
+test_worker_death_before_publication (test_storage_reliability.StorageReliabilityTests.test_worker_death_before_publication) ... ok
+test_25_mib_pdf_is_indexed (test_uploads.UploadTests.test_25_mib_pdf_is_indexed) ... 2026-10-16 20:33:17,684 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_health_responds_while_embedding_is_busy (test_uploads.UploadTests.test_health_responds_while_embedding_is_busy) ... 2026-10-16 20:33:17,697 | INFO | httpx | HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-16 20:33:17,699 | INFO | httpx | HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2026-10-16 20:33:17,700 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_invalid_pdf_is_rejected (test_uploads.UploadTests.test_invalid_pdf_is_rejected) ... 2026-10-16 20:33:17,704 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 400 Bad Request"
+ok
+test_metrics_are_exposed (test_uploads.UploadTests.test_metrics_are_exposed) ... 2026-10-16 20:33:17,706 | INFO | httpx | HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-16 20:33:17,708 | INFO | httpx | HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+ok
+test_oversized_pdf_is_rejected (test_uploads.UploadTests.test_oversized_pdf_is_rejected) ... 2026-10-16 20:33:17,845 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+ok
+test_upload_requires_authentication (test_uploads.UploadTests.test_upload_requires_authentication) ... 2026-10-16 20:33:17,851 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 401 Unauthorized"
+ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 35.161s
+
+OK
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

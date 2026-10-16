@@ -1,0 +1,3 @@
+Clean-checkout real-model concurrency run: exit status 0.
+Selected stdout below; progress bars omitted. No hosted Gemini request.
+PASS four simultaneous genuine 10-page PDF uploads; real embedding/reranking models, Qdrant and SQLite; 3 documents, 60 active chunks; same-document publication is complete

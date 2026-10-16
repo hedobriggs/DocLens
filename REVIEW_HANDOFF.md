@@ -1,23 +1,22 @@
-# DocLens review handoff
+# Current review handoff: reliability and MVP foundation proposal
 
-Implementation branch: `improve/uploads-monitoring`.
-Base: `e800f34018474c411ba609654c13ccf4d59cb05f`.
-No remote PR exists yet. No push or merge is authorized.
+Local branch: `fix/ingestion-reliability`.
+Base: `00fada211a0a663e053132fa2559a896abe9036f`.
+Implementation: `7baee9de9246b00cd4023d7cdc8a2f3783320e29`.
+Final review head additionally commits evidence/docs only; use `git rev-parse HEAD`.
+Nothing from this branch is published. The earlier public
+`improve/uploads-monitoring` branch is unchanged.
 
-The reviewed implementation commit is `dcf5222fbecd25901abb50a454cd2ba6bba2d9a2`.
-Clean-checkout commands, exact results and remaining blockers are in `VALIDATION.md`.
-The final review head adds that report and raw evidence files. The earlier e800f34
-checkout predates all upload-timeout and monitoring changes.
+Start with `docs/RELIABILITY-REVIEW.md` for exact commands, results and limitations.
+Review process serialization AND SQLite cross-thread configuration, staged writes,
+publication authority, legacy visibility, failed replacements, restart visibility,
+counts, and optional pricing/metric handling. Provider/filename log privacy is
+covered. Raw/selected evidence is in `validation/reliability-*.txt`.
 
-Review the diff for upload deadlines/error classification, UI recovery,
-admin-only monitoring and independent Grafana authorization, bounded-cardinality
-instrumentation, exporter deployment, and dashboard queries. Run the automated
-Python tests and production-browser tests. Verify live Prometheus/Grafana evidence
-and distinguish missing-provider metrics from actual zero observations.
+Then review the proposed ADR, four milestones and evaluation plan in `docs/`.
+No tenant/workspace/job/report foundation has been implemented yet; the 20 scenarios
+need professional expected findings and thresholds before tuning. Do not mistake
+this repair for multi-firm isolation, durable ingestion or production readiness.
 
-The pipeline remains synchronous. A timed-out request can leave indexing running;
-external ingress size/time limits remain deployment-specific. Multipart bodies
-are parsed before application size checks. Indexing replacement is not
-transactional. The user's exact failing PDF/deployment still needs verification.
-
-Do not push or merge into main without explicit client approval.
+Return prioritized findings with acceptance checks. Do not publish, push, deploy
+or merge without the client's explicit approval.

@@ -317,3 +317,24 @@ unused CUDA libraries for this local-inference workflow. For a GPU deployment,
 explicitly override `TORCH_INDEX_URL` with the appropriate official wheel index
 and configure GPU access separately. The PyTorch version still comes from
 `backend/requirements.txt`.
+
+### Local ingestion reliability and proposed MVP foundation
+
+Local Qdrant has one owning process. All its application reads/writes are serialized;
+SQLite's supported cross-thread option is used only under that lock. Replacement
+vectors are staged and a durable publication pointer controls visibility for both
+dense and lexical retrieval/counts. Failed staging/publication does not remove the
+previous searchable data. Retired/unpublished points remain stored for now; this
+is not a garbage collector or immutable original-file/version access feature.
+Back up the whole data directory, including `publications.sqlite`, with the owner
+stopped. Do not run multiple backend workers against the same local directory.
+
+Invalid optional Gemini prices omit cost estimates without breaking answers or
+reported token usage. The `doclens_gemini_cost_estimate_skipped_total` metric records
+bounded reasons; invalid configuration values are never logged or used as labels.
+
+See [reliability evidence](docs/RELIABILITY-REVIEW.md), the proposed
+[architecture](docs/ADR-001-shared-document-platform.md),
+[milestone backlog](docs/MVP-MILESTONES.md) and
+[insurance evaluation plan](docs/INSURANCE-EVALUATION-PLAN.md). These proposals are
+not implemented multi-tenant features or evidence of production/pilot readiness.
