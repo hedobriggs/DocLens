@@ -88,6 +88,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ detail: "Document service returned an invalid response. Please contact the administrator." }, { status: 502 });
     }
 
+    if (response.ok && (!data || typeof data !== "object" ||
+      !("filename" in data) || typeof data.filename !== "string" ||
+      !("indexed" in data) || data.indexed !== true ||
+      !("total_chunks" in data) || !Number.isInteger(data.total_chunks) || Number(data.total_chunks) < 0)) {
+      return NextResponse.json({ detail: "Document service returned an invalid response. Please contact the administrator." }, { status: 502 });
+    }
     return NextResponse.json(data, {
       status: response.status,
     });

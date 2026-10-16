@@ -15,6 +15,7 @@ const backend = createServer((req, res) => {
       if (body.includes('disconnect.pdf')) return req.socket.destroy();
       if (body.includes('invalid.pdf')) return res.end('not JSON');
       res.setHeader('Content-Type', 'application/json');
+      if (body.includes('schema.pdf')) return res.end(JSON.stringify({unexpected:true}));
       if (body.includes('failure.pdf')) { res.statusCode = 503; return res.end(JSON.stringify({detail:'Index capacity exhausted'})); }
       res.end(JSON.stringify({filename:'sample.pdf',indexed:true,total_chunks:1}));
     };

@@ -20,7 +20,7 @@ test('monitoring requires admin and provides a link, not a popup', async ({page,
 for (const [file,status,message] of [
   ['slow.pdf',200,''], ['timeout.pdf',504,'supported deadline'],
   ['bodytimeout.pdf',504,'supported deadline'], ['failure.pdf',503,'Index capacity exhausted'],['invalid.pdf',502,'invalid response'],
-  ['disconnect.pdf',502,'service is unavailable']
+  ['disconnect.pdf',502,'service is unavailable'], ['schema.pdf',502,'invalid response']
 ] as const) {
   test(`${file}: real proxy status and UI resets`, async ({page,context,request})=>{
     const token=await session('admin');
