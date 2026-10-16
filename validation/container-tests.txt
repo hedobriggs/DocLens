@@ -1,0 +1,24 @@
+No broken requirements found.
+test_provisioned_dashboards_and_datasources (test_monitoring.MonitoringTests.test_provisioned_dashboards_and_datasources) ... ok
+test_real_instrumentation_with_isolated_model_provider (test_monitoring.MonitoringTests.test_real_instrumentation_with_isolated_model_provider) ... ok
+test_25_mib_pdf_is_indexed (test_uploads.UploadTests.test_25_mib_pdf_is_indexed) ... 2026-10-16 19:32:02,778 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_health_responds_while_embedding_is_busy (test_uploads.UploadTests.test_health_responds_while_embedding_is_busy) ... 2026-10-16 19:32:02,791 | INFO | httpx | HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-16 19:32:02,795 | INFO | httpx | HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2026-10-16 19:32:02,796 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_invalid_pdf_is_rejected (test_uploads.UploadTests.test_invalid_pdf_is_rejected) ... 2026-10-16 19:32:02,800 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 400 Bad Request"
+ok
+test_metrics_are_exposed (test_uploads.UploadTests.test_metrics_are_exposed) ... 2026-10-16 19:32:02,803 | INFO | httpx | HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-16 19:32:02,805 | INFO | httpx | HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+ok
+test_oversized_pdf_is_rejected (test_uploads.UploadTests.test_oversized_pdf_is_rejected) ... 2026-10-16 19:32:02,944 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+ok
+test_upload_requires_authentication (test_uploads.UploadTests.test_upload_requires_authentication) ... 2026-10-16 19:32:02,948 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 401 Unauthorized"
+ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.897s
+
+OK
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

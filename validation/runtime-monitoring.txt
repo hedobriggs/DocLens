@@ -1,0 +1,23 @@
+PASS real backend health
+PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini error
+DocLens Grafana monitoring organization and folder: Admin only
+PASS five dashboards provisioned; admin allowed, anonymous/viewer denied; viewer datasource query denied
+PASS Prometheus up{instance="backend:8000"}=1
+PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini error
+PASS Grafana datasource query: overview values=3
+PASS Grafana datasource query: application values=0,0.005128222222222222,0.005128222222222222
+PASS Grafana datasource query: upload-latency values=0.009499999999999998,0.0975
+PASS Grafana datasource query: ai-latency values=0.046000000000000006,0.048,0.0095
+PASS Grafana datasource query: embedding values=4
+PASS Grafana datasource query: reranking values=2
+PASS Grafana datasource query: gemini-error values=2
+PASS Grafana datasource query: documents values=1
+PASS Grafana datasource query: chunks values=1
+PASS Grafana datasource query: qdrant-bytes values=12816
+PASS Grafana datasource query: host-memory values=35743784960
+PASS Grafana datasource query: host-disk values=17119318016,1044480
+PASS Grafana datasource query: host-cpu values=0.07542295555555499,0.07655791111111186,0.07521659999999963,0.07645473333333183,0.07619678888888645
+PASS Grafana datasource query: container-health values=1792179068,1792179068,1792179068,1792179068,1792179068
+PASS Grafana datasource query: container-cpu values=0.0005635695913081051,0.0011474779073842288,0.00039229368823477315,0.00011681219368018427,0.00031896578288361616
+PASS Grafana datasource query: container-memory values=16228352,341827584,87437312,6983680,25047040
+PASS unavailable provider token/cost metrics absent, not zero

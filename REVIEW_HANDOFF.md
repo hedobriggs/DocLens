@@ -4,8 +4,9 @@ Implementation branch: `improve/uploads-monitoring`.
 Base: `e800f34018474c411ba609654c13ccf4d59cb05f`.
 No remote PR exists yet. No push or merge is authorized.
 
-The exact reviewed implementation commit and clean-checkout validation commands
-and results are recorded in `VALIDATION.md` after validation. The earlier e800f34
+The reviewed implementation commit is `dcf5222fbecd25901abb50a454cd2ba6bba2d9a2`.
+Clean-checkout commands, exact results and remaining blockers are in `VALIDATION.md`.
+The final review head adds that report and raw evidence files. The earlier e800f34
 checkout predates all upload-timeout and monitoring changes.
 
 Review the diff for upload deadlines/error classification, UI recovery,
