@@ -1,0 +1,181 @@
+{
+  "uid": "doclens-application",
+  "title": "DocLens Application",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "links": [
+    {
+      "title": "CPU and system",
+      "url": "/d/doclens-system",
+      "type": "link"
+    },
+    {
+      "title": "AI",
+      "url": "/d/doclens-ai",
+      "type": "link"
+    },
+    {
+      "title": "Application",
+      "url": "/d/doclens-application",
+      "type": "link"
+    },
+    {
+      "title": "Storage",
+      "url": "/d/doclens-storage",
+      "type": "link"
+    },
+    {
+      "title": "Overview",
+      "url": "/d/doclens",
+      "type": "link"
+    }
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Upload and indexing latency p95",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, operation) (rate(doclens_operation_duration_seconds_bucket{operation=~\"upload|indexing\"}[5m])))",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "title": "Upload and indexing failures",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "doclens_operations_total{operation=~\"upload|indexing\",outcome=\"error\"}",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "title": "API traffic",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum by (handler) (rate(http_requests_total[5m]))",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "title": "API latency p95",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket[5m])))",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "title": "API failures",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum by (status) (rate(http_requests_total{status=~\"[45]..\"}[5m]))",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "description": "Unavailable or unsupported metrics remain No data. Gemini cost requires configured pricing; CPU/system uses Linux host exporters."
+}

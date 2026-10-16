@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await fetch("http://backend:8000/ask", {
+    const response = await fetch(`${process.env.BACKEND_URL || "http://backend:8000"}/ask`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

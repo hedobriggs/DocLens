@@ -1,0 +1,153 @@
+{
+  "uid": "doclens-ai",
+  "title": "DocLens AI",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "links": [
+    {
+      "title": "CPU and system",
+      "url": "/d/doclens-system",
+      "type": "link"
+    },
+    {
+      "title": "AI",
+      "url": "/d/doclens-ai",
+      "type": "link"
+    },
+    {
+      "title": "Application",
+      "url": "/d/doclens-application",
+      "type": "link"
+    },
+    {
+      "title": "Storage",
+      "url": "/d/doclens-storage",
+      "type": "link"
+    },
+    {
+      "title": "Overview",
+      "url": "/d/doclens",
+      "type": "link"
+    }
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "AI latency p95",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, operation) (rate(doclens_operation_duration_seconds_bucket{operation=~\"embedding|reranking|gemini\"}[5m])))",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "title": "AI failures",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum by (operation) (increase(doclens_operations_total{operation=~\"embedding|reranking|gemini\",outcome=\"error\"}[1h]))",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "title": "Provider reported tokens",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "doclens_gemini_tokens_total",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "title": "Estimated Gemini cost (configured prices only)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "doclens_gemini_estimated_cost_usd_total",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "description": "Unavailable or unsupported metrics remain No data. Gemini cost requires configured pricing; CPU/system uses Linux host exporters."
+}

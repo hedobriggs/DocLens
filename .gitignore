@@ -14,3 +14,7 @@ frontend/.next/
 
 # macOS
 .DS_Store
+
+# Test artifacts
+frontend/test-results/
+frontend/playwright-report/

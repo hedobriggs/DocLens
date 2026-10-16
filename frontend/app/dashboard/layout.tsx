@@ -20,6 +20,8 @@ export default async function DashboardLayout({
     redirect("/");
   }
 
-  return <>{children}</>;
+  return <><nav aria-label="Administration" className="bg-slate-950 px-6 py-2 text-sm">
+    <a href="/monitoring" className="underline">Monitoring</a>
+  </nav>{children}</>;
 }
 

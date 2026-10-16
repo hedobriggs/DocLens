@@ -1,3 +1,4 @@
+from observability import tracked
 from sentence_transformers import SentenceTransformer
 
 
@@ -7,6 +8,7 @@ MODEL_NAME = "all-MiniLM-L6-v2"
 model = SentenceTransformer(MODEL_NAME)
 
 
+@tracked("embedding")
 def create_embedding(text: str) -> list[float]:
     """Create an embedding for one piece of text."""
 
@@ -15,6 +17,7 @@ def create_embedding(text: str) -> list[float]:
     return embedding.tolist()
 
 
+@tracked("embedding")
 def create_embeddings(texts: list[str]) -> list[list[float]]:
     """Create embeddings for multiple pieces of text."""
 

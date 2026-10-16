@@ -1,3 +1,4 @@
+from observability import measure, DOCUMENTS, CHUNKS
 from uuid import uuid4
 from typing import Optional
 import re
@@ -27,6 +28,23 @@ reranker = CrossEncoder(
 )
 
 
+def refresh_storage_metrics():
+    if not client.collection_exists(COLLECTION_NAME):
+        DOCUMENTS.labels(COLLECTION_NAME).set(0)
+        CHUNKS.labels(COLLECTION_NAME).set(0)
+        return
+    names = set()
+    offset = None
+    while True:
+        points, offset = client.scroll(COLLECTION_NAME, offset=offset, limit=256,
+                                       with_payload=["document_name"], with_vectors=False)
+        names.update(p.payload.get("document_name") for p in points)
+        if offset is None:
+            break
+    DOCUMENTS.labels(COLLECTION_NAME).set(len(names))
+    CHUNKS.labels(COLLECTION_NAME).set(client.count(COLLECTION_NAME, exact=True).count)
+
+
 def create_collection():
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
@@ -36,6 +54,8 @@ def create_collection():
                 distance=Distance.COSINE
             )
         )
+
+    refresh_storage_metrics()
 
 
 def delete_document(document_name: str):
@@ -57,6 +77,8 @@ def delete_document(document_name: str):
             )
         )
     )
+
+    refresh_storage_metrics()
 
 
 def store_chunks(
@@ -85,6 +107,8 @@ def store_chunks(
         collection_name=COLLECTION_NAME,
         points=points
     )
+
+    refresh_storage_metrics()
 
 
 def search_chunks(
@@ -281,7 +305,8 @@ def hybrid_search(
         for point in candidates
     ]
 
-    rerank_scores = reranker.predict(pairs)
+    with measure("reranking"):
+        rerank_scores = reranker.predict(pairs)
 
     reranked = sorted(
         zip(candidates, rerank_scores),
@@ -294,3 +319,6 @@ def hybrid_search(
         point
         for point, _ in reranked[:limit]
     ]
+
+
+refresh_storage_metrics()

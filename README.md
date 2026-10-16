@@ -175,3 +175,106 @@ The long-term goal is to turn DocLens from a local RAG prototype into a deployed
 ---
 
 **DocLens** — *by Hedobriggs*
+
+## Uploads and built-in monitoring
+
+The application accepts PDFs up to **50 MiB**, including 25 MB files. The browser,
+frontend API and backend validate the file limit. PDF processing runs outside the
+backend event loop so health and metrics requests remain responsive. The frontend
+allows up to ten minutes for processing; hosting platforms and reverse proxies
+may impose shorter limits. Configure any external proxy to accept at least 51 MiB
+(to allow multipart overhead) and an appropriate request timeout. The synchronous
+workflow is not a background job system; very long documents may still require
+an asynchronous ingestion pipeline. File bytes alone do not predict inference time.
+
+`BACKEND_URL` optionally overrides the frontend's internal backend address; the
+default `http://backend:8000` works with Docker Compose. For native development set
+it to `http://127.0.0.1:8000` in the frontend's server environment.
+
+The existing Compose build includes Prometheus and Grafana by default:
+
+```sh
+docker compose up -d --build
+```
+
+Supply the existing backend/root environment files and set `GRAFANA_ADMIN_PASSWORD`
+securely before starting. Prometheus uses port 9090 and Grafana port 3001, both
+bound to loopback. Use a secure tunnel for remote access. Grafana provisions the
+**DocLens** dashboard automatically, showing backend availability, request rate,
+server errors, p95 request latency, upload outcomes and process memory. Upload
+metrics measure completed requests, not per-document processing progress.
+
+Verify that the `doclens-backend` Prometheus target is UP and the Grafana dashboard
+contains data after making API requests. The API exposes `/metrics`; keep backend
+port 8000 private or restrict external access to this endpoint in your deployment.
+
+Run the upload HTTP regression checks with:
+
+```sh
+backend/.venv/bin/python -m unittest discover -s tests -v
+```
+
+These checks cover a 25 MiB PDF, over-limit and invalid files, authentication,
+metrics, and health responsiveness during inference. Model inference and hosted
+generation are isolated in these tests; validate a representative real document
+and Gemini response separately before releasing.
+
+### Admin monitoring and metric availability
+
+The admin dashboard includes a **Monitoring** link to an authorized DocLens page.
+It opens the Grafana overview using `GRAFANA_PUBLIC_URL` (default:
+`http://localhost:3001`). Set this to the URL reachable by the administrator's
+browser; a remote browser's localhost is not the server. Grafana has its own
+admin/password login. DocLens cookies are never used as Grafana credentials.
+Anonymous access and self-registration are disabled.
+
+On first startup the `grafana-permissions` service removes default Viewer/Editor
+permissions from the provisioned `doclens-admin` folder. **Keep Grafana on its
+loopback binding and do not expose it remotely until that service exits with
+code 0.** Recheck after changing Grafana users, organizations or folder permissions.
+An existing Grafana volume retains its admin password; changing the environment
+variable does not reset it. Rotate the password through Grafana first, then update
+the bootstrap configuration. Only trusted administrators should access Grafana.
+
+The overview links to CPU/system, AI, application and storage dashboards. The
+Linux host's node-exporter and cAdvisor are private Compose services; they need
+read-only host filesystem/process/container metadata mounts. Their values describe
+the Docker host, which may be a VM, not the administrator's laptop. Restricted
+container platforms may not support those mounts/cgroups. Unavailable collectors
+show No data or a down exporter; do not replace them with synthetic zeros.
+`container_last_seen` shows observation freshness, not Docker HEALTHCHECK status.
+
+Backend metrics include embedding/reranking/Gemini duration and failures,
+upload/indexing duration and outcomes, distinct document and chunk counts, and
+apparent Qdrant file bytes (not filesystem allocated blocks). No document names,
+questions, contents or usernames are metric labels. Gemini token counters appear
+only when the provider returns usage metadata. Optional
+`GEMINI_INPUT_USD_PER_MILLION` and `GEMINI_OUTPUT_USD_PER_MILLION` enable a basic
+USD estimate using provider-reported prompt and candidate tokens; use current
+prices for the configured model. It excludes unsupported billing dimensions
+(e.g. caching/thinking/tool charges) and is not an invoice. Without prices the
+cost metric has no samples. A missing Gemini key permits ingestion and monitoring,
+but answer generation fails explicitly and is counted as a Gemini operation error.
+
+`UPLOAD_TIMEOUT_MS` sets the server-to-backend processing deadline (1–600000 ms,
+default 600000). It does not limit the incoming multipart transfer. Headers, response
+body and overall upstream deadline are bounded. Timeout responses use HTTP 504;
+upstream application statuses are preserved, malformed upstream JSON is an explicit
+502, and connection failures have a distinct service-unavailable message. A timeout
+does not cancel an already-running backend indexing operation. Check before retrying.
+External proxy deadlines remain deployment-specific.
+
+Browser regression checks use the built production app and a controlled upstream:
+
+```sh
+cd frontend
+npm ci
+npm run build
+npm run test:e2e
+```
+
+Set `CHROMIUM_PATH` to an installed Chromium binary (default `/usr/bin/chromium`).
+The test upstream deadline is 1500 ms, exercising the same policy as production
+without waiting ten minutes. Tests cover slow success, headers/body deadlines,
+application errors, invalid JSON, disconnection, UI reset paths, file-size limits,
+and administrator/non-administrator monitoring access.

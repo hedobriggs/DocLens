@@ -10,8 +10,7 @@ import {
 import ReactMarkdown from "react-markdown";
 
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const MAX_PDF_BYTES = 50 * 1024 * 1024;
 
 
 type Document = {
@@ -97,6 +96,11 @@ export default function Dashboard() {
     }
 
     setUploadError("");
+    if (file.size > MAX_PDF_BYTES) {
+      setUploadError("PDF files must be 50 MiB or smaller.");
+      event.target.value = "";
+      return;
+    }
     setIsUploading(true);
 
     const formData = new FormData();
@@ -111,7 +115,9 @@ export default function Dashboard() {
         }
       );
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({
+        detail: `Upload failed (HTTP ${response.status}). Check the server upload limit and logs.`,
+      }));
 
       if (!response.ok) {
         throw new Error(

@@ -1,3 +1,4 @@
+from observability import measure, TOKENS, COST
 import os
 import json
 import logging
@@ -21,19 +22,8 @@ load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not GEMINI_API_KEY:
-    raise ValueError(
-        "GEMINI_API_KEY was not found in the environment."
-    )
-
-
-# --------------------------------------------------
-# Gemini client
-# --------------------------------------------------
-
-client = genai.Client(
-    api_key=GEMINI_API_KEY
-)
+# Ingestion, health and metrics remain usable without a hosted-generation key.
+client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 
 # --------------------------------------------------
@@ -105,10 +95,29 @@ Document context:
 """.strip()
 
     try:
-        response = client.models.generate_content(
-            model="gemini-3.5-flash-lite",
-            contents=prompt
-        )
+        with measure("gemini"):
+            if client is None:
+                raise RuntimeError("GEMINI_API_KEY is not configured")
+            response = client.models.generate_content(
+                model="gemini-3.5-flash-lite", contents=prompt
+            )
+            # Include JSON/schema failures in operation error metrics.
+            raw = response.text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+            parsed = json.loads(raw)
+            if not isinstance(parsed.get("answer"), str) or not isinstance(parsed.get("source_ids", []), list):
+                raise ValueError("Invalid Gemini response schema")
+        usage = response.usage_metadata
+        if usage is not None:
+            input_tokens = usage.prompt_token_count
+            output_tokens = usage.candidates_token_count
+            if input_tokens is not None:
+                TOKENS.labels("input").inc(input_tokens)
+            if output_tokens is not None:
+                TOKENS.labels("output").inc(output_tokens)
+            input_price = os.getenv("GEMINI_INPUT_USD_PER_MILLION")
+            output_price = os.getenv("GEMINI_OUTPUT_USD_PER_MILLION")
+            if input_price and output_price and input_tokens is not None and output_tokens is not None:
+                COST.labels("USD").inc((input_tokens * float(input_price) + output_tokens * float(output_price)) / 1_000_000)
 
         response_text = response.text.strip()
 

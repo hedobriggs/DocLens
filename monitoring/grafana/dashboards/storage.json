@@ -1,0 +1,125 @@
+{
+  "uid": "doclens-storage",
+  "title": "DocLens Storage",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "links": [
+    {
+      "title": "CPU and system",
+      "url": "/d/doclens-system",
+      "type": "link"
+    },
+    {
+      "title": "AI",
+      "url": "/d/doclens-ai",
+      "type": "link"
+    },
+    {
+      "title": "Application",
+      "url": "/d/doclens-application",
+      "type": "link"
+    },
+    {
+      "title": "Storage",
+      "url": "/d/doclens-storage",
+      "type": "link"
+    },
+    {
+      "title": "Overview",
+      "url": "/d/doclens",
+      "type": "link"
+    }
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Documents",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "doclens_documents",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "title": "Chunks",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "doclens_chunks",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "title": "Qdrant local files",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "doclens_qdrant_storage_bytes",
+          "refId": "A",
+          "legendFormat": "{{operation}} {{handler}} {{name}} {{direction}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "description": "Unavailable or unsupported metrics remain No data. Gemini cost requires configured pricing; CPU/system uses Linux host exporters."
+}

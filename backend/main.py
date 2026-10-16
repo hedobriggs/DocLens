@@ -1,3 +1,4 @@
+from observability import tracked, measure
 
 import logging
 import os
@@ -178,7 +179,8 @@ async def extract_document(
 # --------------------------------------------------
 
 @app.post("/documents/process")
-async def process_document(
+@tracked("upload")
+def process_document(
     file: UploadFile = File(...),
     _: None = Depends(require_internal_auth),
 ):
@@ -189,7 +191,10 @@ async def process_document(
             detail="Only PDF files are currently supported."
         )
 
-    pdf_bytes = await file.read()
+    # UploadFile is spooled to disk by Starlette; bound the in-memory PDF copy.
+    pdf_bytes = file.file.read(50 * 1024 * 1024 + 1)
+    if len(pdf_bytes) > 50 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="PDF files must be 50 MiB or smaller.")
 
     try:
         document = fitz.open(
@@ -256,17 +261,18 @@ async def process_document(
 
     embeddings = create_embeddings(texts)
 
-    # Store in Qdrant
-    create_collection()
+    with measure("indexing"):
+        # Store in Qdrant
+        create_collection()
 
-    # Prevent duplicate chunks when a document
-    # with the same filename is uploaded again.
-    delete_document(file.filename)
+        # Prevent duplicate chunks when a document
+        # with the same filename is uploaded again.
+        delete_document(file.filename)
 
-    store_chunks(
-        chunks=chunks,
-        embeddings=embeddings
-    )
+        store_chunks(
+            chunks=chunks,
+            embeddings=embeddings
+        )
 
     return {
         "filename": file.filename,
