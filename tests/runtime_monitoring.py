@@ -22,6 +22,7 @@ from urllib.request import Request, urlopen
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--python', default=str(Path('backend/.venv/bin/python').resolve()))
+    parser.add_argument('--backend-image', help='Validate an already-built backend image instead of native uvicorn')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     prefix = 'doclens-validation-' + secrets.token_hex(4)
@@ -72,7 +73,14 @@ def main():
             environment = {**os.environ, 'DOCLENS_SESSION_SECRET': internal_key,
                            'OMP_NUM_THREADS': '2', 'HF_HUB_OFFLINE': '1'}
             environment.pop('GEMINI_API_KEY', None)
-            backend = subprocess.Popen([args.python, '-m', 'uvicorn', 'main:app', '--app-dir', str(root/'backend'), '--host', '0.0.0.0', '--port', '8000'], cwd=tmp, env=environment, stdout=log, stderr=log)
+            if args.backend_image:
+                cache = Path(os.environ['HF_HOME']).resolve()
+                run('backend', args.backend_image, options=(
+                    '-e', f'DOCLENS_SESSION_SECRET={internal_key}', '-e', 'HF_HOME=/models',
+                    '-e', 'HF_HUB_OFFLINE=1', '-e', 'OMP_NUM_THREADS=2',
+                    '-v', f'{cache}:/models:ro'))
+            else:
+                backend = subprocess.Popen([args.python, '-m', 'uvicorn', 'main:app', '--app-dir', str(root/'backend'), '--host', '0.0.0.0', '--port', '8000'], cwd=tmp, env=environment, stdout=log, stderr=log)
             wait_for(lambda: request('http://127.0.0.1:8000/'), 'real backend')
             print('PASS real backend health', flush=True)
             # Generate a valid 25 MiB PDF, upload it, then exercise real retrieval/reranking.
