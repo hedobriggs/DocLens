@@ -161,7 +161,8 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
                 # Execute the same query through the provisioned Grafana datasource.
                 data = request('http://127.0.0.1:3301/api/datasources/proxy/uid/prometheus/api/v1/query?' + urlencode({'query':expression}), headers={'Authorization':auth})
                 assert data['data']['result'], label
-                print('PASS Grafana datasource query: ' + label, flush=True)
+                values = [sample['value'][1] for sample in data['data']['result']]
+                print('PASS Grafana datasource query: ' + label + ' values=' + ','.join(values[:8]), flush=True)
             assert not query('doclens_gemini_tokens_total')
             assert not query('doclens_gemini_estimated_cost_usd_total')
             print('PASS unavailable provider token/cost metrics absent, not zero', flush=True)
