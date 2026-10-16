@@ -278,3 +278,36 @@ The test upstream deadline is 1500 ms, exercising the same policy as production
 without waiting ten minutes. Tests cover slow success, headers/body deadlines,
 application errors, invalid JSON, disconnection, UI reset paths, file-size limits,
 and administrator/non-administrator monitoring access.
+
+Grafana's monitoring organization is reserved for administrators. Auto-assignment
+of new users is disabled, and the permissions bootstrap removes non-admin members
+from organization 1 as well as restricting its folder. This also protects its
+Prometheus datasource: folder permissions alone do not restrict datasource queries
+in Grafana OSS. Do not manually assign Viewer/Editor users to monitoring's
+organization. The acceptance test checks viewer denial for both the dashboard and
+the datasource API.
+
+Clone with a standard readable umask (e.g. `umask 022`) or run
+`chmod -R a+rX monitoring` before starting non-root monitoring containers. This
+machine defaults to umask 077, which would otherwise make bind-mounted public
+configuration unreadable inside Grafana and Prometheus.
+
+Live monitoring acceptance uses real backend models and ephemeral Docker services:
+
+```sh
+HF_HOME=/path/to/model-cache backend/.venv/bin/python tests/runtime_monitoring.py
+```
+
+It requires free host ports 8000, 8080, 9090, 9100 and 3301. It deliberately runs
+without a Gemini key, measuring a real missing-key error rather than inventing
+provider token usage. The test uses host networking and maps the configured
+service hostnames to loopback; it is not a full Compose deployment test. All
+containers and processes it starts are removed on exit. For a clean source clone
+without a virtualenv, pass `--python /path/to/installed/venv/bin/python`.
+
+Behind this cloud machine's HTTPS proxy, `python tests/build_backend_cloud.py`
+resolves the existing proxy for Docker and supplies the machine's current CA
+bundle as a temporary BuildKit secret. TLS verification remains enabled and the
+bundle is not copied into the image. Outside this cloud environment, use the
+normal Docker build or provide your own authorized trust bundle using
+`--secret id=build_ca,src=/path/to/ca-bundle.pem` if your network requires one.

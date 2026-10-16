@@ -128,9 +128,13 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
             print('PASS five dashboards provisioned; admin allowed, anonymous/viewer denied; viewer datasource query denied', flush=True)
             wait_for(lambda: query('up{job="doclens-backend",instance="backend:8000"}') and query('up{job="doclens-backend"}')[0]['value'][1]=='1', 'Prometheus scraping backend:8000')
             print('PASS Prometheus up{instance="backend:8000"}=1', flush=True)
+            # Activity after the first scrape makes histogram/rate panels meaningful.
+            subprocess.run([args.python, '-c', activity], env=environment, check=True)
             required = {
                 'overview':'sum(http_requests_total)',
-                'application':'sum(http_request_duration_seconds_count)',
+                'application':'sum by (handler) (rate(http_requests_total[5m]))',
+                'upload-latency':'histogram_quantile(0.95, sum by (le, operation) (rate(doclens_operation_duration_seconds_bucket{operation=~"upload|indexing"}[5m])))',
+                'ai-latency':'histogram_quantile(0.95, sum by (le, operation) (rate(doclens_operation_duration_seconds_bucket{operation=~"embedding|reranking|gemini"}[5m])))',
                 'embedding':'doclens_operation_duration_seconds_count{operation="embedding"}',
                 'reranking':'doclens_operation_duration_seconds_count{operation="reranking"}',
                 'gemini-error':'doclens_operations_total{operation="gemini",outcome="error"}',
@@ -139,10 +143,13 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
                 'host-memory':'node_memory_MemTotal_bytes',
                 'host-disk':'node_filesystem_avail_bytes',
                 'host-cpu':'rate(node_cpu_seconds_total{mode="idle"}[5m])',
-                'container-health':'container_last_seen',
+                'container-health':'container_last_seen{name!=""}',
+                'container-cpu':'sum by (name) (rate(container_cpu_usage_seconds_total{name!=""}[5m]))',
+                'container-memory':'container_memory_working_set_bytes{name!=""}',
             }
             for label, expression in required.items():
-                wait_for(lambda: query(expression), label + ' samples', seconds=60)
+                import math
+                wait_for(lambda: any(math.isfinite(float(sample['value'][1])) for sample in query(expression)), label + ' finite samples', seconds=60)
                 # Execute the same query through the provisioned Grafana datasource.
                 data = request('http://127.0.0.1:3301/api/datasources/proxy/uid/prometheus/api/v1/query?' + urlencode({'query':expression}), headers={'Authorization':auth})
                 assert data['data']['result'], label
