@@ -98,16 +98,18 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
             run('grafana', 'grafana/grafana:12.1.1', options=(
                 '--add-host','prometheus:127.0.0.1','-e','GF_SERVER_HTTP_PORT=3301',
                 '-e',f'GF_SECURITY_ADMIN_PASSWORD={admin_password}',
-                '-e','GF_AUTH_ANONYMOUS_ENABLED=false','-e','GF_USERS_ALLOW_SIGN_UP=false','-e','GF_PLUGINS_PREINSTALL_DISABLED=true',
+                '-e','GF_AUTH_ANONYMOUS_ENABLED=false','-e','GF_USERS_ALLOW_SIGN_UP=false','-e','GF_USERS_AUTO_ASSIGN_ORG=false','-e','GF_USERS_ALLOW_ORG_CREATE=false','-e','GF_PLUGINS_PREINSTALL_DISABLED=true',
                 '-v',f'{root}/monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro',
                 '-v',f'{root}/monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro',
                 '-v',f'{root}/monitoring/grafana/dashboards:/etc/grafana/dashboards/details:ro',
                 '-v',f'{root}/monitoring/grafana/doclens.json:/etc/grafana/dashboards/doclens.json:ro'))
             wait_for(lambda: request('http://127.0.0.1:3301/api/health'), 'Grafana')
             subprocess.run([args.python, str(root/'monitoring/grafana/admin_permissions.py')], env={**os.environ,'GRAFANA_ADMIN_PASSWORD':admin_password,'GRAFANA_URL':'http://127.0.0.1:3301'}, check=True)
-            dashboards = request('http://127.0.0.1:3301/api/search', headers={'Authorization':auth})
-            uids = {d['uid'] for d in dashboards}
-            assert {'doclens','doclens-system','doclens-ai','doclens-application','doclens-storage'}.issubset(uids), uids
+            expected_uids = {'doclens','doclens-system','doclens-ai','doclens-application','doclens-storage'}
+            def provisioned():
+                dashboards = request('http://127.0.0.1:3301/api/search', headers={'Authorization':auth})
+                return expected_uids.issubset({d['uid'] for d in dashboards})
+            wait_for(provisioned, 'all five provisioned dashboards')
             request('http://127.0.0.1:3301/api/admin/users', headers={'Authorization':auth}, body={'name':'Acceptance viewer','login':'acceptance-viewer','email':'viewer@example.invalid','password':viewer_password})
             viewer_auth = 'Basic ' + base64.b64encode(('acceptance-viewer:' + viewer_password).encode()).decode()
             for headers in ({}, {'Authorization':viewer_auth}):
@@ -117,7 +119,13 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
                     assert error.code in (401,403,404), error.code
                 else:
                     raise AssertionError('Non-admin could read monitoring dashboard')
-            print('PASS five dashboards provisioned; admin allowed, anonymous/viewer denied', flush=True)
+            try:
+                request('http://127.0.0.1:3301/api/datasources/proxy/uid/prometheus/api/v1/query?query=up', headers={'Authorization':viewer_auth})
+            except HTTPError as error:
+                assert error.code in (401,403,404), error.code
+            else:
+                raise AssertionError('Viewer could query monitoring datasource')
+            print('PASS five dashboards provisioned; admin allowed, anonymous/viewer denied; viewer datasource query denied', flush=True)
             wait_for(lambda: query('up{job="doclens-backend",instance="backend:8000"}') and query('up{job="doclens-backend"}')[0]['value'][1]=='1', 'Prometheus scraping backend:8000')
             print('PASS Prometheus up{instance="backend:8000"}=1', flush=True)
             required = {
