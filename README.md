@@ -311,3 +311,9 @@ bundle as a temporary BuildKit secret. TLS verification remains enabled and the
 bundle is not copied into the image. Outside this cloud environment, use the
 normal Docker build or provide your own authorized trust bundle using
 `--secret id=build_ca,src=/path/to/ca-bundle.pem` if your network requires one.
+
+The backend image installs the pinned PyTorch CPU wheel by default, avoiding
+unused CUDA libraries for this local-inference workflow. For a GPU deployment,
+explicitly override `TORCH_INDEX_URL` with the appropriate official wheel index
+and configure GPU access separately. The PyTorch version still comes from
+`backend/requirements.txt`.
