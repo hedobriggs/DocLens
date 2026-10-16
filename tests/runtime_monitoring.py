@@ -101,7 +101,7 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
                 '-e','GF_AUTH_ANONYMOUS_ENABLED=false','-e','GF_USERS_ALLOW_SIGN_UP=false','-e','GF_PLUGINS_PREINSTALL_DISABLED=true',
                 '-v',f'{root}/monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro',
                 '-v',f'{root}/monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro',
-                '-v',f'{root}/monitoring/grafana/dashboards:/etc/grafana/dashboards:ro',
+                '-v',f'{root}/monitoring/grafana/dashboards:/etc/grafana/dashboards/details:ro',
                 '-v',f'{root}/monitoring/grafana/doclens.json:/etc/grafana/dashboards/doclens.json:ro'))
             wait_for(lambda: request('http://127.0.0.1:3301/api/health'), 'Grafana')
             subprocess.run([args.python, str(root/'monitoring/grafana/admin_permissions.py')], env={**os.environ,'GRAFANA_ADMIN_PASSWORD':admin_password,'GRAFANA_URL':'http://127.0.0.1:3301'}, check=True)
