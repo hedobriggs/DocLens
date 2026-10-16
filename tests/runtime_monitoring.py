@@ -96,7 +96,7 @@ print('PASS 25 MiB real-model indexing, retrieval/reranking and missing-Gemini e
             run('cadvisor', 'gcr.io/cadvisor/cadvisor:v0.52.1', options=('-v','/:/rootfs:ro','-v','/var/run:/var/run:ro','-v','/sys:/sys:ro','-v','/var/lib/docker:/var/lib/docker:ro'))
             run('prometheus', 'prom/prometheus:v3.5.0', '--config.file=/etc/prometheus/prometheus.yml', options=('--add-host','backend:127.0.0.1','--add-host','node-exporter:127.0.0.1','--add-host','cadvisor:127.0.0.1','-v',f'{root}/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro'))
             run('grafana', 'grafana/grafana:12.1.1', options=(
-                '--add-host','prometheus:127.0.0.1','-e','GF_SERVER_HTTP_PORT=3301',
+                '--add-host','prometheus:127.0.0.1','-e','GF_SERVER_HTTP_PORT=3301','-e','NO_PROXY=prometheus,backend,localhost,127.0.0.1',
                 '-e',f'GF_SECURITY_ADMIN_PASSWORD={admin_password}',
                 '-e','GF_AUTH_ANONYMOUS_ENABLED=false','-e','GF_USERS_ALLOW_SIGN_UP=false','-e','GF_USERS_AUTO_ASSIGN_ORG=false','-e','GF_USERS_ALLOW_ORG_CREATE=false','-e','GF_PLUGINS_PREINSTALL_DISABLED=true',
                 '-v',f'{root}/monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro',

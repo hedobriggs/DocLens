@@ -57,6 +57,7 @@ services:
       GF_USERS_AUTO_ASSIGN_ORG: "false"
       GF_AUTH_DISABLE_LOGIN_FORM: "false"
       GF_PLUGINS_PREINSTALL_DISABLED: "true"
+      NO_PROXY: "prometheus,backend,localhost,127.0.0.1,${NO_PROXY:-}"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
@@ -71,6 +72,7 @@ services:
     image: python:3.12-alpine
     environment:
       GRAFANA_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD}
+      NO_PROXY: "grafana,localhost,127.0.0.1,${NO_PROXY:-}"
     volumes:
       - ./monitoring/grafana/admin_permissions.py:/admin_permissions.py:ro
     command: ["python", "/admin_permissions.py"]
