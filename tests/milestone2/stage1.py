@@ -329,6 +329,62 @@ Jobs(db,obj).submit(db.identity(os.environ['M2_TOKEN']),'workspaces',UUID(os.env
         self.assertEqual(self.accepted(key=key,meta=meta),job)
         self.assertEqual(str(self.owner('SELECT active_version_id FROM platform.documents')[0]['active_version_id']),new['version_id'])
 
+    def job_snapshot(self):
+        return {table:self.owner(f'SELECT to_jsonb(t) AS row FROM platform.{table} t ORDER BY to_jsonb(t)::text')
+                for table in ('ingestion_reservations','ingestion_submissions','ingestion_jobs','ingestion_attempts','ingestion_events')}
+
+    def runtime_reserve(self,identity,r,request_hash):
+        with self.s['db'].transaction(identity) as conn:
+            self.assertEqual(conn.execute('SELECT current_user AS role').fetchone()['role'],'doclens_web')
+            return conn.execute('SELECT * FROM platform.reserve_ingestion(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+                ('workspaces',fid('a-private'),r['idempotency_key'],request_hash,None,None,r['original_sha256'],
+                 r['byte_size'],r['filename'],Jsonb(r['metadata']),Jsonb(r['processing_manifest']))).fetchone()
+
+    def test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted(self):
+        key=str(uuid4())
+        with patch.object(self.s['objects'],'put',side_effect=RuntimeError('synthetic storage failure')):
+            self.assertEqual(self.enqueue(key=key).status_code,503)
+        r=self.owner('SELECT * FROM platform.ingestion_reservations')[0]
+        identity=self.s['db'].identity(self.headers()['Authorization'][7:])
+        for state in ('new','receiving','accepted'):
+            if state=='accepted': self.accepted(key=key)
+            candidate={**r,'idempotency_key':str(uuid4())} if state=='new' else r
+            before=self.job_snapshot()
+            with self.subTest(state=state):
+                with self.assertRaises(psycopg.Error) as error:
+                    self.runtime_reserve(identity,candidate,None)
+                self.assertEqual(error.exception.sqlstate,'DL001')
+                self.assertEqual(self.job_snapshot(),before)
+        job=self.accepted(key=key)
+        replay=self.runtime_reserve(identity,r,r['request_sha256'])
+        self.assertEqual(str(replay['accepted_job_id']),job['job_id'])
+        self.assertEqual(self.accepted(key=key),job)
+
+    def test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance(self):
+        key=str(uuid4())
+        with patch.object(self.s['objects'],'put',side_effect=RuntimeError('synthetic storage failure')):
+            self.assertEqual(self.enqueue(key=key).status_code,503)
+        r=self.owner('SELECT * FROM platform.ingestion_reservations')[0]
+        identity=self.s['db'].identity(self.headers()['Authorization'][7:])
+        r=self.runtime_reserve(identity,r,r['request_sha256'])
+        object_version=self.s['objects'].put(r['object_key'],self.data,retention_days=r['retention_days'],legal_hold=r['legal_hold'])
+        for state in ('receiving','accepted'):
+            for operation,query,args in (
+                ('accept','SELECT * FROM platform.accept_ingestion(%s,%s,%s)',(r['id'],None,object_version)),
+                ('release','SELECT platform.release_ingestion(%s,%s)',(r['id'],None))):
+                before=self.job_snapshot()
+                with self.subTest(state=state,operation=operation):
+                    with self.assertRaises(psycopg.Error) as error:
+                        with self.s['db'].transaction(identity) as conn:
+                            self.assertEqual(conn.execute('SELECT current_user AS role').fetchone()['role'],'doclens_web')
+                            conn.execute(query,args)
+                    self.assertEqual(error.exception.sqlstate,'DL005')
+                    self.assertEqual(self.job_snapshot(),before)
+            with self.s['db'].transaction(identity) as conn:
+                job=conn.execute('SELECT * FROM platform.accept_ingestion(%s,%s,%s)',(r['id'],r['upload_token'],object_version)).fetchone()
+            self.assertEqual(str(self.runtime_reserve(identity,r,r['request_sha256'])['accepted_job_id']),str(job['id']))
+        self.assertEqual(self.accepted(key=key)['job_id'],str(job['id']))
+
 
 class MigrationUpgrade(unittest.TestCase):
     def test_01_legacy_v1_upgrade_preserves_all_old_rows_and_citation_bytes(self):
@@ -352,7 +408,7 @@ class MigrationUpgrade(unittest.TestCase):
                         if table=='documents':
                             self.assertEqual([json.loads(r[0]) for r in actual],[json.loads(r[0]) for r in snapshot[table]])
                         else:self.assertEqual(actual,snapshot[table],table)
-                    self.assertEqual(conn.execute('SELECT version FROM platform.schema_migrations ORDER BY version').fetchall(),[(1,),(2,)])
+                    self.assertEqual(conn.execute('SELECT version FROM platform.schema_migrations ORDER BY version').fetchall(),[(1,),(2,),(3,)])
                     provenance=conn.execute('SELECT sha256,provenance FROM platform.migration_history WHERE version=1').fetchone()
                     self.assertEqual(provenance,(None,'legacy-unverified'))
                 self.assertEqual(api.get('/versions/'+old['version_id']+'/original',headers=headers).content,original)
@@ -379,7 +435,7 @@ class MigrationUpgrade(unittest.TestCase):
             with psycopg.connect(s['owner'],autocommit=True) as conn:
                 with self.assertRaisesRegex(RuntimeError,'checksum changed'):migrate(conn,migrations_dir=directory)
                 with self.assertRaisesRegex(RuntimeError,'newer'):migrate(conn,target=1)
-                self.assertEqual(conn.execute('SELECT count(*) FROM platform.migration_history').fetchone()[0],2)
+                self.assertEqual(conn.execute('SELECT count(*) FROM platform.migration_history').fetchone()[0],3)
 
     def test_04_concurrent_migration_runners_serialize(self):
         with m1.services(legacy_v1=True) as s:
@@ -387,8 +443,28 @@ class MigrationUpgrade(unittest.TestCase):
                 with psycopg.connect(s['owner'],autocommit=True) as conn:migrate(conn)
             with ThreadPoolExecutor(max_workers=2) as pool:list(pool.map(upgrade,range(2)))
             with psycopg.connect(s['owner']) as conn:
-                self.assertEqual(conn.execute('SELECT version FROM platform.schema_migrations ORDER BY version').fetchall(),[(1,),(2,)])
-                self.assertEqual(conn.execute('SELECT count(*) FROM platform.migration_history').fetchone()[0],2)
+                self.assertEqual(conn.execute('SELECT version FROM platform.schema_migrations ORDER BY version').fetchall(),[(1,),(2,),(3,)])
+                self.assertEqual(conn.execute('SELECT count(*) FROM platform.migration_history').fetchone()[0],3)
+
+    def test_05_v2_upgrade_preserves_jobs_history_and_runtime_replay(self):
+        with m1.services(legacy_v1=True) as s:
+            with psycopg.connect(s['owner'],autocommit=True) as conn:
+                migrate(conn,target=2)
+                with conn.transaction():seed_synthetic(conn,s['password'])
+            with TestClient(create_app(s['db'],s['objects'],m1.DeterministicEmbeddings())) as api:
+                token=api.post('/session',json={'email':'alice@synthetic.invalid','password':s['password']}).json()['token']
+                identity=s['db'].identity(token);jobs=Jobs(s['db'],s['objects'])
+                key=str(uuid4());data=m1.pdf('Synthetic existing stage-one queued original.')
+                original=jobs.submit(identity,'workspaces',fid('a-private'),key,metadata(),data,'durable.pdf')
+                tables=('ingestion_reservations','ingestion_submissions','ingestion_jobs','ingestion_attempts','ingestion_events','migration_history')
+                with psycopg.connect(s['owner']) as conn:
+                    snapshot={table:conn.execute(f'SELECT to_jsonb(t)::text FROM platform.{table} t ORDER BY to_jsonb(t)::text').fetchall() for table in tables}
+                with psycopg.connect(s['owner'],autocommit=True) as conn:migrate(conn);migrate(conn)
+                with psycopg.connect(s['owner']) as conn:
+                    for table in tables:
+                        condition=' WHERE version<=2' if table=='migration_history' else ''
+                        self.assertEqual(conn.execute(f'SELECT to_jsonb(t)::text FROM platform.{table} t{condition} ORDER BY to_jsonb(t)::text').fetchall(),snapshot[table],table)
+                self.assertEqual(jobs.submit(identity,'workspaces',fid('a-private'),key,metadata(),data,'durable.pdf'),original)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

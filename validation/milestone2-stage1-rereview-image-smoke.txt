@@ -1,0 +1,2 @@
+PASS durable admission/status/replay and unpublished-version denial inside non-root Python 3.11 API image
+PASS non-root Python 3.11 API image: pip check, live identity/workspace RLS, retained original range, cross-firm denial, revocation

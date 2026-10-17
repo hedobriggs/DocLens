@@ -1,0 +1,56 @@
+test_01_accepted_job_is_durable_but_not_published (__main__.DurableAdmission.test_01_accepted_job_is_durable_but_not_published) ... ok
+test_02_idempotent_replay_and_changed_request_conflict (__main__.DurableAdmission.test_02_idempotent_replay_and_changed_request_conflict) ... ok
+test_03_identity_scope_and_key_checked_before_body (__main__.DurableAdmission.test_03_identity_scope_and_key_checked_before_body) ... ok
+test_04_job_status_uses_current_permissions (__main__.DurableAdmission.test_04_job_status_uses_current_permissions) ... ok
+test_05_same_org_key_cannot_reveal_other_workspace_submission (__main__.DurableAdmission.test_05_same_org_key_cannot_reveal_other_workspace_submission) ... ok
+test_06_shared_organisation_quota_includes_hidden_workspaces (__main__.DurableAdmission.test_06_shared_organisation_quota_includes_hidden_workspaces) ... ok
+test_07_concurrent_admission_across_instances_respects_shared_quota (__main__.DurableAdmission.test_07_concurrent_admission_across_instances_respects_shared_quota) ... ok
+test_08_original_put_response_loss_reuses_retained_storage_version (__main__.DurableAdmission.test_08_original_put_response_loss_reuses_retained_storage_version) ... Workspace operation failed (RuntimeError)
+ok
+test_09_acceptance_transaction_rolls_back_all_job_records (__main__.DurableAdmission.test_09_acceptance_transaction_rolls_back_all_job_records) ... Workspace operation failed (RaiseException)
+ok
+test_10_fresh_process_can_read_accepted_job_after_submitter_session_expiry (__main__.DurableAdmission.test_10_fresh_process_can_read_accepted_job_after_submitter_session_expiry) ... ok
+test_11_readonly_job_tables_and_no_delete_or_role_escalation (__main__.DurableAdmission.test_11_readonly_job_tables_and_no_delete_or_role_escalation) ... ok
+test_12_replacement_captures_revision_and_preserves_old_citations (__main__.DurableAdmission.test_12_replacement_captures_revision_and_preserves_old_citations) ... ok
+test_13_revocation_during_storage_cannot_accept_job (__main__.DurableAdmission.test_13_revocation_during_storage_cannot_accept_job) ... ok
+test_14_forged_scope_and_customer_data_flag_rejected (__main__.DurableAdmission.test_14_forged_scope_and_customer_data_flag_rejected) ... ok
+test_15_originals_are_retained_and_cleanup_has_no_delete_capability (__main__.DurableAdmission.test_15_originals_are_retained_and_cleanup_has_no_delete_capability) ... ok
+test_16_process_death_after_reservation_and_after_put_is_recoverable (__main__.DurableAdmission.test_16_process_death_after_reservation_and_after_put_is_recoverable) ... ok
+test_17_global_quota_is_shared_across_organisations (__main__.DurableAdmission.test_17_global_quota_is_shared_across_organisations) ... ok
+test_18_expired_upload_token_is_fenced_after_reservation_reclaim (__main__.DurableAdmission.test_18_expired_upload_token_is_fenced_after_reservation_reclaim) ... Workspace operation failed (RuntimeError)
+ok
+test_19_acceptance_expiry_is_enforced_without_changing_original_versions (__main__.DurableAdmission.test_19_acceptance_expiry_is_enforced_without_changing_original_versions) ... Workspace operation failed (RuntimeError)
+ok
+test_20_upload_token_and_raw_submission_metadata_are_not_runtime_selectable (__main__.DurableAdmission.test_20_upload_token_and_raw_submission_metadata_are_not_runtime_selectable) ... ok
+test_21_server_manifest_update_does_not_retarget_an_idempotent_replay (__main__.DurableAdmission.test_21_server_manifest_update_does_not_retarget_an_idempotent_replay) ... ok
+test_22_replay_remains_stable_after_document_pointer_changes (__main__.DurableAdmission.test_22_replay_remains_stable_after_document_pointer_changes) ... ok
+test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) ... Workspace operation failed (RuntimeError)
+ok
+test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) ... Workspace operation failed (RuntimeError)
+ok
+test_01_legacy_v1_upgrade_preserves_all_old_rows_and_citation_bytes (__main__.MigrationUpgrade.test_01_legacy_v1_upgrade_preserves_all_old_rows_and_citation_bytes) ... ok
+test_02_failed_upgrade_rolls_back_and_retry_succeeds (__main__.MigrationUpgrade.test_02_failed_upgrade_rolls_back_and_retry_succeeds) ... ok
+test_03_changed_applied_migration_and_downgrade_are_rejected (__main__.MigrationUpgrade.test_03_changed_applied_migration_and_downgrade_are_rejected) ... FAIL
+test_04_concurrent_migration_runners_serialize (__main__.MigrationUpgrade.test_04_concurrent_migration_runners_serialize) ... FAIL
+
+======================================================================
+FAIL: test_03_changed_applied_migration_and_downgrade_are_rejected (__main__.MigrationUpgrade.test_03_changed_applied_migration_and_downgrade_are_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 438, in test_03_changed_applied_migration_and_downgrade_are_rejected
+    self.assertEqual(conn.execute('SELECT count(*) FROM platform.migration_history').fetchone()[0],3)
+AssertionError: 3 != 2
+
+======================================================================
+FAIL: test_04_concurrent_migration_runners_serialize (__main__.MigrationUpgrade.test_04_concurrent_migration_runners_serialize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 447, in test_04_concurrent_migration_runners_serialize
+    self.assertEqual(conn.execute('SELECT count(*) FROM platform.migration_history').fetchone()[0],3)
+AssertionError: 3 != 2
+
+----------------------------------------------------------------------
+Ran 28 tests in 52.829s
+
+FAILED (failures=2)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,11 @@
+Before correction: git diff 474a50d5b8df21fab90df39e832d0163afda2ce2 1201fca6ee88a5a0981a73756c303a5da36c76c6 --check
+Exit status: 2
+validation/milestone2-stage1-frontend-build.txt:14: trailing whitespace.
++  Generating static pages using 4 workers (2/11)
+validation/milestone2-stage1-frontend-build.txt:15: trailing whitespace.
++  Generating static pages using 4 workers (5/11)
+validation/milestone2-stage1-frontend-build.txt:16: trailing whitespace.
++  Generating static pages using 4 workers (8/11)
+
+After correction (complete staged tree): git diff 474a50d5b8df21fab90df39e832d0163afda2ce2 --check
+Exit status: 0; no diagnostics.

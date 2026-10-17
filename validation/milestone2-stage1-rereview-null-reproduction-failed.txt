@@ -1,0 +1,85 @@
+test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) ... Workspace operation failed (RuntimeError)
+
+  test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) (state='new') ... FAIL
+  test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) (state='receiving') ... FAIL
+test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) ... FAIL
+test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) ... Workspace operation failed (RuntimeError)
+
+  test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='receiving', operation='accept') ... FAIL
+  test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='receiving', operation='release') ... FAIL
+  test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='accepted', operation='accept') ... FAIL
+  test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='accepted', operation='release') ... FAIL
+
+======================================================================
+FAIL: test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) (state='new')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 356, in test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted
+    self.assertEqual(error.exception.sqlstate,'DL001')
+AssertionError: '23502' != 'DL001'
+- 23502
++ DL001
+
+
+======================================================================
+FAIL: test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted) (state='receiving')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 354, in test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted
+    with self.assertRaises(psycopg.Error) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error not raised
+
+======================================================================
+FAIL: test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted (__main__.DurableAdmission.test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 350, in test_23_null_fingerprints_rejected_by_runtime_for_new_receiving_and_accepted
+    if state=='accepted': self.accepted(key=key)
+                          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 65, in accepted
+    response=self.enqueue(**kwargs);self.assertEqual(response.status_code,202,response.text);return response.json()
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 202 : {"detail":"Upload is in progress. Retry the same request and key later."}
+
+======================================================================
+FAIL: test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='receiving', operation='accept')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 377, in test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance
+    with self.assertRaises(psycopg.Error) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error not raised
+
+======================================================================
+FAIL: test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='receiving', operation='release')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 377, in test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance
+    with self.assertRaises(psycopg.Error) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error not raised
+
+======================================================================
+FAIL: test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='accepted', operation='accept')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 377, in test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance
+    with self.assertRaises(psycopg.Error) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error not raised
+
+======================================================================
+FAIL: test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance (__main__.DurableAdmission.test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance) (state='accepted', operation='release')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/milestone2/stage1.py", line 377, in test_24_null_tokens_rejected_by_runtime_before_and_after_acceptance
+    with self.assertRaises(psycopg.Error) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.285s
+
+FAILED (failures=7)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

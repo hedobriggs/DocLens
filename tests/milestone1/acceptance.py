@@ -62,10 +62,11 @@ def wait_for_services(owner, client, *, timeout=60):
 @contextmanager
 def services(*, legacy_v1=False):
     suffix=secrets.token_hex(5); pg='doclens-m1-pg-'+suffix; obj='doclens-m1-s3-'+suffix
-    password=secrets.token_urlsafe(24)
+    # MinIO's mc parses leading '-' passwords as CLI flags, even when quoted.
+    password='fixture-'+secrets.token_urlsafe(24)
     with tempfile.TemporaryDirectory(prefix='doclens-m1-') as temp:
         envfile=Path(temp)/'services.env'
-        envfile.write_text(f'POSTGRES_PASSWORD={password}\nMINIO_ROOT_USER=doclens-test-owner\nMINIO_ROOT_PASSWORD={password}\nMINIO_APP_USER=doclens-app\nMINIO_APP_PASSWORD={secrets.token_urlsafe(24)}\n')
+        envfile.write_text(f'POSTGRES_PASSWORD={password}\nMINIO_ROOT_USER=doclens-test-owner\nMINIO_ROOT_PASSWORD={password}\nMINIO_APP_USER=doclens-app\nMINIO_APP_PASSWORD=fixture-{secrets.token_urlsafe(24)}\n')
         envfile.chmod(0o600)
         try:
             docker('run','-d','--name',pg,'--env-file',str(envfile),'-p','127.0.0.1::5432',PG_IMAGE)

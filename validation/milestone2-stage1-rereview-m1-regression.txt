@@ -1,0 +1,30 @@
+test_01_workspace_lists_and_admin_without_content_grant (__main__.Acceptance.test_01_workspace_lists_and_admin_without_content_grant) ... ok
+test_02_cross_firm_and_restricted_ids_are_indistinguishable (__main__.Acceptance.test_02_cross_firm_and_restricted_ids_are_indistinguishable) ... ok
+test_03_auth_and_scope_denied_before_body_consumption (__main__.Acceptance.test_03_auth_and_scope_denied_before_body_consumption) ... ok
+test_04_version_identity_provenance_and_pinned_original (__main__.Acceptance.test_04_version_identity_provenance_and_pinned_original) ... ok
+test_05_compare_and_swap_preserves_active_version (__main__.Acceptance.test_05_compare_and_swap_preserves_active_version) ... ok
+test_06_range_downloads_and_private_object_store (__main__.Acceptance.test_06_range_downloads_and_private_object_store) ... ok
+test_07_revoke_membership_blocks_live_sessions_and_ranges (__main__.Acceptance.test_07_revoke_membership_blocks_live_sessions_and_ranges) ... ok
+test_08_expired_revoked_and_forged_sessions (__main__.Acceptance.test_08_expired_revoked_and_forged_sessions) ... ok
+test_09_database_rls_no_context_and_connection_reuse (__main__.Acceptance.test_09_database_rls_no_context_and_connection_reuse) ... ok
+test_10_forged_scope_fields_and_reader_write_denied (__main__.Acceptance.test_10_forged_scope_fields_and_reader_write_denied) ... ok
+test_11_dense_and_lexical_search_isolation_and_replacement (__main__.Acceptance.test_11_dense_and_lexical_search_isolation_and_replacement) ... ok
+test_12_library_exact_version_selection_and_grant_revocation (__main__.Acceptance.test_12_library_exact_version_selection_and_grant_revocation) ... ok
+test_13_immutable_metadata_audit_and_nonowner_runtime (__main__.Acceptance.test_13_immutable_metadata_audit_and_nonowner_runtime) ... ok
+test_14_unimplemented_routes_and_legacy_admin_do_not_grant_access (__main__.Acceptance.test_14_unimplemented_routes_and_legacy_admin_do_not_grant_access) ... ok
+test_15_original_integrity_failure_and_failed_storage_leave_no_publication (__main__.Acceptance.test_15_original_integrity_failure_and_failed_storage_leave_no_publication) ... Workspace operation failed (RuntimeError)
+ok
+test_16_session_throttling_and_input_not_reflected (__main__.Acceptance.test_16_session_throttling_and_input_not_reflected) ... ok
+test_17_revocation_during_upload_rolls_back_metadata_and_publication (__main__.Acceptance.test_17_revocation_during_upload_rolls_back_metadata_and_publication) ... ok
+test_18_revocation_during_dense_search_and_original_io (__main__.Acceptance.test_18_revocation_during_dense_search_and_original_io) ... ok
+test_19_object_retention_legal_hold_and_restricted_credentials (__main__.Acceptance.test_19_object_retention_legal_hold_and_restricted_credentials) ... ok
+test_20_unreviewed_library_and_disabled_identity (__main__.Acceptance.test_20_unreviewed_library_and_disabled_identity) ... ok
+test_21_reference_selection_requires_exact_version_approval (__main__.Acceptance.test_21_reference_selection_requires_exact_version_approval) ... ok
+test_22_failure_responses_and_logs_exclude_exception_content (__main__.Acceptance.test_22_failure_responses_and_logs_exclude_exception_content) ... ok
+test_23_multi_organisation_membership_cannot_mix_reference_sources (__main__.Acceptance.test_23_multi_organisation_membership_cannot_mix_reference_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 20.137s
+
+OK
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

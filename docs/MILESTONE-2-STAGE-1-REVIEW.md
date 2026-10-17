@@ -7,6 +7,11 @@ deploy, admit customer documents or approve later Milestone 2 stages.
 
 Read `docs/MILESTONE-2-STAGE-1.md`, the base-to-head diff and
 `docs/MILESTONE-2-STAGE-1-VALIDATION.md`. Reproduce the relevant checks independently.
+The re-review correction is additive migration 003; migrations 001 and 002 remain
+byte-for-byte unchanged. Review NULL argument guards before reservation/replay,
+acceptance and release, plus restricted-runtime regression tests and the v2 upgrade.
+The validation note records failing reproduction and subsequent passing checks.
+
 Prioritize:
 
 1. Incremental migrations: unmodified v1 source, truthful legacy checksum adoption,

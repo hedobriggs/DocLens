@@ -1,0 +1,41 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.platform
+#1 transferring dockerfile: 893B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.11-slim
+#2 DONE 0.6s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 119B done
+#3 DONE 0.0s
+
+#4 [stage-0 1/6] FROM docker.io/library/python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 113.88kB done
+#5 DONE 0.0s
+
+#6 [stage-0 2/6] WORKDIR /app
+#6 CACHED
+
+#7 [stage-0 3/6] COPY requirements.txt platform-requirements.txt ./
+#7 CACHED
+
+#8 [stage-0 4/6] RUN --mount=type=secret,id=build_ca     if [ -f /run/secrets/build_ca ]; then export PIP_CERT=/run/secrets/build_ca; fi;     pip install --no-cache-dir --index-url "https://download.pytorch.org/whl/cpu" "$(sed -n '/^torch==/p' requirements.txt)" &&     pip install --no-cache-dir -r requirements.txt -r platform-requirements.txt
+#8 CACHED
+
+#9 [stage-0 5/6] COPY . .
+#9 DONE 6.6s
+
+#10 [stage-0 6/6] RUN useradd --create-home --uid 10001 doclens && chmod -R a+rX /app &&     mkdir -p /home/doclens/.cache/huggingface && chown -R doclens:doclens /home/doclens
+#10 DONE 5.8s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 1.6s done
+#11 writing image sha256:b9995d3551339dcb176d0eb95f9e5dee3980aad02a0622a56221b6890c620183 done
+#11 naming to docker.io/library/doclens-milestone1-review done
+#11 DONE 1.6s

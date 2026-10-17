@@ -1,0 +1,5 @@
+Pinned MinIO mc admin user add, with a synthetic leading-hyphen password.
+Exit status: 1
+mc: <ERROR> Invalid command usage, flag provided but not defined: -SyntheticTestOnly12345
+Generated test passwords now have a fixed fixture- prefix; randomness is preserved.
+The earlier fixture error did not retain stderr, so this establishes a concrete hazard, not its confirmed exact cause.

@@ -26,7 +26,7 @@ work where the runner includes it. There is no ingestion/search percentile,
 large-corpus, 8 GiB deployment or independently measured performance evidence.
 All proposed Milestone 2 latency targets remain unverified.
 
-## Completed checks
+## Original stage checks (before independent review)
 
 | Check | Result |
 | --- | --- |
@@ -38,7 +38,8 @@ All proposed Milestone 2 latency targets remain unverified.
 | Legacy browser regression | 13 passed, 14.2 s |
 | Final-source non-root container smoke | Passed: durable admission + existing identity/storage checks |
 | Frontend lint and production build | Passed |
-| Python compile, dependency check, diff whitespace | Passed |
+| Python compile and dependency check | Passed |
+| Whitespace validation | Incomplete: working-tree check missed untracked build-log whitespace |
 
 Stage coverage includes legacy row/citation/original preservation, atomic
 migration rollback and concurrent runners; retained originals and crash recovery;
@@ -71,3 +72,57 @@ cleanup inventory executor or deletion is implemented here. Attempts/state
 columns are preparatory schema only. The default-off queue fills to its cap
 because it has no consumer. Unsupported scanned PDFs must be rejected without
 publication by the later worker stage. No OCR or production readiness is claimed.
+
+## Independent re-review: NULL handling and evidence correction
+
+The original report overstated whitespace validation: `git diff --check` did not
+include the then-untracked build log. Reproducing the full base-to-1201fca check
+returned exit 2 and identified three trailing-whitespace lines (14–16) in
+`validation/milestone2-stage1-frontend-build.txt`. The committed log now has line
+endings normalized and trailing whitespace removed; test outcomes are unchanged.
+
+Two new restricted-runtime tests against the original 002 functions ran and failed
+with seven subtest failures: missing NULL rejection for receiving/accepted request
+fingerprints, the new-request NOT NULL error using a different SQLSTATE, and NULL
+accept/release tokens before/after acceptance. This was a deliberate failing
+reproduction, not a passing validation. Migration 003 adds explicit guards and
+NULL-safe comparisons, preserving existing migration checksums and job records.
+An additional upgrade test verifies already-applied v2 job/history preservation.
+
+The first post-fix stage run executed 28 tests: 26 passed and two migration tests
+failed because their assertions still expected two history rows rather than three.
+Those assertions were updated; no admission-function change was required. The
+runner had loaded the old assertions before the displayed source lines were edited.
+The full rerun includes 29 tests with the additional existing-v2 upgrade check.
+
+A subsequent 29-test run passed 28 tests but failed while administering the
+legacy-upgrade MinIO fixture, before application assertions in that test. The
+captured subprocess exception did not retain stderr. Investigation reproduced a
+concrete fixture hazard: generated URL-safe passwords can begin with a hyphen,
+which the pinned MinIO mc CLI interprets as a flag even inside quoted arguments.
+Test-only passwords now have a `fixture-` prefix while retaining their random
+suffix. This removes that hazard; the exact earlier CLI error is not proven.
+The failure and isolated CLI reproduction are retained as evidence, followed by
+the complete suite rerun. No production credential or storage behavior changed.
+
+Re-review evidence is in `validation/milestone2-stage1-rereview-*.txt`, including
+both intentionally failing reproduction and the first post-fix test failure.
+Captured logs have trailing whitespace removed for repository storage; outcomes
+and diagnostics are retained. The older stage results above are historical and
+are not being presented as reruns of this correction.
+
+| Re-review check | Result |
+| --- | --- |
+| Stage acceptance | 29 passed, 52.938 s |
+| Milestone 1 regression | 23 passed, 20.137 s |
+| Storage portability | 6 passed, 0.326 s |
+| Platform browser regression | 7 passed, 22.4s |
+| Rebuilt container smoke | Passed: durable admission, identity/RLS, retained ranges, revocation |
+| Python test compilation | Passed |
+| Full base-to-head whitespace | Passed for complete staged tree against 474a50d; repeated after commit |
+
+The rebuilt image is
+`sha256:b9995d3551339dcb176d0eb95f9e5dee3980aad02a0622a56221b6890c620183`.
+Hardware, synthetic dataset, model manifest and functional measurement method
+remain as described above. No new performance claim or worker/publication/cleanup
+capability is introduced by this correction.

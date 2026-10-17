@@ -129,3 +129,15 @@ worker stage is reviewed. Scanned/invalid PDFs may be admitted as pending origin
 the later worker must reject unsupported/no-text documents clearly without
 publication. OCR remains deferred. No hosted model/provider is called by admission.
 Legacy pre-platform data is not imported, assigned ownership or rewritten.
+
+## Independent review correction: NULL admission arguments
+
+Migration 003 replaces the admission functions without rewriting migrations 001/002
+or modifying stored records. It rejects NULL request fingerprints with DL001 before
+new/resumed/replayed reservation handling, and uses IS DISTINCT FROM for comparison.
+Acceptance and release reject NULL upload tokens with DL005 before any acceptance,
+replay or lease mutation; acceptance also uses IS DISTINCT FROM. Non-NULL accepted
+replays retain their previous behavior. Upgrade from already-applied 002 preserves
+all reservation/submission/job/event/attempt rows and original migration checksums.
+Restricted-runtime tests exercise NULL inputs directly through SQL, snapshot every
+job table to detect mutation, and verify valid admission/replay still works.
