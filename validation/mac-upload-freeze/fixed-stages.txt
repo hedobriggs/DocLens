@@ -1,0 +1,36 @@
+INFO:     Started server process [134472]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:59855 (Press CTRL+C to quit)
+2026-10-17 13:46:49,597 | INFO | doclens | Embedding started | total_chunks=1 | batch_size=32
+2026-10-17 13:46:49,620 | INFO | doclens | Embedding progress | completed=1 | total=1 | elapsed=0.0s
+2026-10-17 13:46:49,620 | INFO | doclens | Embedding completed | total_chunks=1 | elapsed=0.0s
+2026-10-17 13:46:49,622 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:46:49,651 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks "HTTP/1.1 200 OK"
+2026-10-17 13:46:49,653 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/doclens_document_publications/exists "HTTP/1.1 200 OK"
+2026-10-17 13:46:49,684 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications "HTTP/1.1 200 OK"
+2026-10-17 13:46:49,686 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:46:49,689 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:46:49,689 | INFO | doclens | PDF processed | bytes=29360128 | pages=1 | chunks=1
+2026-10-17 13:46:49,765 | INFO | doclens | Embedding started | total_chunks=280 | batch_size=32
+2026-10-17 13:46:51,060 | INFO | doclens | Embedding progress | completed=32 | total=280 | elapsed=1.3s
+2026-10-17 13:46:52,269 | INFO | doclens | Embedding progress | completed=64 | total=280 | elapsed=2.5s
+2026-10-17 13:46:53,527 | INFO | doclens | Embedding progress | completed=96 | total=280 | elapsed=3.8s
+2026-10-17 13:46:54,834 | INFO | doclens | Embedding progress | completed=128 | total=280 | elapsed=5.1s
+2026-10-17 13:46:56,188 | INFO | doclens | Embedding progress | completed=160 | total=280 | elapsed=6.4s
+2026-10-17 13:46:57,440 | INFO | doclens | Embedding progress | completed=192 | total=280 | elapsed=7.7s
+2026-10-17 13:46:58,851 | INFO | doclens | Embedding progress | completed=224 | total=280 | elapsed=9.1s
+2026-10-17 13:47:00,110 | INFO | doclens | Embedding progress | completed=256 | total=280 | elapsed=10.3s
+2026-10-17 13:47:01,073 | INFO | doclens | Embedding progress | completed=280 | total=280 | elapsed=11.3s
+2026-10-17 13:47:01,073 | INFO | doclens | Embedding completed | total_chunks=280 | elapsed=11.3s
+2026-10-17 13:47:01,077 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:47:01,078 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/doclens_document_publications/exists "HTTP/1.1 200 OK"
+2026-10-17 13:47:01,107 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:47:01,137 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:47:01,157 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:47:01,160 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:47:01,160 | INFO | doclens | PDF processed | bytes=24614 | pages=40 | chunks=280
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [134472]

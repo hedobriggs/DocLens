@@ -1,0 +1,8 @@
+{
+  "backend_peak_rss_high_water_kib": 791200,
+  "backend_peak_rss_high_water_mib": 772.65625,
+  "maximum_sampled_cpu_percent": 203.70380082203909,
+  "cpu_sampling_interval_seconds": 0.25,
+  "samples": 72,
+  "measurement": "/proc/1/status high-water RSS and /proc/1/stat process CPU tick deltas inside disposable backend container"
+}

@@ -1,0 +1,20 @@
+PASS native-synthetic.pdf: startup, authentication, invalid-PDF rejection, two-page PDF extraction/indexing, 2 real 384-dimensional vectors and page metadata; PDF SHA256=189e5b70082b7950c1b77a78327be28d2ceab7e23b207a6f42fc5e9fdeab19c1
+PASS container-synthetic.pdf: startup, authentication, invalid-PDF rejection, two-page PDF extraction/indexing, 2 real 384-dimensional vectors and page metadata; PDF SHA256=5589d1df7652bc4ede61a039c9e9bc2606cec1a091e0be7385097ddcc316eb19
+PASS constrained container PDF: {"padded-28mib.pdf": {"bytes": 29360128, "status": 200, "seconds": 0.33574890100135235, "health_successes": 3, "health_timeouts": 0, "health_max_seconds": 0.006259918998694047, "stage_seconds": {"transfer": 0.05166734300291864, "extraction": 0.05372149799950421, "chunking": 2.375599433435127e-05, "embedding": 0.013667200000782032, "indexing": 0.005111298996780533, "publication": 0.0019685500010382384}}}
+PASS constrained container PDF: {"text-heavy-40pages.pdf": {"bytes": 24614, "status": 200, "seconds": 10.315279335001833, "health_successes": 99, "health_timeouts": 0, "health_max_seconds": 0.024144708004314452, "stage_seconds": {"transfer": 0.000249067998083774, "extraction": 0.05554265400132863, "chunking": 0.0007294079987332225, "embedding": 10.11994234300073, "indexing": 0.09125975699862465, "publication": 0.0024831920018186793}}}
+PASS constrained container PDF: {"text-heavy-28mib.pdf": {"bytes": 30437728, "status": 413, "seconds": 0.23327602099743672, "health_successes": 2, "health_timeouts": 0, "health_max_seconds": 0.019842361005430575, "stage_seconds": {"transfer": 0.04266788699897006, "extraction": 0.0008319939952343702, "chunking": 0.0, "embedding": 0.0, "indexing": 0.0, "publication": 0.0}}}
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_upload_freeze_smoke.py", line 78, in <module>
+    if __name__=='__main__':recovery.main()
+                            ^^^^^^^^^^^^^^^
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 172, in main
+    gateway(base, secret, evidence)
+  File "/workspace/DocLens/tests/mac_upload_freeze_smoke.py", line 71, in gateway
+    stats.terminate();stats.wait(timeout=5)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 2045, in _wait
+    raise TimeoutExpired(self.args, timeout)
+subprocess.TimeoutExpired: Command '['docker', 'stats', '--format', '{{json .}}', 'doclens-mac-api-9c62e159e2']' timed out after 5 seconds

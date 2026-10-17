@@ -1,0 +1,54 @@
+test_auth_declared_size_chunked_size_and_body_deadline_before_parsing (__main__.UploadLimits.test_auth_declared_size_chunked_size_and_body_deadline_before_parsing) ... 2026-10-17 13:16:53,869 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-17 13:16:53,870 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_catalog_survives_reopen_and_existing_citation_metadata_is_preserved (__main__.UploadLimits.test_catalog_survives_reopen_and_existing_citation_metadata_is_preserved) ... ok
+test_embedding_failure_preserves_existing_points_and_hides_exception_text (__main__.UploadLimits.test_embedding_failure_preserves_existing_points_and_hides_exception_text) ... 2026-10-17 13:16:53,891 | INFO | doclens | Qdrant collection created | collection=document_chunks
+2026-10-17 13:16:53,896 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 503 Service Unavailable"
+ok
+test_health_and_metrics_responsive_and_second_upload_rejected_while_embedding_busy (__main__.UploadLimits.test_health_and_metrics_responsive_and_second_upload_rejected_while_embedding_busy) ... 2026-10-17 13:16:53,907 | INFO | httpx | HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-17 13:16:53,909 | INFO | httpx | HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2026-10-17 13:16:53,910 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 429 Too Many Requests"
+2026-10-17 13:16:53,911 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-17 13:16:53,912 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_limits_and_scans_leave_old_revision_unchanged (__main__.UploadLimits.test_limits_and_scans_leave_old_revision_unchanged) ... 2026-10-17 13:16:53,929 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-17 13:16:53,932 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-17 13:16:53,934 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-17 13:16:53,937 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-17 13:16:53,940 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 400 Bad Request"
+2026-10-17 13:16:53,941 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 400 Bad Request"
+ok
+test_partial_batch_and_pointer_failure_preserve_all_read_paths (__main__.UploadLimits.test_partial_batch_and_pointer_failure_preserve_all_read_paths) ... 2026-10-17 13:16:53,949 | INFO | doclens | Qdrant collection created | collection=document_chunks
+
+  test_partial_batch_and_pointer_failure_preserve_all_read_paths (__main__.UploadLimits.test_partial_batch_and_pointer_failure_preserve_all_read_paths) (legacy=True) ... FAIL
+  test_partial_batch_and_pointer_failure_preserve_all_read_paths (__main__.UploadLimits.test_partial_batch_and_pointer_failure_preserve_all_read_paths) (legacy=False) ... FAIL
+test_staging_cancellation_keeps_old_publication (__main__.UploadLimits.test_staging_cancellation_keeps_old_publication) ... ok
+test_timeout_holds_admission_until_worker_exits_and_never_publishes (__main__.UploadLimits.test_timeout_holds_admission_until_worker_exits_and_never_publishes) ... 2026-10-17 13:16:54,331 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 504 Gateway Timeout"
+2026-10-17 13:16:54,332 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 429 Too Many Requests"
+2026-10-17 13:16:54,347 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-17 13:16:54,347 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+
+======================================================================
+FAIL: test_partial_batch_and_pointer_failure_preserve_all_read_paths (__main__.UploadLimits.test_partial_batch_and_pointer_failure_preserve_all_read_paths) (legacy=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/test_mac_upload_limits.py", line 158, in test_partial_batch_and_pointer_failure_preserve_all_read_paths
+    self.assertEqual({str(p.id) for p in self.storage.search_chunks_bm25('Original',10,'existing.pdf')},old)
+AssertionError: Items in the second set but not the first:
+'2720d575-b241-47ae-b9f2-0bce20cb9554'
+
+======================================================================
+FAIL: test_partial_batch_and_pointer_failure_preserve_all_read_paths (__main__.UploadLimits.test_partial_batch_and_pointer_failure_preserve_all_read_paths) (legacy=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/test_mac_upload_limits.py", line 158, in test_partial_batch_and_pointer_failure_preserve_all_read_paths
+    self.assertEqual({str(p.id) for p in self.storage.search_chunks_bm25('Original',10,'existing.pdf')},old)
+AssertionError: Items in the second set but not the first:
+'a126101f-392e-44b3-bf61-ac660e592438'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.622s
+
+FAILED (failures=2)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,16 @@
+test_lost_ack_and_reconnected_reader_see_complete_revision_and_retain_old_points (__main__.PublicationServer.test_lost_ack_and_reconnected_reader_see_complete_revision_and_retain_old_points) ... ERROR
+test_partial_batch_and_failed_pointer_leave_exact_existing_view (__main__.PublicationServer.test_partial_batch_and_failed_pointer_leave_exact_existing_view) ... ok
+
+======================================================================
+ERROR: test_lost_ack_and_reconnected_reader_see_complete_revision_and_retain_old_points (__main__.PublicationServer.test_lost_ack_and_reconnected_reader_see_complete_revision_and_retain_old_points)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/test_mac_publication_server.py", line 86, in test_lost_ack_and_reconnected_reader_see_complete_revision_and_retain_old_points
+    with QdrantClient(url=self.url,timeout=5,trust_env=False) as reconnected:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'QdrantClient' object does not support the context manager protocol
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.298s
+
+FAILED (errors=1)

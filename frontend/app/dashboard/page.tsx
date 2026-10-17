@@ -5,6 +5,7 @@ import {
   FormEvent,
   useRef,
   useState,
+  useEffect,
 } from "react";
 
 import ReactMarkdown from "react-markdown";
@@ -30,6 +31,8 @@ type Message = {
 export default function Dashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const askAbortRef = useRef<AbortController | null>(null);
+  const uploadAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => uploadAbortRef.current?.abort(), []);
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedDocument, setSelectedDocument] =
@@ -71,29 +74,49 @@ export default function Dashboard() {
   ) {
     const file = event.target.files?.[0];
 
-    if (!file) return;
+    if (!file || uploadAbortRef.current) return;
+    if (file.size > 32 * 1024 * 1024 || file.size === 0) {
+      setUploadError("PDF must contain 1 byte to 32 MiB.");
+      event.target.value = "";
+      return;
+    }
+    if (file.type !== "application/pdf") {
+      setUploadError("Please choose a PDF file.");
+      event.target.value = "";
+      return;
+    }
 
     setUploadError("");
     setIsUploading(true);
-
-    const formData = new FormData();
-    formData.append("file", file);
+    const controller = new AbortController();
+    uploadAbortRef.current = controller;
+    let timedOut = false;
+    const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, 135000);
 
     try {
+      const formData = new FormData();
+      formData.append("file", file);
       const response = await fetch(
         "/api/documents/process",
         {
           method: "POST",
           body: formData,
+          signal: controller.signal,
         }
       );
 
-      const data = await response.json();
+      let data;
+      try { data = await response.json(); } catch { throw new Error("The document service returned an unreadable response."); }
+      if (!data || typeof data !== "object") throw new Error("Invalid upload response.");
 
       if (!response.ok) {
         throw new Error(
           data.detail || "Document upload failed."
         );
+      }
+
+      if (data.indexed !== true || typeof data.filename !== "string" || !Number.isInteger(data.total_chunks) || data.total_chunks < 1) {
+        throw new Error("The document service returned an invalid upload result.");
       }
 
       const newDocument: Document = {
@@ -117,12 +140,16 @@ export default function Dashboard() {
 
       setSelectedDocument(data.filename);
     } catch (error) {
-      if (error instanceof Error) {
+      if (controller.signal.aborted) {
+        setUploadError(timedOut ? "Upload timed out. Check document status before retrying." : "Upload cancelled. Check document status before retrying.");
+      } else if (error instanceof Error) {
         setUploadError(error.message);
       } else {
         setUploadError("Document upload failed.");
       }
     } finally {
+      clearTimeout(timeout);
+      uploadAbortRef.current = null;
       setIsUploading(false);
 
       if (fileInputRef.current) {
@@ -287,6 +314,11 @@ export default function Dashboard() {
                 : "+ Upload PDF"}
             </button>
 
+            {isUploading && (
+              <button type="button" onClick={() => uploadAbortRef.current?.abort()}>
+                Cancel upload
+              </button>
+            )}
             {uploadError && (
               <p className="mt-2 text-xs text-red-400">
                 {uploadError}

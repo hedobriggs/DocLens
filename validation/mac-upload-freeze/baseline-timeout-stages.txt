@@ -1,0 +1,46 @@
+INFO:     Started server process [130828]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:37183 (Press CTRL+C to quit)
+2026-10-17 13:27:26,219 | INFO | doclens | Embedding started | total_chunks=1 | batch_size=32
+2026-10-17 13:27:26,235 | INFO | doclens | Embedding progress | completed=1 | total=1 | elapsed=0.0s
+2026-10-17 13:27:26,236 | INFO | doclens | Embedding completed | total_chunks=1 | elapsed=0.0s
+2026-10-17 13:27:26,237 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:27:26,268 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks "HTTP/1.1 200 OK"
+2026-10-17 13:27:26,269 | INFO | doclens | Qdrant collection created | collection=document_chunks
+2026-10-17 13:27:26,270 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:27:26,272 | INFO | httpx | HTTP Request: POST http://qdrant:6333/collections/document_chunks/points/delete?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:27:26,272 | INFO | doclens | Document deleted from Qdrant | document=replacement.pdf
+2026-10-17 13:27:26,273 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:27:26,273 | INFO | doclens | Qdrant storage started | total_chunks=1 | batch_size=100
+2026-10-17 13:27:26,275 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:27:26,275 | INFO | doclens | Qdrant storage progress | completed=1 | total=1 | elapsed=0.0s
+2026-10-17 13:27:26,275 | INFO | doclens | Qdrant storage completed | total_chunks=1 | elapsed=0.0s
+2026-10-17 13:27:26,841 | INFO | doclens | Embedding started | total_chunks=280 | batch_size=32
+2026-10-17 13:27:28,274 | INFO | doclens | Embedding progress | completed=32 | total=280 | elapsed=1.4s
+2026-10-17 13:27:29,619 | INFO | doclens | Embedding progress | completed=64 | total=280 | elapsed=2.8s
+2026-10-17 13:27:30,909 | INFO | doclens | Embedding progress | completed=96 | total=280 | elapsed=4.1s
+2026-10-17 13:27:32,123 | INFO | doclens | Embedding progress | completed=128 | total=280 | elapsed=5.3s
+2026-10-17 13:27:33,395 | INFO | doclens | Embedding progress | completed=160 | total=280 | elapsed=6.6s
+2026-10-17 13:27:34,857 | INFO | doclens | Embedding progress | completed=192 | total=280 | elapsed=8.0s
+2026-10-17 13:27:36,460 | INFO | doclens | Embedding progress | completed=224 | total=280 | elapsed=9.6s
+2026-10-17 13:27:38,102 | INFO | doclens | Embedding progress | completed=256 | total=280 | elapsed=11.3s
+2026-10-17 13:27:39,322 | INFO | doclens | Embedding progress | completed=280 | total=280 | elapsed=12.5s
+2026-10-17 13:27:39,322 | INFO | doclens | Embedding completed | total_chunks=280 | elapsed=12.5s
+2026-10-17 13:27:39,324 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,325 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,327 | INFO | httpx | HTTP Request: POST http://qdrant:6333/collections/document_chunks/points/delete?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,328 | INFO | doclens | Document deleted from Qdrant | document=replacement.pdf
+2026-10-17 13:27:39,328 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,328 | INFO | doclens | Qdrant storage started | total_chunks=280 | batch_size=100
+2026-10-17 13:27:39,356 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,356 | INFO | doclens | Qdrant storage progress | completed=100 | total=280 | elapsed=0.0s
+2026-10-17 13:27:39,382 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,382 | INFO | doclens | Qdrant storage progress | completed=200 | total=280 | elapsed=0.1s
+2026-10-17 13:27:39,404 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 13:27:39,405 | INFO | doclens | Qdrant storage progress | completed=280 | total=280 | elapsed=0.1s
+2026-10-17 13:27:39,405 | INFO | doclens | Qdrant storage completed | total_chunks=280 | elapsed=0.1s
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [130828]

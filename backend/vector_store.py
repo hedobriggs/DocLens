@@ -4,6 +4,7 @@ import re
 import time
 from typing import Optional
 from uuid import uuid4
+from document_publication import visible_filter, replace as publish_replacement
 
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder
@@ -33,7 +34,7 @@ logger = logging.getLogger("doclens")
 # Connect to the dedicated Qdrant Docker container.
 client = QdrantClient(
     url="http://qdrant:6333",
-    timeout=120,
+    timeout=10,
 )
 
 # Load the reranker only when it is needed.
@@ -107,77 +108,19 @@ def delete_document(document_name: str):
 # Document storage
 # --------------------------------------------------
 
+def replace_document(name, chunks, embeddings, check=lambda: None, stage=lambda name: None):
+    return publish_replacement(client, COLLECTION_NAME, name, chunks, embeddings, check, stage)
+
+
 def store_chunks(chunks, embeddings):
-    """Store chunks in Qdrant in manageable batches."""
-
     if len(chunks) != len(embeddings):
-        raise ValueError(
-            "Chunks and embeddings must have the same length"
-        )
-
-    create_collection()
-
-    total = len(chunks)
-
-    if total == 0:
-        logger.info("No chunks to store")
-        return
-
-    start_time = time.perf_counter()
-
-    logger.info(
-        "Qdrant storage started | total_chunks=%d | batch_size=%d",
-        total,
-        QDRANT_BATCH_SIZE,
-    )
-
-    for start in range(0, total, QDRANT_BATCH_SIZE):
-        batch_chunks = chunks[
-            start:start + QDRANT_BATCH_SIZE
-        ]
-
-        batch_embeddings = embeddings[
-            start:start + QDRANT_BATCH_SIZE
-        ]
-
-        points = [
-            PointStruct(
-                id=str(uuid4()),
-                vector=embedding,
-                payload={
-                    "text": chunk["text"],
-                    **chunk["metadata"],
-                },
-            )
-            for chunk, embedding in zip(
-                batch_chunks,
-                batch_embeddings,
-            )
-        ]
-
-        client.upsert(
-            collection_name=COLLECTION_NAME,
-            points=points,
-            wait=True,
-        )
-
-        completed = min(
-            start + len(batch_chunks),
-            total,
-        )
-
-        logger.info(
-            "Qdrant storage progress | completed=%d | total=%d | elapsed=%.1fs",
-            completed,
-            total,
-            time.perf_counter() - start_time,
-        )
-
-    logger.info(
-        "Qdrant storage completed | total_chunks=%d | elapsed=%.1fs",
-        total,
-        time.perf_counter() - start_time,
-    )
+        raise ValueError('Chunks and embeddings must have the same length')
+    groups = {}
+    for chunk, vector in zip(chunks, embeddings):
+        group = groups.setdefault(chunk['metadata']['document_name'], ([], []))
+        group[0].append(chunk); group[1].append(vector)
+    for name, (parts, vectors) in groups.items():
+        replace_document(name, parts, vectors)
 
 
 # --------------------------------------------------
@@ -194,17 +137,7 @@ def search_chunks(
     if not client.collection_exists(COLLECTION_NAME):
         return []
 
-    query_filter = None
-
-    if document_name:
-        query_filter = Filter(
-            must=[
-                FieldCondition(
-                    key="document_name",
-                    match=MatchValue(value=document_name),
-                )
-            ]
-        )
+    query_filter = visible_filter(client, document_name)
 
     response = client.query_points(
         collection_name=COLLECTION_NAME,
@@ -231,17 +164,7 @@ def search_chunks_bm25(
     if not client.collection_exists(COLLECTION_NAME):
         return []
 
-    query_filter = None
-
-    if document_name:
-        query_filter = Filter(
-            must=[
-                FieldCondition(
-                    key="document_name",
-                    match=MatchValue(value=document_name),
-                )
-            ]
-        )
+    query_filter = visible_filter(client, document_name)
 
     all_points = []
     offset = None
@@ -371,7 +294,9 @@ def hybrid_search(
         for point in candidates
     ]
 
-    rerank_scores = get_reranker().predict(pairs)
+    from embeddings import inference_lock
+    with inference_lock:
+        rerank_scores = get_reranker().predict(pairs)
 
     reranked = sorted(
         zip(candidates, rerank_scores),
@@ -396,6 +321,7 @@ def list_documents():
         return []
 
     documents = {}
+    query_filter = visible_filter(client)
     offset = None
 
     while True:
@@ -403,6 +329,7 @@ def list_documents():
             collection_name=COLLECTION_NAME,
             limit=256,
             offset=offset,
+            scroll_filter=query_filter,
             with_payload=True,
             with_vectors=False,
         )

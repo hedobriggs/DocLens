@@ -1,0 +1,55 @@
+{
+  "padded-28mib.pdf": {
+    "bytes": 29360128,
+    "status": 200,
+    "seconds": 0.22781680700427387,
+    "health_successes": 2,
+    "health_timeouts": 0,
+    "health_max_seconds": 0.004818099005206022,
+    "stage_seconds": {
+      "transfer": 0.04876289299863856,
+      "extraction": 0.05316384000616381,
+      "chunking": 2.436700015095994e-05,
+      "embedding": 0.01109985099901678,
+      "indexing": 0.0052496200005407445,
+      "publication": 0.0016918199980864301
+    }
+  },
+  "text-heavy-40pages.pdf": {
+    "bytes": 24614,
+    "status": 200,
+    "seconds": 8.930574901001819,
+    "health_successes": 86,
+    "health_timeouts": 0,
+    "health_max_seconds": 0.01563247699959902,
+    "stage_seconds": {
+      "transfer": 0.0006506380013888702,
+      "extraction": 0.056347485005971976,
+      "chunking": 0.0006721210011164658,
+      "embedding": 8.710544044006383,
+      "indexing": 0.08435071600251831,
+      "publication": 0.0023841520014684647
+    }
+  },
+  "text-heavy-28mib.pdf": {
+    "bytes": 30437728,
+    "status": 413,
+    "seconds": 0.2255420290020993,
+    "health_successes": 2,
+    "health_timeouts": 0,
+    "health_max_seconds": 0.0031426640052814037,
+    "stage_seconds": {
+      "transfer": 0.04281976699712686,
+      "extraction": 0.000767601995903533,
+      "chunking": 0.0,
+      "embedding": 0.0,
+      "indexing": 0.0,
+      "publication": 0.0
+    }
+  },
+  "docker_requested_limits": {
+    "memory_bytes": 1610612736,
+    "nano_cpus": 2000000000,
+    "swap_total_bytes": 1610612736
+  }
+}

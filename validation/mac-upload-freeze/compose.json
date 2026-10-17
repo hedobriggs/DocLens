@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "backend": {
+    "cpus": 2,
+    "mem_limit": "1610612736",
+    "memswap_limit": "1610612736",
+    "command": [
+      "uvicorn",
+      "main:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000",
+      "--workers",
+      "1"
+    ]
+  },
+  "inference_environment": {
+    "OMP_NUM_THREADS": "2",
+    "DOCLENS_INFERENCE_THREADS": "2",
+    "TOKENIZERS_PARALLELISM": "false"
+  },
+  "frontend": {
+    "mem_limit": "536870912",
+    "memswap_limit": "536870912"
+  },
+  "qdrant_volume": "qdrant_server_data retained unchanged",
+  "configuration_only": "No compose services started; synthetic temporary env files only."
+}

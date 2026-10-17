@@ -1,0 +1,12 @@
+{
+  "mode": "baseline",
+  "gateway_28mib": {
+    "status": 200,
+    "received_bytes": 29360349,
+    "seconds": 5.435441266,
+    "rss_before_kib": 110768,
+    "rss_peak_kib": 314512,
+    "rss_delta_kib": 203744
+  },
+  "ui_busy_after_virtual_11_minutes": true
+}
