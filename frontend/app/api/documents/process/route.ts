@@ -17,6 +17,7 @@ const processingAgent = new Agent({
 });
 
 export async function POST(request: NextRequest) {
+  if (process.env.DOCLENS_PLATFORM_ENABLED === "1") return new NextResponse(null, { status: 404 });
   const cookieStore = await cookies();
 
   const authenticated = await verifySession(

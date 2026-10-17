@@ -1,5 +1,10 @@
 # DocLens
 
+The opt-in **Milestone 1 workspace foundation** is documented in
+[docs/MILESTONE-1.md](docs/MILESTONE-1.md). It adds separate verified identities,
+PostgreSQL permissions and private versioned originals for synthetic-data review.
+It does not migrate legacy documents or enable a customer deployment.
+
 > **Ask your documents. Find the source.**
 
 DocLens is a document question-answering application built around **Retrieval-Augmented Generation (RAG)**.

@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt platform-requirements.txt ./
+ARG TORCH_INDEX_URL=https://download.pytorch.org/whl/cpu
+RUN --mount=type=secret,id=build_ca \
+    if [ -f /run/secrets/build_ca ]; then export PIP_CERT=/run/secrets/build_ca; fi; \
+    pip install --no-cache-dir --index-url "$TORCH_INDEX_URL" "$(sed -n '/^torch==/p' requirements.txt)" && \
+    pip install --no-cache-dir -r requirements.txt -r platform-requirements.txt
+COPY . .
+RUN useradd --create-home --uid 10001 doclens && chmod -R a+rX /app && \
+    mkdir -p /home/doclens/.cache/huggingface && chown -R doclens:doclens /home/doclens
+USER doclens
+ENV HF_HOME=/home/doclens/.cache/huggingface OMP_NUM_THREADS=2 TOKENIZERS_PARALLELISM=false
+CMD ["uvicorn", "platform_api:app", "--host", "0.0.0.0", "--port", "8001", "--workers", "1", "--no-access-log"]

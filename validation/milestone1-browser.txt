@@ -1,0 +1,24 @@
+
+> frontend@0.1.0 test:platform
+> playwright test --config playwright.platform.config.ts
+
+[WebServer] (node:23101) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:23118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e-platform/workspaces.spec.ts:14:5 › sign in, workspace upload, immutable version and citation original (1.6s)
+  ✓  2 e2e-platform/workspaces.spec.ts:39:5 › cross-firm guessed original, passage, document and legacy paths are denied (742ms)
+  ✓  3 e2e-platform/workspaces.spec.ts:51:5 › organisation admin has no implicit restricted-workspace access (563ms)
+  ✓  4 e2e-platform/workspaces.spec.ts:57:5 › reader can open permitted sources, cannot upload, and logout revokes access (896ms)
+  ✓  5 e2e-platform/workspaces.spec.ts:68:5 › cross-origin mutations and missing identity fail before forwarding (273ms)
+  ✓  6 e2e-platform/workspaces.spec.ts:75:5 › streaming gateway preserves a 10 MiB PDF and rejects an oversized original (889ms)
+
+  6 passed (13.4s)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

@@ -1,0 +1,91 @@
+# Synthetic local development only. Separate from the legacy stack.
+# Never run against an existing customer database or bucket.
+name: doclens-milestone1
+services:
+  database:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_PASSWORD: ${PLATFORM_OWNER_PASSWORD:?Set a fresh migration-owner password}
+    volumes: [platform_sql:/var/lib/postgresql/data]
+    networks: [data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres]
+      interval: 2s
+      retries: 30
+  originals:
+    # Archived image is pinned for synthetic local fixtures, not production use.
+    image: bitnamilegacy/minio:2025.7.23-debian-12-r0@sha256:8935e75fa5d11295c17171e4aa49efe390a1193cd7f12e4d21b92af9ffef09d7
+    user: "0"
+    entrypoint: [/opt/bitnami/minio/bin/minio]
+    command: [server, /data]
+    environment:
+      MINIO_ROOT_USER: ${PLATFORM_S3_OWNER_USER:?Set an object-store owner name}
+      MINIO_ROOT_PASSWORD: ${PLATFORM_S3_OWNER_PASSWORD:?Set a fresh object-store owner password}
+    volumes: [platform_objects:/data]
+    networks: [data]
+  migrate:
+    profiles: [setup]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.platform
+    environment:
+      PLATFORM_OWNER_DATABASE_URL: ${PLATFORM_OWNER_DATABASE_URL:?Set the owner URL for database:5432}
+      PLATFORM_RUNTIME_PASSWORD: ${PLATFORM_RUNTIME_PASSWORD:?Set a fresh runtime password}
+      PLATFORM_AUTH_PASSWORD: ${PLATFORM_AUTH_PASSWORD:?Set a fresh identity password}
+    command: [sh, -c, "python platform_admin.py migrate && python platform_admin.py create-logins"]
+    depends_on:
+      database: {condition: service_healthy}
+    networks: [data]
+  initialise-originals:
+    profiles: [setup]
+    image: bitnamilegacy/minio:2025.7.23-debian-12-r0@sha256:8935e75fa5d11295c17171e4aa49efe390a1193cd7f12e4d21b92af9ffef09d7
+    user: "0"
+    entrypoint: [sh, -ec]
+    environment:
+      MINIO_ROOT_USER: ${PLATFORM_S3_OWNER_USER:?Set an object-store owner name}
+      MINIO_ROOT_PASSWORD: ${PLATFORM_S3_OWNER_PASSWORD:?Set the object-store owner password}
+      PLATFORM_S3_ACCESS_KEY: ${PLATFORM_S3_ACCESS_KEY:?Set a separate application access key}
+      PLATFORM_S3_SECRET_KEY: ${PLATFORM_S3_SECRET_KEY:?Set a separate application secret key}
+    command:
+      - |
+        mc=/opt/bitnami/minio-client/bin/mc
+        "$$mc" --config-dir /tmp/mc alias set local http://originals:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null
+        "$$mc" --config-dir /tmp/mc mb --with-lock local/originals >/dev/null
+        "$$mc" --config-dir /tmp/mc admin user add local "$$PLATFORM_S3_ACCESS_KEY" "$$PLATFORM_S3_SECRET_KEY" >/dev/null
+        "$$mc" --config-dir /tmp/mc admin policy create local originals-only /policy.json >/dev/null
+        "$$mc" --config-dir /tmp/mc admin policy attach local originals-only --user "$$PLATFORM_S3_ACCESS_KEY" >/dev/null
+    volumes: [./config/platform-object-policy.json:/policy.json:ro]
+    depends_on: [originals]
+    networks: [data]
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.platform
+    environment:
+      PLATFORM_DATABASE_URL: ${PLATFORM_DATABASE_URL:?Set the doclens_web URL for database:5432}
+      PLATFORM_AUTH_DATABASE_URL: ${PLATFORM_AUTH_DATABASE_URL:?Set the doclens_identity URL for database:5432}
+      PLATFORM_S3_ENDPOINT: http://originals:9000
+      PLATFORM_S3_BUCKET: originals
+      PLATFORM_S3_ACCESS_KEY: ${PLATFORM_S3_ACCESS_KEY:?Set the application key}
+      PLATFORM_S3_SECRET_KEY: ${PLATFORM_S3_SECRET_KEY:?Set the application secret}
+      PLATFORM_SYNTHETIC_HTTP: "1"
+    depends_on:
+      database: {condition: service_healthy}
+    volumes: [platform_models:/home/doclens/.cache/huggingface]
+    networks: [edge, data]
+  web:
+    build: ./frontend
+    environment:
+      DOCLENS_PLATFORM_ENABLED: "1"
+      PLATFORM_API_URL: http://api:8001
+      PLATFORM_PUBLIC_ORIGIN: ${PLATFORM_PUBLIC_ORIGIN:-http://localhost:3000}
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [api]
+    networks: [edge]
+networks:
+  data: {internal: true}
+  edge: {}
+volumes:
+  platform_sql:
+  platform_objects:
+  platform_models:
