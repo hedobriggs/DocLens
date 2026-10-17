@@ -1,0 +1,22 @@
+INFO:     Started server process [117849]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:48751 (Press CTRL+C to quit)
+2026-10-17 11:55:57,928 | INFO | doclens | Embedding started | total_chunks=2 | batch_size=32
+2026-10-17 11:55:57,946 | INFO | doclens | Embedding progress | completed=2 | total=2 | elapsed=0.0s
+2026-10-17 11:55:57,946 | INFO | doclens | Embedding completed | total_chunks=2 | elapsed=0.0s
+2026-10-17 11:55:57,951 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:55:57,981 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks "HTTP/1.1 200 OK"
+2026-10-17 11:55:57,982 | INFO | doclens | Qdrant collection created | collection=document_chunks
+2026-10-17 11:55:57,983 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:55:57,985 | INFO | httpx | HTTP Request: POST http://qdrant:6333/collections/document_chunks/points/delete?wait=true "HTTP/1.1 200 OK"
+2026-10-17 11:55:57,986 | INFO | doclens | Document deleted from Qdrant | document=native-synthetic.pdf
+2026-10-17 11:55:57,986 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:55:57,986 | INFO | doclens | Qdrant storage started | total_chunks=2 | batch_size=100
+2026-10-17 11:55:57,988 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 11:55:57,989 | INFO | doclens | Qdrant storage progress | completed=2 | total=2 | elapsed=0.0s
+2026-10-17 11:55:57,989 | INFO | doclens | Qdrant storage completed | total_chunks=2 | elapsed=0.0s
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [117849]

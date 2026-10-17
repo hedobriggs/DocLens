@@ -1,0 +1,28 @@
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-10-17 11:56:18,066 | INFO | doclens | Embedding started | total_chunks=2 | batch_size=32
+2026-10-17 11:56:18,087 | INFO | doclens | Embedding progress | completed=2 | total=2 | elapsed=0.0s
+2026-10-17 11:56:18,088 | INFO | doclens | Embedding completed | total_chunks=2 | elapsed=0.0s
+2026-10-17 11:56:18,093 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,095 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,101 | INFO | httpx | HTTP Request: POST http://qdrant:6333/collections/document_chunks/points/delete?wait=true "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,101 | INFO | doclens | Document deleted from Qdrant | document=container-synthetic.pdf
+2026-10-17 11:56:18,102 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,103 | INFO | doclens | Qdrant storage started | total_chunks=2 | batch_size=100
+2026-10-17 11:56:18,106 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,107 | INFO | doclens | Qdrant storage progress | completed=2 | total=2 | elapsed=0.0s
+2026-10-17 11:56:18,107 | INFO | doclens | Qdrant storage completed | total_chunks=2 | elapsed=0.0s
+2026-10-17 11:56:18,688 | INFO | doclens | Embedding started | total_chunks=1 | batch_size=32
+2026-10-17 11:56:18,699 | INFO | doclens | Embedding progress | completed=1 | total=1 | elapsed=0.0s
+2026-10-17 11:56:18,699 | INFO | doclens | Embedding completed | total_chunks=1 | elapsed=0.0s
+2026-10-17 11:56:18,703 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,704 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,709 | INFO | httpx | HTTP Request: POST http://qdrant:6333/collections/document_chunks/points/delete?wait=true "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,709 | INFO | doclens | Document deleted from Qdrant | document=gateway-synthetic.pdf
+2026-10-17 11:56:18,709 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,710 | INFO | doclens | Qdrant storage started | total_chunks=1 | batch_size=100
+2026-10-17 11:56:18,712 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+2026-10-17 11:56:18,712 | INFO | doclens | Qdrant storage progress | completed=1 | total=1 | elapsed=0.0s
+2026-10-17 11:56:18,712 | INFO | doclens | Qdrant storage completed | total_chunks=1 | elapsed=0.0s

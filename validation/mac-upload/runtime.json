@@ -1,0 +1,5 @@
+{
+  "image": "sha256:e5a5838f939467453d10be4e30343021fa5ca5dbc3cb2955c6803df72a9ff177",
+  "qdrant": "qdrant/qdrant:v1.15.5@sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863",
+  "architecture": "amd64"
+}

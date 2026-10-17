@@ -1,0 +1,10 @@
+PASS native-synthetic.pdf: startup, authentication, invalid-PDF rejection, two-page PDF extraction/indexing, 2 real 384-dimensional vectors and page metadata; PDF SHA256=6c2532a85d275f21750b434f933f28ce9b158eabdf4c1735855904b1d7d4d1ca
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 137, in <module>
+    main()
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 120, in main
+    exercise(base, storage, secret, 'container-synthetic.pdf')
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 60, in exercise
+    assert response.status_code == 200, response.text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Internal Server Error

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 133, in <module>
+    main()
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 106, in main
+    exercise(f'http://127.0.0.1:{native_port}', storage, secret, 'native-synthetic.pdf')
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 60, in exercise
+    assert response.status_code == 200, response.text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Internal Server Error

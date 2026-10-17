@@ -368,7 +368,7 @@ def ask_question(
     # 4. Cross-encoder reranking
     # --------------------------------------------------
 
-       retrieval_start = time.perf_counter()
+    retrieval_start = time.perf_counter()
 
     try:
         results = hybrid_search(

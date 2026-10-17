@@ -1,0 +1,1 @@
+{"proxy_nonempty": {"ALL_PROXY": false, "all_proxy": false, "HTTP_PROXY": true, "http_proxy": true, "HTTPS_PROXY": true, "https_proxy": true, "NO_PROXY": true, "no_proxy": true}, "qdrant_dns": "172.18.0.2", "default_status": 403, "direct_status": 200}
