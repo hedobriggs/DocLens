@@ -131,13 +131,16 @@ def search_chunks(
     query_embedding,
     limit: int = 3,
     document_name: Optional[str] = None,
+    *,
+    _visibility_filter: Optional[Filter] = None,
 ):
     """Search for semantically similar document chunks."""
 
     if not client.collection_exists(COLLECTION_NAME):
         return []
 
-    query_filter = visible_filter(client, document_name)
+    query_filter = (_visibility_filter if _visibility_filter is not None
+                    else visible_filter(client, document_name))
 
     response = client.query_points(
         collection_name=COLLECTION_NAME,
@@ -158,13 +161,16 @@ def search_chunks_bm25(
     query: str,
     limit: int = 3,
     document_name: Optional[str] = None,
+    *,
+    _visibility_filter: Optional[Filter] = None,
 ):
     """Search document chunks using BM25 keyword matching."""
 
     if not client.collection_exists(COLLECTION_NAME):
         return []
 
-    query_filter = visible_filter(client, document_name)
+    query_filter = (_visibility_filter if _visibility_filter is not None
+                    else visible_filter(client, document_name))
 
     all_points = []
     offset = None
@@ -243,16 +249,23 @@ def hybrid_search(
 
     candidate_limit = max(limit * 4, 10)
 
+    # Capture publication pointers once for the whole retrieval. Old revision
+    # points remain retained, so a concurrent replacement cannot mix revisions
+    # between dense search and BM25 (including its paginated scroll).
+    query_filter = visible_filter(client, document_name)
+
     dense_results = search_chunks(
         query_embedding=query_embedding,
         limit=candidate_limit,
         document_name=document_name,
+        _visibility_filter=query_filter,
     )
 
     bm25_results = search_chunks_bm25(
         query=query,
         limit=candidate_limit,
         document_name=document_name,
+        _visibility_filter=query_filter,
     )
 
     # Reciprocal rank fusion.

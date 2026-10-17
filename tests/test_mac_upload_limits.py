@@ -68,6 +68,46 @@ class UploadLimits(unittest.TestCase):
         self.addCleanup(self.storage.client.close)
         self.addCleanup(lambda:self.api.__exit__(None,None,None))
 
+    def test_hybrid_search_uses_one_revision_when_publication_races_dense_and_bm25(self):
+        from types import SimpleNamespace
+        vector = [1.0] + [0.0] * 383
+        for legacy in (True, False):
+            for scoped in (True, False):
+                with self.subTest(legacy=legacy, scoped=scoped):
+                    # Isolate global searches from earlier subtests too.
+                    if self.storage.client.collection_exists(self.storage.COLLECTION_NAME):
+                        self.storage.client.delete_collection(self.storage.COLLECTION_NAME)
+                    if self.storage.client.collection_exists(self.publication.CATALOG):
+                        self.storage.client.delete_collection(self.publication.CATALOG)
+                    old = self.old(legacy=legacy)
+                    original_query = self.storage.client.query_points
+                    parts = [
+                        {'text': text, 'metadata': {'document_name': 'existing.pdf',
+                            'page_number': 1, 'chunk_id': f'p1-c{i}'}}
+                        for i, text in enumerate(('needle replacement evidence', 'unrelated wording', 'different terms'))
+                    ]
+                    def publish_after_dense(*args, **kwargs):
+                        result = original_query(*args, **kwargs)
+                        self.storage.replace_document('existing.pdf', parts, [vector] * 3)
+                        return result
+                    # Exercise real dense search, BM25, fusion and publication;
+                    # only reranker scores are controlled (no model download).
+                    reranker = SimpleNamespace(predict=lambda pairs: [1.0] * len(pairs))
+                    with patch.object(self.storage.client, 'query_points', side_effect=publish_after_dense), \
+                         patch.object(self.storage, 'get_reranker', return_value=reranker), \
+                         patch.object(sys.modules['embeddings'], 'inference_lock', threading.RLock(), create=True):
+                        results = self.storage.hybrid_search('needle', vector, limit=10,
+                            document_name='existing.pdf' if scoped else None)
+                    self.assertEqual({str(p.id) for p in results}, old)
+                    current = {str(p.id) for p in self.visible()}
+                    self.assertEqual(len(current), 3)
+                    self.assertFalse(current & old)
+                    with patch.object(self.storage, 'get_reranker', return_value=reranker), \
+                         patch.object(sys.modules['embeddings'], 'inference_lock', threading.RLock(), create=True):
+                        subsequent = self.storage.hybrid_search('needle', vector, limit=10,
+                            document_name='existing.pdf' if scoped else None)
+                    self.assertEqual({str(p.id) for p in subsequent}, current)
+
     def upload(self, data=None, name='existing.pdf'):
         return self.api.post('/documents/process',headers=self.headers,
             files={'file':(name, self.data if data is None else data,'application/pdf')})

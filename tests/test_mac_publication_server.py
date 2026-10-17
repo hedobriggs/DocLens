@@ -90,4 +90,38 @@ class PublicationServer(unittest.TestCase):
         finally:reconnected.close()
 
 
+class SearchRaceServer(unittest.TestCase):
+    """Reuse the deterministic race against HTTP Qdrant, not only local storage."""
+    @classmethod
+    def setUpClass(cls):
+        from test_mac_upload_limits import UploadLimits
+        cls.fixture = UploadLimits
+        UploadLimits.setUpClass.__func__(cls)
+        try:
+            PublicationServer.setUpClass.__func__(cls)
+        except BaseException:
+            UploadLimits.tearDownClass.__func__(cls)
+            raise
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            PublicationServer.tearDownClass.__func__(cls)
+        finally:
+            cls.fixture.tearDownClass.__func__(cls)
+
+    def setUp(self):
+        self.storage.client = QdrantClient(url=self.url, timeout=5, trust_env=False)
+        self.addCleanup(self.storage.client.close)
+
+    def old(self, legacy=False):
+        return self.fixture.old(self, legacy)
+
+    def visible(self, name='existing.pdf'):
+        return self.fixture.visible(self, name)
+
+    def test_hybrid_search_revision_race(self):
+        self.fixture.test_hybrid_search_uses_one_revision_when_publication_races_dense_and_bm25(self)
+
+
 if __name__=='__main__':unittest.main(verbosity=2)

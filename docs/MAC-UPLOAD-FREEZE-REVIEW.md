@@ -278,3 +278,57 @@ deadline/disconnect behavior, backpressure/socket cleanup, old-data visibility o
 all read paths, pointer uncertainty, persistent catalogue/restart behavior, and
 busy-state cleanup. Return findings and an approve/request-changes recommendation.
 Do not merge or deploy.
+
+
+## Search race follow-up (approval pending)
+
+Base: `689e75e48fab67820ff23b7c85d7cf91149b6cec`. This follow-up remains
+pending independent review and approval; it authorizes no merge or deployment.
+
+Hybrid search previously read the publication catalog twice: once for dense
+retrieval and again for BM25. Publishing a replacement between those reads
+could fuse old and new chunks from the same document into one answer.
+`hybrid_search` now captures one visibility filter and passes it to both
+retrievers; BM25 reuses that filter across every scroll page. Standalone dense
+and BM25 calls still capture their own filter. No points or citation IDs change.
+
+A deterministic regression performs a real replacement immediately after the
+dense query completes, before BM25 begins. It checks exact old point IDs in the
+in-flight result and exact new IDs in the next request. All four cases cover
+legacy/versioned originals and document-scoped/global searches. This test runs
+against both real local Qdrant storage and a real HTTP Qdrant 1.15.5 server
+using the existing digest-pinned test image; only reranker scores are controlled.
+The new test failed in all four cases before the fix and passes afterward.
+
+Validation in `validation/mac-search-race/`:
+
+- `before-fix.txt`: expected four failing subtests reproduce mixed revisions.
+- `backend-regressions.txt`: all 13 tests passed in the existing review image
+  with current source mounted read-only (Python 3.11, pinned dependencies).
+- `qdrant-server.txt`: all 3 server tests passed (Python 3.12.14,
+  qdrant-client 1.16.1, rank-bm25 0.2.2, numpy 1.26.4).
+- `checks.txt`: whitespace verification against the original patch base and
+  the follow-up base.
+
+Commands:
+
+```sh
+docker run --rm --user 0 -v "$PWD:/review:ro" -w /review --entrypoint python doclens-mac-upload-freeze:review tests/test_mac_upload_limits.py
+python tests/test_mac_publication_server.py
+git diff 497394bf03f00f73256e3e70cb7283e7ce33c342 --check
+git diff 689e75e48fab67820ff23b7c85d7cf91149b6cec --check
+```
+
+The first local attempt lacked qdrant-client; the first container attempt lacked
+permission to traverse the mounted checkout as the image's default user. Tests
+then ran as container root against a read-only source mount. The native server
+runner initially lacked requests; dependencies were installed in an isolated
+`/tmp` virtual environment before the passing run. No dependency manifests or
+environment configuration were changed.
+
+This fixes revision consistency within one hybrid retrieval, not a transactional
+snapshot across all document catalog entries. It relies on retained old points;
+future destructive cleanup must protect in-flight readers. No destructive cleanup
+was introduced. Frontend/build and real-model upload performance checks from the
+parent commit were not rerun for this backend search-only follow-up; the existing
+review image was used as the test runtime, not rebuilt as a release artifact.

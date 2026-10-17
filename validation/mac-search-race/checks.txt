@@ -1,0 +1,4 @@
+PASS: regression reproduced four failing race cases before the fix.
+PASS: 13 backend regressions and 3 real-Qdrant-server tests.
+PASS: whitespace checks against 497394bf03f00f73256e3e70cb7283e7ce33c342 and 689e75e48fab67820ff23b7c85d7cf91149b6cec.
+Approval remains pending; no merge or deployment.
