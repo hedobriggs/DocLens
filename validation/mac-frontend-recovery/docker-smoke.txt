@@ -1,0 +1,38 @@
+[
+  {
+    "mounted": false,
+    "real_missing_image": false,
+    "image_removal_exit": 1,
+    "original_still_running_after_capture": true,
+    "default_image_startup_auth_probe": {
+      "root_status": 200,
+      "html": true,
+      "anonymous_upload_status": 401
+    },
+    "second_restore_from_private_archives": true,
+    "source_container_and_image_absent_during_second_restore": true,
+    "metadata_permissions": "0600",
+    "credential_literal_preserved": true,
+    "credential_stdout_leak": false,
+    "credential_argv_leak": false
+  },
+  {
+    "mounted": true,
+    "real_missing_image": false,
+    "image_removal_exit": 1,
+    "original_still_running_after_capture": true,
+    "default_image_startup_auth_probe": {
+      "root_status": 200,
+      "html": true,
+      "anonymous_upload_status": 401
+    },
+    "second_restore_from_private_archives": true,
+    "source_container_and_image_absent_during_second_restore": true,
+    "metadata_permissions": "0600",
+    "credential_literal_preserved": true,
+    "credential_stdout_leak": false,
+    "credential_argv_leak": false
+  }
+]
+PASS: two independent restore runs per case; no original mounts attached to probes
+Synthetic private evidence: /tmp/doclens-frontend-recovery-94yfo__n

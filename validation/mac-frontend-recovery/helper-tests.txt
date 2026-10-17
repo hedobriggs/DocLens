@@ -1,0 +1,37 @@
+test_external_credential_symlink_is_preserved_and_backed_up (__main__.SafeMacUpdate.test_external_credential_symlink_is_preserved_and_backed_up) ... PASS: complete private checkout backup (including ignored and untracked files)
+PASS: all starting tracked files match the preserved Mac snapshot; original or approved indentation accepted
+ok
+test_mismatch_backs_up_then_stops_without_applying_or_touching_docker (__main__.SafeMacUpdate.test_mismatch_backs_up_then_stops_without_applying_or_touching_docker) ... PASS: complete private checkout backup (including ignored and untracked files)
+ok
+test_missing_frontend_failure_checkpoints_backend_and_never_stops_services (__main__.SafeMacUpdate.test_missing_frontend_failure_checkpoints_backend_and_never_stops_services) ... PASS: complete private checkout backup (including ignored and untracked files)
+PASS: all starting tracked files match the preserved Mac snapshot; original or approved indentation accepted
+ok
+test_missing_frontend_verified_capture_integrates_with_prepare (__main__.SafeMacUpdate.test_missing_frontend_verified_capture_integrates_with_prepare) ... PASS: complete private checkout backup (including ignored and untracked files)
+PASS: all starting tracked files match the preserved Mac snapshot; original or approved indentation accepted
+Copying stopped Qdrant storage to the private backup; this may take several minutes
+ok
+test_original_indentation_and_untracked_collision (__main__.SafeMacUpdate.test_original_indentation_and_untracked_collision) ... ok
+test_prepare_preserves_local_files_credentials_and_cold_backup (__main__.SafeMacUpdate.test_prepare_preserves_local_files_credentials_and_cold_backup) ... PASS: selective reviewed files applied on local/mac-reviewed-bd2bf6d7820d
+Backup: /tmp/tmp8bw8pqm7/private-backup
+Services are stopped. Continue with rebuild; no source commit or merge was made.
+PASS: complete private checkout backup (including ignored and untracked files)
+PASS: all starting tracked files match the preserved Mac snapshot; original or approved indentation accepted
+Copying stopped Qdrant storage to the private backup; this may take several minutes
+ok
+test_rebuild_is_explicit_and_never_recreates_data_service (__main__.SafeMacUpdate.test_rebuild_is_explicit_and_never_recreates_data_service) ... ok
+test_verify_fixture_is_dense_and_multipart_has_real_newlines (__main__.SafeMacUpdate.test_verify_fixture_is_dense_and_multipart_has_real_newlines) ... <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+ok
+test_wrong_head_never_normalizes_or_resets (__main__.SafeMacUpdate.test_wrong_head_never_normalizes_or_resets) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.495s
+
+OK
+PASS: selective reviewed files applied on local/mac-reviewed-d1c2126ff50a
+Backup: /tmp/tmp9dyjj4jo/private-backup
+Services are stopped. Continue with rebuild; no source commit or merge was made.
+PASS: rebuilt backend/frontend; existing Qdrant container and volume reused
+Continue with verify. A successful build alone does not validate startup.
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

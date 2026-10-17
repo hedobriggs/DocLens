@@ -1,5 +1,10 @@
 # Mac local update — reviewed upload fix only
 
+**Update paused:** the original-image backup assumption failed on the Mac.
+Do not rerun the commands below until the [frontend recovery correction](MAC-FRONTEND-RECOVERY-REVIEW.md)
+is independently reviewed and resumption is authorized. This procedure is retained
+for context; its download command selects the old helper.
+
 Apply application code from **76b81c1bf5a23fd62e344e893b1bff45e24e8cb4**.
 Do this in your existing Mac checkout, while nobody is uploading and no editor
 or other process is changing its files. This is one procedure with three gated

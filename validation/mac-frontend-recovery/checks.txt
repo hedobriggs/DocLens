@@ -1,0 +1,7 @@
+PASS: 19 helper/security regressions (9 + 10).
+PASS: two Docker fixture cases, each with default-image startup/auth and retained-helper recovery after source container/image removal.
+PASS: literal environment/command preservation, owner/mode/content of copied mounts, private artifacts, no credential stdout/argv leak.
+PASS: Python compilation and base-to-head whitespace checks.
+PASS: application paths unchanged from 76b81c1bf5a23fd62e344e893b1bff45e24e8cb4.
+LIMIT: Docker refused image removal while the source fixture ran; exact Mac missing-image export and ARM/Next behavior remain unverified.
+Pending independent review; no Mac action, merge or deployment.

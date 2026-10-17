@@ -1,0 +1,18 @@
+test_capture_only_never_overwrites_original_failed_backup (__main__.FrontendRecovery.test_capture_only_never_overwrites_original_failed_backup) ... ok
+test_export_failure_always_unpauses_original_and_hides_stderr (__main__.FrontendRecovery.test_export_failure_always_unpauses_original_and_hides_stderr) ... ok
+test_literal_compose_escaping_and_tamper_gate (__main__.FrontendRecovery.test_literal_compose_escaping_and_tamper_gate) ... ok
+test_mount_change_and_snapshot_warning_unpause_without_restoring (__main__.FrontendRecovery.test_mount_change_and_snapshot_warning_unpause_without_restoring) ... ok
+test_mount_inspect_order_does_not_report_false_identity_change (__main__.FrontendRecovery.test_mount_inspect_order_does_not_report_false_identity_change) ... Private recovery directory: private-child
+PASS: private frontend recovery captured and isolated startup/auth probe verified; original remains running
+ok
+test_mounts_need_explicit_quiescence_and_unsupported_mounts_fail_before_pause (__main__.FrontendRecovery.test_mounts_need_explicit_quiescence_and_unsupported_mounts_fail_before_pause) ... ok
+test_only_explicit_missing_image_activates_fallback (__main__.FrontendRecovery.test_only_explicit_missing_image_activates_fallback) ... ok
+test_reverify_uses_only_capture_and_writes_private_evidence (__main__.FrontendRecovery.test_reverify_uses_only_capture_and_writes_private_evidence) ... ok
+test_sensitive_command_errors_are_private_and_files_are_exclusive (__main__.FrontendRecovery.test_sensitive_command_errors_are_private_and_files_are_exclusive) ... ok
+test_unexpected_original_identity_is_rejected_before_pause (__main__.FrontendRecovery.test_unexpected_original_identity_is_rejected_before_pause) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.008s
+
+OK
+PASS: frontend recovery reverified from private artifacts; no original container or mount used

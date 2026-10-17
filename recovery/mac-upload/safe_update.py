@@ -105,7 +105,325 @@ def context(repo):
     return project, mounts[0]['Name'], details
 
 
-def prepare(repo, backup):
+def private_bytes(path, data):
+    """New sensitive artifact only; never follow or overwrite an existing path."""
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, 'wb') as target:
+        target.write(data)
+
+
+def file_sha(path):
+    digest = hashlib.sha256()
+    with path.open('rb') as source:
+        while block := source.read(1024 * 1024):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def private_docker(repo, folder, label, args, *, source=None, destination=None):
+    """Stream archives to disk; stdout/stderr may contain credentials."""
+    from contextlib import ExitStack
+    with ExitStack() as stack:
+        incoming = stack.enter_context(source.open('rb')) if source else subprocess.DEVNULL
+        outgoing = subprocess.PIPE
+        if destination:
+            fd = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            outgoing = stack.enter_context(os.fdopen(fd, 'wb'))
+        result = subprocess.run(['docker', *args], cwd=repo, stdin=incoming,
+                                stdout=outgoing, stderr=subprocess.PIPE)
+    private_bytes(folder / (label + '.stderr.private'), result.stderr)
+    if result.returncode or (destination and result.stderr.strip()):
+        raise RuntimeError('Frontend recovery ' + label + ' failed; inspect private evidence locally')
+    return result.stdout or b''
+
+
+def image_available(repo, image):
+    result = subprocess.run(['docker', 'image', 'inspect', image], cwd=repo,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode:
+        if result.returncode == 1 and (b'No such image:' in result.stderr or b'No such object:' in result.stderr):
+            return False
+        raise RuntimeError('Image availability check failed; no recovery fallback attempted')
+    if json.loads(result.stdout)[0]['Id'] != image:
+        raise RuntimeError('Image identity mismatch')
+    return True
+
+
+def private_backup(repo, backup):
+    info = backup.lstat()
+    if backup.is_symlink() or not backup.is_dir() or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise RuntimeError('Recovery requires an owned private backup directory (mode 700)')
+    if inside(backup, repo) or inside(repo, backup):
+        raise RuntimeError('Recovery backup must be outside the checkout')
+
+
+def compose_literal(value):
+    # Compose interpolates dollars even in JSON. Preserve literal credentials,
+    # commands and paths, including $ and ${...}, without putting them in argv.
+    if isinstance(value, str):
+        return value.replace('$', '$$')
+    if isinstance(value, list):
+        return [compose_literal(v) for v in value]
+    if isinstance(value, dict):
+        return {k: compose_literal(v) for k, v in value.items()}
+    return value
+
+
+FRONTEND_PROBE = r'''
+const http=require('node:http');
+function get(path,method){return new Promise((resolve,reject)=>{
+ const r=http.request({host:'127.0.0.1',port:3000,path,method,timeout:2000},res=>{
+  let body='';res.on('data',x=>{body+=x;if(body.length>1048576)r.destroy(new Error('Response too large'))});
+  res.on('end',()=>resolve({status:res.statusCode,type:res.headers['content-type']||'',body}));res.on('error',reject);
+ });r.on('timeout',()=>r.destroy(new Error('Timeout')));r.on('error',reject);r.end();
+})}
+(async()=>{try{
+ const root=await get('/','GET'),denied=await get('/api/documents/process','POST');
+ if(root.status!==200||!root.type.includes('text/html')||!root.body.toLowerCase().includes('<html')||denied.status!==401)throw new Error('Frontend contract failed');
+ console.log(JSON.stringify({root_status:root.status,html:true,anonymous_upload_status:denied.status}));
+}catch(e){process.exitCode=1}})();
+'''
+
+
+def archive_inventory(path):
+    """Compare mounted contents/ownership without exposing names or bytes."""
+    result = {}
+    with tarfile.open(path) as archive:
+        for member in archive:
+            if (member.name.startswith('/') or '..' in Path(member.name).parts or
+                not (member.isfile() or member.isdir() or member.issym() or member.islnk())):
+                raise RuntimeError('Unsupported entry in frontend mount snapshot')
+            digest = hashlib.sha256()
+            if member.isfile():
+                with archive.extractfile(member) as source:
+                    while block := source.read(1024 * 1024):
+                        digest.update(block)
+            result[member.name.rstrip('/')] = [member.type.decode(), member.mode, member.uid,
+                member.gid, member.linkname, digest.hexdigest() if member.isfile() else None]
+    return result
+
+
+def restore_frontend_capture(repo, folder):
+    """Rebuild only from private artifacts; never use the missing original image."""
+    manifest = json.loads((folder / 'manifest.private.json').read_text())
+    for name, digest in manifest['files'].items():
+        if Path(name).name != name or file_sha(folder / name) != digest:
+            raise RuntimeError('Frontend recovery artifact integrity check failed')
+    original = json.loads((folder / 'container-inspect.private.json').read_text())
+    runtime = manifest['runtime']
+    token = uuid.uuid4().hex
+    base_tag = 'doclens-private-frontend:rootfs-' + token
+    restored_tag = 'doclens-private-frontend:filesystem-' + token
+    final_tag = 'doclens-private-frontend:verified-' + token
+    bootstrap = 'doclens-private-restore-' + token
+    project = 'doclens-private-probe-' + token
+    probe_name = project + '-frontend'
+    compose_file = folder / ('probe-' + token + '.private.json')
+    created_bootstrap = created_probe = False
+    try:
+        imported = private_docker(repo, folder, token+'-import',
+            ['import', '--platform', runtime['platform']+'/'+runtime['arch'], '-', base_tag], source=folder/'rootfs.private.tar').decode().strip()
+        if not imported.startswith('sha256:'):
+            raise RuntimeError('Frontend recovery import did not return an image identity')
+        private_docker(repo, folder, token+'-create-bootstrap', [
+            'create', '--pull', 'never', '--name', bootstrap, '--network', 'none', '--cap-drop', 'ALL',
+            '--security-opt', 'no-new-privileges', '--memory', '512m', '--cpus', '1',
+            '--entrypoint', runtime['execPath'], imported, '-e',
+            'setInterval(()=>{},1000);process.on("SIGTERM",()=>process.exit(0))'])
+        created_bootstrap = True
+        if inspect(repo, bootstrap)['Mounts']:
+            raise RuntimeError('Recovery bootstrap unexpectedly has mounts')
+        run(['docker', 'start', bootstrap], repo)
+        for i, mount in enumerate(manifest['mounts']):
+            destination = mount['Destination']
+            # This removes only copied image paths in our new, unmounted,
+            # network-isolated bootstrap. Never operate on original mounts.
+            run(['docker', 'exec', '--user', '0', bootstrap, runtime['execPath'], '-e',
+                 'const fs=require("fs"),p=require("path"),d=process.argv[1];fs.rmSync(d,{recursive:true,force:true});fs.mkdirSync(p.dirname(d),{recursive:true})', destination], repo)
+            private_docker(repo, folder, token+f'-restore-mount-{i}',
+                ['cp', '-a', '-', bootstrap+':'+str(Path(destination).parent)], source=folder/mount['archive'])
+            checked = folder / (token+f'-restored-mount-{i}.private.tar')
+            private_docker(repo, folder, token+f'-read-restored-mount-{i}',
+                ['cp', bootstrap+':'+destination, '-'], destination=checked)
+            if archive_inventory(checked) != archive_inventory(folder/mount['archive']):
+                raise RuntimeError('Recovered mounted data/ownership did not match the snapshot')
+        run(['docker', 'stop', '-t', '10', bootstrap], repo)
+        restored = private_docker(repo, folder, token+'-commit-restored',
+            ['commit', bootstrap, restored_tag]).decode().strip()
+        config = original['Config']
+        environment = {}
+        for assignment in config.get('Env') or []:
+            key, sep, value = assignment.partition('=')
+            if not sep or key in environment:
+                raise RuntimeError('Unsupported duplicate or invalid frontend environment entry')
+            environment[key] = value
+        service = {
+            'image': restored, 'container_name': probe_name, 'network_mode': 'none',
+            'entrypoint': config.get('Entrypoint') or [], 'command': config.get('Cmd') or [],
+            'working_dir': config.get('WorkingDir') or '/', 'user': config.get('User') or '',
+            'environment': environment, 'restart': 'no', 'cap_drop': ['ALL'],
+            'security_opt': ['no-new-privileges:true'], 'mem_limit': '512m', 'cpus': 1,
+        }
+        private_bytes(compose_file, json.dumps(compose_literal({'services': {'frontend': service}})).encode())
+        args = ['compose', '--env-file', os.devnull, '-f', str(compose_file), '-p', project]
+        # create and inspect isolation before executing the captured command.
+        private_docker(repo, folder, token+'-create-probe', [*args, 'create', '--no-build', '--pull', 'never', 'frontend'])
+        created_probe = True
+        probe = inspect(repo, probe_name)
+        if (probe['Mounts'] or probe['HostConfig']['NetworkMode'] != 'none' or
+            probe['HostConfig'].get('PortBindings') or probe['HostConfig']['Privileged']):
+            raise RuntimeError('Recovery probe isolation check failed')
+        replay_env = dict(item.split('=', 1) for item in probe['Config'].get('Env') or [])
+        if any(replay_env.get(k) != v for k, v in environment.items()):
+            raise RuntimeError('Recovery environment was not preserved exactly')
+        # Commit the stopped runtime-configured container, then test the final
+        # image's defaults. The filesystem bootstrap command is never advertised
+        # as a runnable frontend recovery image.
+        final_image = private_docker(repo, folder, token+'-commit-runtime',
+            ['commit', probe_name, final_tag]).decode().strip()
+        run(['docker', 'rm', '-f', probe_name], repo)
+        created_probe = False
+        private_docker(repo, folder, token+'-create-default-probe', [
+            'create', '--pull', 'never', '--name', probe_name, '--network', 'none', '--cap-drop', 'ALL',
+            '--security-opt', 'no-new-privileges', '--memory', '512m', '--cpus', '1', final_image])
+        created_probe = True
+        probe = inspect(repo, probe_name)
+        if (probe['Mounts'] or probe['HostConfig']['NetworkMode'] != 'none' or
+            probe['HostConfig'].get('PortBindings') or probe['HostConfig']['Privileged'] or
+            probe['Config']['Cmd'] != config.get('Cmd') or
+            (probe['Config'].get('Entrypoint') or []) != (config.get('Entrypoint') or []) or
+            probe['Config'].get('WorkingDir') != (config.get('WorkingDir') or '/') or
+            (probe['Config'].get('User') or '') != (config.get('User') or '')):
+            raise RuntimeError('Final frontend recovery defaults/isolation did not match')
+        final_env = dict(item.split('=', 1) for item in probe['Config'].get('Env') or [])
+        if any(final_env.get(k) != v for k, v in environment.items()):
+            raise RuntimeError('Final frontend recovery environment changed')
+        run(['docker', 'start', probe_name], repo)
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            attempt = subprocess.run(['docker', 'exec', probe_name, runtime['execPath'], '-e', FRONTEND_PROBE], cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if attempt.returncode == 0:
+                contract = json.loads(attempt.stdout)
+                if contract != {'root_status':200, 'html':True, 'anonymous_upload_status':401}:
+                    raise RuntimeError('Recovery probe returned an unexpected result')
+                break
+            if not inspect(repo, probe_name)['State']['Running']:
+                raise RuntimeError('Recovered frontend exited; inspect private probe logs')
+            time.sleep(.25)
+        else:
+            raise RuntimeError('Recovered frontend startup/anonymous-auth probe failed')
+        # Retain private logs, never print a captured application's output.
+        logs = subprocess.run(['docker', 'logs', probe_name], cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        private_bytes(folder / (token+'-probe-log.private'), logs.stdout+logs.stderr)
+        return {'image_tag': final_tag, 'restored_image_id': final_image,
+                'filesystem_image_tag': restored_tag,
+                'rootfs_image_tag': base_tag, 'verified': True, 'probe': contract,
+                'capture_dir': str(folder), 'source_container_id': original['Id'],
+                'source_image_id': original['Image']}
+    finally:
+        # Clean up only helper-created isolated containers. Keep private images
+        # and artifacts for recovery; never delete originals, volumes or tags.
+        if created_probe:
+            logs = subprocess.run(['docker', 'logs', probe_name], cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            path = folder / (token+'-final-probe-log.private')
+            private_bytes(path, logs.stdout+logs.stderr)
+            run(['docker', 'rm', '-f', probe_name], repo)
+        if created_bootstrap:
+            run(['docker', 'rm', '-f', bootstrap], repo)
+
+
+def capture_frontend(repo, backup, *, quiescent_mounts=False, expected_image=None, expected_container=None):
+    private_backup(repo, backup)
+    original = inspect(repo, 'doclens-frontend')
+    if (expected_image is not None and original['Image'] != expected_image) or (expected_container is not None and original['Id'] != expected_container):
+        raise RuntimeError('Running frontend identity does not match the expected original; nothing captured or paused')
+    if not original['State']['Running'] or original['State'].get('Paused'):
+        raise RuntimeError('Frontend recovery requires the original container running and unpaused')
+    mounts = sorted(original.get('Mounts') or [], key=lambda m: m['Destination'].count('/'))
+    if mounts and not quiescent_mounts:
+        raise RuntimeError('Frontend has mounts; quiesce outside writers and explicitly declare --quiescent-mounts before capture')
+    for mount in mounts:
+        destination = mount['Destination']
+        parts = Path(destination).parts
+        if (mount['Type'] not in ('bind', 'volume') or not destination.startswith('/') or
+            '..' in parts or destination == '/' or parts[1] in ('proc','sys','dev','bin','sbin','usr','lib','lib64')):
+            raise RuntimeError('Unsupported frontend mount; requires a separate recovery plan')
+        if mount['Type'] == 'bind' and inside(backup, Path(mount['Source']).resolve()):
+            raise RuntimeError('Backup directory is inside a frontend bind mount')
+    runtime = json.loads(run(['docker','exec',original['Id'],'node','-p',
+        '(()=>{const s=require("fs").statfsSync("/");return JSON.stringify({arch:process.arch,platform:process.platform,execPath:process.execPath,freeBytes:s.bavail*s.bsize})})()'],repo))
+    if runtime['platform'] != 'linux' or runtime['arch'] not in ('x64','arm64'):
+        raise RuntimeError('Unsupported frontend recovery platform')
+    runtime['arch'] = {'x64':'amd64','arm64':'arm64'}[runtime['arch']]
+    folder = backup / ('frontend-recovery-'+uuid.uuid4().hex)
+    folder.mkdir(mode=0o700)
+    private_bytes(folder/'container-inspect.private.json',json.dumps(original).encode())
+    private_bytes(folder/'recovery-helper.private.py',Path(__file__).read_bytes())
+    paused = False
+    captures = []
+    try:
+        run(['docker','pause',original['Id']],repo)
+        paused = True
+        private_docker(repo,folder,'export',['export',original['Id']],destination=folder/'rootfs.private.tar')
+        for i, mount in enumerate(mounts):
+            archive = f'mount-{i}.private.tar'
+            check = f'mount-{i}-check.private.tar'
+            for filename in (archive,check):
+                private_docker(repo,folder,filename,['cp',original['Id']+':'+mount['Destination'],'-'],destination=folder/filename)
+            if file_sha(folder/archive) != file_sha(folder/check):
+                raise RuntimeError('Frontend mounted files changed during capture; recovery is not verified')
+            archive_inventory(folder/archive)
+            captures.append({'Destination':mount['Destination'],'archive':archive})
+        current = inspect(repo,'doclens-frontend')
+        identity = {'container':current['Id'] == original['Id'],
+                    'configuration':current['Config'] == original['Config'],
+                    'mounts':sorted(current['Mounts'], key=lambda m:m['Destination']) == sorted(original['Mounts'], key=lambda m:m['Destination'])}
+        private_bytes(folder/'identity-check.private.json',json.dumps(identity).encode())
+        if not all(identity.values()):
+            raise RuntimeError('Frontend identity/configuration changed during capture')
+    finally:
+        if paused:
+            run(['docker','unpause',original['Id']],repo)
+    # Import/commit/probes may duplicate layers (especially Docker's vfs driver).
+    # This is a conservative preflight, not a concurrent disk-space guarantee.
+    logical = (folder/'rootfs.private.tar').stat().st_size + sum((folder/m['archive']).stat().st_size for m in captures)
+    if runtime.get('freeBytes', 0) < 8*logical + 512*1024**2:
+        raise RuntimeError('Insufficient Docker filesystem space for isolated frontend recovery; original was unpaused')
+    if shutil.disk_usage(folder).free < 2*logical + 512*1024**2:
+        raise RuntimeError('Insufficient backup disk space for frontend recovery verification; original was unpaused')
+    files = {p.name:file_sha(p) for p in folder.iterdir() if p.is_file()}
+    private_bytes(folder/'manifest.private.json',json.dumps({'files':files,'runtime':runtime,'mounts':captures}).encode())
+    recovery = restore_frontend_capture(repo,folder)
+    after = inspect(repo,'doclens-frontend')
+    if after['Id'] != original['Id'] or not after['State']['Running'] or after['State'].get('Paused'):
+        raise RuntimeError('Original frontend did not remain running after recovery verification')
+    private_bytes(folder/'verified.private.json',json.dumps(recovery).encode())
+    print('PASS: private frontend recovery captured and isolated startup/auth probe verified; original remains running',flush=True)
+    return recovery
+
+
+def preserve_frontend(repo, backup, *, quiescent_mounts=False, expected_image=None):
+    """Capture-only phase for the failed old preparation; no source or service stop."""
+    private_backup(repo,backup)
+    state = json.loads((backup/'state.json').read_text())
+    if state.get('repo') != str(repo) or state.get('reviewed') != REVIEWED or state.get('phase') != 'backup-started':
+        raise RuntimeError('Capture-only requires the original failed preparation backup')
+    # Never overwrite the old state, helper, checkout archive or credential copies.
+    if expected_image is None:
+        raise RuntimeError('Capture-only requires --expected-frontend-image from the reported original container')
+    recovery = capture_frontend(repo,backup,quiescent_mounts=quiescent_mounts,expected_image=expected_image)
+    print('Private recovery directory: ' + recovery['capture_dir'])
+
+
+def verify_frontend_recovery(repo, backup):
+    """Reconstruct from a private capture, without the original image/container."""
+    private_backup(repo, backup)
+    recovery = restore_frontend_capture(repo, backup)
+    private_bytes(backup/('reverified-'+uuid.uuid4().hex+'.private.json'),json.dumps(recovery).encode())
+    print('PASS: frontend recovery reverified from private artifacts; no original container or mount used')
+
+
+def prepare(repo, backup, *, quiescent_mounts=False):
     if backup.exists() or inside(backup, repo) or inside(repo, backup):
         raise RuntimeError('Choose a new backup directory outside the checkout')
     backup.mkdir(mode=0o700)
@@ -142,8 +460,19 @@ def prepare(repo, backup):
     state['image_tags'] = {}
     for name in CONTAINERS[:2]:
         target = name + ':' + tag
-        run(['docker', 'image', 'tag', state['images'][name], target], repo)
-        state['image_tags'][name] = target
+        save(backup, state)
+        if image_available(repo, state['images'][name]):
+            run(['docker', 'image', 'tag', state['images'][name], target], repo)
+            state['image_tags'][name] = target
+        elif name == 'doclens-frontend':
+            recovery = capture_frontend(repo, backup, quiescent_mounts=quiescent_mounts, expected_image=state['images'][name], expected_container=details[name]['Id'])
+            if not recovery.get('verified') or recovery.get('source_image_id') != state['images'][name] or recovery.get('source_container_id') != details[name]['Id']:
+                raise RuntimeError('Frontend recovery identity/verification did not match')
+            state['frontend_recovery'] = recovery
+            state['image_tags'][name] = recovery['image_tag']
+        else:
+            raise RuntimeError('Backend original image is unavailable; stop for a separate recovery plan')
+        save(backup, state)
     save(backup, state)
     # Stop writers first. Back up the existing volume cold, never create a new volume.
     run(['docker', 'stop', '-t', '60', *CONTAINERS[:2]], repo)
@@ -307,14 +636,25 @@ def verify(repo, backup):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=('prepare', 'rebuild', 'verify'))
+    parser.add_argument('phase', choices=('prepare', 'rebuild', 'verify', 'preserve-frontend', 'verify-frontend-recovery'))
     parser.add_argument('--backup', required=True, type=Path)
+    parser.add_argument('--quiescent-mounts', action='store_true', help='Declare all outside writers to frontend mounts are quiesced; required for mounted-file capture')
+    parser.add_argument('--expected-frontend-image', help='Required for capture-only: the original reported frontend image ID')
     args = parser.parse_args()
     os.umask(0o077)
     repo = Path.cwd().resolve()
     backup = args.backup.expanduser().resolve()
     try:
-        {'prepare': prepare, 'rebuild': rebuild, 'verify': verify}[args.phase](repo, backup)
+        if args.phase == 'preserve-frontend':
+            preserve_frontend(repo,backup,quiescent_mounts=args.quiescent_mounts,expected_image=args.expected_frontend_image)
+        elif args.expected_frontend_image:
+            raise RuntimeError('--expected-frontend-image applies only to capture-only')
+        elif args.phase == 'prepare':
+            prepare(repo,backup,quiescent_mounts=args.quiescent_mounts)
+        else:
+            if args.quiescent_mounts:
+                raise RuntimeError('--quiescent-mounts applies only to frontend capture/preparation')
+            {'rebuild':rebuild,'verify':verify,'verify-frontend-recovery':verify_frontend_recovery}[args.phase](repo,backup)
     except Exception as error:
         print('STOP: ' + str(error), file=sys.stderr)
         print('Do not reset, clean, delete volumes, restore old readers, or retry your document. Keep the private backup and report the failed phase.', file=sys.stderr)

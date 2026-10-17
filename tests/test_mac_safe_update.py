@@ -48,7 +48,7 @@ class SafeMacUpdate(unittest.TestCase):
                 (target/'synthetic-wal').write_bytes(b'Cold original Qdrant storage')
             return b''
         details = {n:{'Image':'sha256:synthetic-'+n,'State':{'Running':True}} for n in update.CONTAINERS}
-        with patch.object(update, 'run', side_effect=command), patch.object(update, 'context', return_value=('existing-project','existing-volume',details)):
+        with patch.object(update, 'image_available', return_value=True), patch.object(update, 'run', side_effect=command), patch.object(update, 'context', return_value=('existing-project','existing-volume',details)):
             update.prepare(self.repo,self.backup)
             state = update.load(self.repo,self.backup)
         self.assertEqual(state['phase'],'prepared')
@@ -102,6 +102,49 @@ class SafeMacUpdate(unittest.TestCase):
     def test_wrong_head_never_normalizes_or_resets(self):
         subprocess.run(['git','-C',str(self.repo),'update-ref','HEAD',update.INDENT],check=True,capture_output=True)
         with self.assertRaisesRegex(RuntimeError,'HEAD is not'):update.check_sources(self.repo)
+
+    def test_missing_frontend_failure_checkpoints_backend_and_never_stops_services(self):
+        details={n:{'Id':'container-'+n,'Image':'sha256:'+n,'State':{'Running':True}} for n in update.CONTAINERS}
+        original_run=update.run
+        calls=[]
+        def command(args,cwd,data=None):
+            if args[0]!='docker':return original_run(args,cwd,data)
+            calls.append(args);return b''
+        with patch.object(update,'context',return_value=('project','volume',details)), \
+             patch.object(update,'image_available',side_effect=(True,False)), \
+             patch.object(update,'capture_frontend',side_effect=RuntimeError('Capture failed')), \
+             patch.object(update,'run',side_effect=command):
+            with self.assertRaisesRegex(RuntimeError,'Capture failed'):update.prepare(self.repo,self.backup)
+        state=json.loads((self.backup/'state.json').read_text())
+        self.assertIn('doclens-backend',state['image_tags'])
+        self.assertNotIn('doclens-frontend',state['image_tags'])
+        self.assertEqual(state['phase'],'backup-started')
+        self.assertFalse(any(c[1] in ('stop','start','rm') for c in calls))
+        self.assertFalse(any('latest' in str(c) for c in calls))
+        self.assertEqual((self.repo/'backend/main.py').read_bytes(),update.blob(ROOT,update.INDENT,'backend/main.py'))
+
+    def test_missing_frontend_verified_capture_integrates_with_prepare(self):
+        details={n:{'Id':'container-'+n,'Image':'sha256:'+n,'State':{'Running':True}} for n in update.CONTAINERS}
+        original_run=update.run;calls=[]
+        recovery={'verified':True,'source_image_id':details['doclens-frontend']['Image'],
+                  'source_container_id':details['doclens-frontend']['Id'],'image_tag':'private-snapshot:verified'}
+        def command(args,cwd,data=None):
+            if args[0]!='docker':return original_run(args,cwd,data)
+            calls.append(args)
+            if args[1]=='cp':
+                target=Path(args[-1]);target.mkdir();(target/'wal').write_bytes(b'Synthetic cold backup')
+            return b''
+        with patch.object(update,'context',return_value=('project','volume',details)), \
+             patch.object(update,'image_available',side_effect=(True,False)), \
+             patch.object(update,'capture_frontend',return_value=recovery) as capture, \
+             patch.object(update,'run',side_effect=command):
+            update.prepare(self.repo,self.backup)
+        capture.assert_called_once_with(self.repo,self.backup,quiescent_mounts=False,expected_image=details['doclens-frontend']['Image'],expected_container=details['doclens-frontend']['Id'])
+        state=json.loads((self.backup/'state.json').read_text())
+        self.assertEqual(state['image_tags']['doclens-frontend'],'private-snapshot:verified')
+        self.assertEqual(state['images']['doclens-frontend'],details['doclens-frontend']['Image'])
+        self.assertEqual(state['phase'],'prepared')
+        self.assertEqual(len([c for c in calls if c[1:3]==['image','tag']]),1)
 
     def test_rebuild_is_explicit_and_never_recreates_data_service(self):
         self.backup.mkdir(mode=0o700)

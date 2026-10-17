@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_frontend_recovery_smoke.py", line 124, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/DocLens/tests/mac_frontend_recovery_smoke.py", line 83, in main
+    recovery=helper.capture_frontend(ROOT,backup,quiescent_mounts=mounted)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/DocLens/recovery/mac-upload/safe_update.py", line 376, in capture_frontend
+    raise RuntimeError('Frontend identity/configuration changed during capture')
+RuntimeError: Frontend identity/configuration changed during capture

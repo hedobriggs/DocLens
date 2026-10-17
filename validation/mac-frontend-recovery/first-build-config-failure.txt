@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_frontend_recovery_smoke.py", line 117, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/DocLens/tests/mac_frontend_recovery_smoke.py", line 53, in main
+    subprocess.run(['docker','build','-t',tag,str(source)],check=True,stdout=(root/'build.log').open('wb'),stderr=subprocess.STDOUT)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['docker', 'build', '-t', 'doclens-private-fixture:a08d719fa1f44ed3a82b905dadd5dd3a', '/tmp/doclens-frontend-recovery-ida5ey07/source']' returned non-zero exit status 1.
