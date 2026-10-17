@@ -1,0 +1,5 @@
+PASS: seven helper regressions; source application files remain identical to reviewed commit 76b81c1bf5a23fd62e344e893b1bff45e24e8cb4.
+PASS: real Docker cold storage backup and reviewed-source synthetic startup/upload checks (two passing runs).
+PASS: Python compilation and whitespace checks.
+NOT RUN: fresh Mac Dockerfile builds, Mac file matching/backup, Mac browser checks, original PDF.
+Operational helper/procedure are separate from reviewed application code. No merge or production deployment.

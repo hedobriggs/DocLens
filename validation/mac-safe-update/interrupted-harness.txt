@@ -1,0 +1,12 @@
+PASS: complete private checkout backup (including ignored and untracked files)
+PASS: all starting tracked files match the preserved Mac snapshot; original or approved indentation accepted
+PASS: selective reviewed files applied on local/mac-reviewed-5bedb648e4d9
+Backup: /tmp/safe-update-live-ozwveo3g/backup
+Services are stopped. Continue with rebuild; no source commit or merge was made.
+Traceback (most recent call last):
+  File "/workspace/mac-upload-freeze/check_safe_update.py", line 34, in <module>
+    docker('start',names[2]);ready(url+'/readyz')
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/DocLens/tests/mac_upload_recovery_smoke.py", line 45, in ready
+    time.sleep(.25)
+KeyboardInterrupt

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/workspace/mac-upload-freeze/check_safe_update.py", line 29, in <module>
+    m.prepare(checkout,backup)
+  File "/workspace/DocLens/recovery/mac-upload/safe_update.py", line 110, in prepare
+    backup.mkdir(mode=0o700)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1311, in mkdir
+    os.mkdir(self, mode)
+OSError: [Errno 28] No space left on device: '/workspace/mac-upload-freeze/safe-update-live-wfscx_p7/backup'

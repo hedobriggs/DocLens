@@ -1,0 +1,25 @@
+PASS: complete private checkout backup (including ignored and untracked files)
+PASS: all starting tracked files match the preserved Mac snapshot; original or approved indentation accepted
+Copying stopped Qdrant storage to the private backup; this may take several minutes
+PASS: selective reviewed files applied on local/mac-reviewed-73de50cf2792
+Backup: /tmp/safe-update-live-sn7mgc_j/backup
+Services are stopped. Continue with rebuild; no source commit or merge was made.
+PASS: backend startup, dense 40-page upload, health probes, existing point count, and failed replacement
+{
+  "pass": true,
+  "filename": "doclens-synthetic-1792275182328141596.pdf",
+  "pages": 40,
+  "characters": 217800,
+  "chunks": 280,
+  "seconds": 9.156341362002422,
+  "health_samples": 89,
+  "health_failures": 0,
+  "health_max_seconds": 0.0047520200023427606,
+  "peak_backend_rss_kib": 787720,
+  "existing_point_count": 1,
+  "after_point_count": 281,
+  "failed_replacement_preserved_ids": true
+}
+NEXT: sign in at http://localhost:3000 and complete the browser checks in the procedure before retrying your PDF.
+PASS: real Docker cold backup, unchanged Qdrant volume/original point, selective update, reviewed-source startup and exact synthetic verify command
+Evidence: /tmp/safe-update-live-sn7mgc_j/backup
