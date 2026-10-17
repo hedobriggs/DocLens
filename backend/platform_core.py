@@ -14,6 +14,7 @@ from uuid import UUID
 
 import boto3
 from botocore.config import Config
+from botocore.session import Session as BotocoreSession
 from fastapi import HTTPException
 import psycopg
 from psycopg.rows import dict_row
@@ -106,16 +107,37 @@ class Database:
                 self.revalidate(identity)
 
 
+def s3_client(*, endpoint: str, access_key: str, secret_key: str):
+    """Explicit S3-compatible connection, without machine AWS profiles/files.
+
+    Override sources on this session only. Do not mutate process environment or
+    Boto3's default session. Keep SDK TLS verification and AWS_CA_BUNDLE support.
+    """
+    try:
+        if not endpoint or not access_key or not secret_key:
+            raise ValueError('Explicit storage connection settings are required')
+        session = BotocoreSession(session_vars={
+            'profile': (None, None, None, None),
+            'config_file': (None, None, os.devnull, None),
+            'credentials_file': (None, None, os.devnull, None),
+        })
+        return boto3.Session(botocore_session=session).client(
+            's3', endpoint_url=endpoint, aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key, region_name='us-east-1',
+            config=Config(signature_version='s3v4', retries={'max_attempts':2},
+                          connect_timeout=5, read_timeout=15,
+                          s3={'addressing_style':'path'}))
+    except Exception as error:
+        # SDK errors can embed endpoints, profile names or credential material.
+        raise RuntimeError(f'S3-compatible storage initialization failed ({type(error).__name__}).') from None
+
+
 class Originals:
     def __init__(self, *, endpoint: str, bucket: str, access_key: str, secret_key: str):
         if not endpoint.startswith('https://') and os.getenv('PLATFORM_SYNTHETIC_HTTP') != '1':
             raise RuntimeError('Object storage requires HTTPS; local synthetic tests can opt into HTTP')
         self.bucket = bucket
-        self.client = boto3.client('s3', endpoint_url=endpoint, aws_access_key_id=access_key,
-                                   aws_secret_access_key=secret_key, region_name='us-east-1',
-                                   config=Config(signature_version='s3v4', retries={'max_attempts':2},
-                                                 connect_timeout=5, read_timeout=15,
-                                                 s3={'addressing_style':'path'}))
+        self.client = s3_client(endpoint=endpoint, access_key=access_key, secret_key=secret_key)
 
     def put(self, key: str, data: bytes, *, retention_days=365, legal_hold=False):
         checksum = base64.b64encode(hashlib.sha256(data).digest()).decode()

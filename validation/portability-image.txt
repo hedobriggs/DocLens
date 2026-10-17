@@ -1,0 +1,2 @@
+Built image: sha256:4132efb646c318c4e4f4f06f7bc1e52c891b14ec6a37285fa9b8be5f97f33176
+PASS non-root Python 3.11 API image: pip check, live identity/workspace RLS, retained original range, cross-firm denial, revocation

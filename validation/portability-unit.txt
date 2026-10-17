@@ -1,0 +1,11 @@
+test_initialization_failure_identifies_component_and_class_without_secret (test_storage_portability.StoragePortabilityTests.test_initialization_failure_identifies_component_and_class_without_secret) ... ok
+test_missing_explicit_credentials_cannot_fall_back_to_machine_credentials (test_storage_portability.StoragePortabilityTests.test_missing_explicit_credentials_cannot_fall_back_to_machine_credentials) ... ok
+test_nonexistent_profiles_and_malformed_shared_files_are_ignored (test_storage_portability.StoragePortabilityTests.test_nonexistent_profiles_and_malformed_shared_files_are_ignored) ... ok
+test_readiness_timeout_identifies_failing_service_without_exception_body (test_storage_portability.StoragePortabilityTests.test_readiness_timeout_identifies_failing_service_without_exception_body) ... ok
+test_shared_default_profile_cannot_change_connection_or_signing (test_storage_portability.StoragePortabilityTests.test_shared_default_profile_cannot_change_connection_or_signing) ... ok
+test_tls_trust_bundle_remains_configurable (test_storage_portability.StoragePortabilityTests.test_tls_trust_bundle_remains_configurable) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.309s
+
+OK

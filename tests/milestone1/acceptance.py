@@ -23,7 +23,6 @@ from uuid import uuid4
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'backend'))
-import boto3
 import fitz
 import psycopg
 from psycopg.rows import dict_row
@@ -31,7 +30,7 @@ import requests
 from fastapi.testclient import TestClient
 from platform_admin import fixture_id as fid, migrate, logins, seed_synthetic
 from platform_api import create_app
-from platform_core import Database, Originals, Embeddings
+from platform_core import Database, Originals, Embeddings, s3_client
 
 PG_IMAGE='postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24'
 S3_IMAGE='bitnamilegacy/minio:2025.7.23-debian-12-r0@sha256:8935e75fa5d11295c17171e4aa49efe390a1193cd7f12e4d21b92af9ffef09d7'
@@ -43,6 +42,21 @@ def docker(*args):
 
 def port(name, target):
     return docker('port',name,str(target)).rsplit(':',1)[1]
+
+
+def wait_for_services(owner, client, *, timeout=60):
+    deadline=time.monotonic()+timeout
+    while True:
+        component='PostgreSQL readiness'
+        try:
+            with psycopg.connect(owner,connect_timeout=1): pass
+            component='MinIO readiness'
+            client.create_bucket(Bucket='originals',ObjectLockEnabledForBucket=True)
+            return
+        except Exception as error:
+            if time.monotonic()>deadline:
+                raise RuntimeError(f'{component} failed ({type(error).__name__}).') from None
+            time.sleep(.2)
 
 
 @contextmanager
@@ -59,16 +73,9 @@ def services():
                    '--entrypoint','/opt/bitnami/minio/bin/minio',S3_IMAGE,'server','/data')
             owner=f'postgresql://postgres:{quote(password)}@127.0.0.1:{port(pg,5432)}/postgres'
             endpoint=f'http://127.0.0.1:{port(obj,9000)}'
-            deadline=time.monotonic()+60
-            while True:
-                try:
-                    with psycopg.connect(owner,connect_timeout=1): pass
-                    client=boto3.client('s3',endpoint_url=endpoint,aws_access_key_id='doclens-test-owner',aws_secret_access_key=password,region_name='us-east-1')
-                    client.create_bucket(Bucket='originals',ObjectLockEnabledForBucket=True)
-                    break
-                except Exception:
-                    if time.monotonic()>deadline: raise RuntimeError('Local test services did not become ready') from None
-                    time.sleep(.2)
+            # Configuration failures must not be hidden by the readiness retry loop.
+            client=s3_client(endpoint=endpoint,access_key='doclens-test-owner',secret_key=password)
+            wait_for_services(owner,client)
             policy={'Version':'2012-10-17','Statement':[{'Effect':'Allow','Action':[
                 's3:PutObject','s3:GetObject','s3:GetObjectVersion','s3:PutObjectRetention','s3:PutObjectLegalHold'],
                 'Resource':['arn:aws:s3:::originals/*']}]}

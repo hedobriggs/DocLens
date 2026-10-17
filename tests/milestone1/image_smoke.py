@@ -33,6 +33,10 @@ with services() as s:
         'PLATFORM_DATABASE_URL':s['runtime'],'PLATFORM_AUTH_DATABASE_URL':s['auth'],
         'PLATFORM_S3_ENDPOINT':s['endpoint'],'PLATFORM_S3_BUCKET':'originals',
         'PLATFORM_S3_ACCESS_KEY':'doclens-app','PLATFORM_S3_SECRET_KEY':s['object_password'],
+        'AWS_PROFILE':'doclens-nonexistent-profile',
+        'AWS_DEFAULT_PROFILE':'doclens-nonexistent-default-profile',
+        'AWS_CONFIG_FILE':'/nonexistent/aws/config',
+        'AWS_SHARED_CREDENTIALS_FILE':'/nonexistent/aws/credentials',
         'PLATFORM_SYNTHETIC_HTTP':'1'}.items())+'\n')
     envfile.chmod(0o600)
     name='doclens-m1-api-'+secrets.token_hex(5)
