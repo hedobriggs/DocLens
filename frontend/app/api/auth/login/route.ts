@@ -27,6 +27,21 @@ export async function POST(request: NextRequest) {
       body.email,
       body.password
     );
+    try {
+  await fetch("http://backend:8000/internal/auth-event", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-DocLens-Internal-Key": process.env.DOCLENS_SESSION_SECRET || "",
+    },
+    body: JSON.stringify({
+      outcome: valid ? "success" : "failure",
+    }),
+    signal: AbortSignal.timeout(2000),
+  });
+} catch (error) {
+  console.error("Authentication metrics unavailable:", error);
+}
 
     if (!valid) {
       return NextResponse.json(

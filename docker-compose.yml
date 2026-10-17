@@ -1,5 +1,12 @@
 
 services:
+  qdrant:
+    image: qdrant/qdrant:v1.15.5
+    container_name: doclens-qdrant
+    volumes:
+      - qdrant_server_data:/qdrant/storage
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -9,8 +16,10 @@ services:
     env_file:
       - ./backend/.env
       - ./.env
-    volumes:
-      - qdrant_data:/app/qdrant_data
+    environment:
+      QDRANT_URL: http://qdrant:6333
+    depends_on:
+      - qdrant
     restart: unless-stopped
 
   frontend:
@@ -61,7 +70,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  qdrant_data:
+  qdrant_server_data:
   prometheus_data:
   grafana_data:
 

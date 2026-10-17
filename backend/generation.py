@@ -1,9 +1,11 @@
 import os
 import json
 import logging
+from time import perf_counter
 
 from dotenv import load_dotenv
 from google import genai
+from prometheus_client import Counter, Histogram
 
 
 # --------------------------------------------------
@@ -11,6 +13,28 @@ from google import genai
 # --------------------------------------------------
 
 logger = logging.getLogger("doclens")
+
+
+# --------------------------------------------------
+# Gemini monitoring metrics
+# --------------------------------------------------
+
+GEMINI_REQUESTS = Counter(
+    "doclens_gemini_requests_total",
+    "Total Gemini generation requests",
+    ["status"],
+)
+
+GEMINI_DURATION = Histogram(
+    "doclens_gemini_duration_seconds",
+    "Duration of Gemini generation requests in seconds",
+)
+
+GEMINI_TOKENS = Counter(
+    "doclens_gemini_tokens_total",
+    "Tokens reported by Gemini usage metadata",
+    ["type"],
+)
 
 
 # --------------------------------------------------
@@ -105,10 +129,25 @@ Document context:
 """.strip()
 
     try:
-        response = client.models.generate_content(
-            model="gemini-3.5-flash-lite",
-            contents=prompt
-        )
+        start = perf_counter()
+        try:
+            response = client.models.generate_content(
+                model="gemini-3.5-flash-lite",
+                contents=prompt
+            )
+        finally:
+            GEMINI_DURATION.observe(perf_counter() - start)
+
+        # Usage metadata is optional; never let missing metadata break an answer.
+        usage = getattr(response, "usage_metadata", None)
+        if usage is not None:
+            for label, field in (
+                ("input", "prompt_token_count"),
+                ("output", "candidates_token_count"),
+            ):
+                count = getattr(usage, field, None)
+                if isinstance(count, (int, float)) and count >= 0:
+                    GEMINI_TOKENS.labels(type=label).inc(count)
 
         response_text = response.text.strip()
 
@@ -120,13 +159,17 @@ Document context:
             ).strip()
 
         result = json.loads(response_text)
+        answer = result["answer"]
+        source_ids = result.get("source_ids", [])
+        GEMINI_REQUESTS.labels(status="success").inc()
 
         return {
-            "answer": result["answer"],
-            "source_ids": result.get("source_ids", [])
+            "answer": answer,
+            "source_ids": source_ids
         }
 
     except json.JSONDecodeError:
+        GEMINI_REQUESTS.labels(status="error").inc()
         logger.exception(
             "Gemini returned invalid JSON"
         )
@@ -136,6 +179,7 @@ Document context:
         )
 
     except Exception:
+        GEMINI_REQUESTS.labels(status="error").inc()
         logger.exception(
             "Gemini generation request failed"
         )
@@ -143,3 +187,4 @@ Document context:
         raise RuntimeError(
             "The AI service is temporarily unavailable."
         )
+

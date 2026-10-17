@@ -1,14 +1,18 @@
 
 import logging
+import time
 import os
 import secrets
 from typing import Optional
+
 
 import fitz
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Counter, Histogram
 from pydantic import BaseModel
+
 
 from chunking import chunk_text
 from embeddings import create_embedding, create_embeddings
@@ -31,6 +35,35 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("doclens")
+
+# --------------------------------------------------
+# Authentication metrics
+# --------------------------------------------------
+
+AUTH_LOGIN_SUCCESS = Counter(
+    "doclens_auth_login_success_total",
+    "Total successful DocLens admin logins",
+)
+
+AUTH_LOGIN_FAILURE = Counter(
+    "doclens_auth_login_failure_total",
+    "Total failed DocLens admin login attempts",
+)
+
+# --------------------------------------------------
+# RAG retrieval metrics
+# --------------------------------------------------
+
+RAG_RETRIEVAL_DURATION = Histogram(
+    "doclens_rag_retrieval_duration_seconds",
+    "Time spent retrieving and reranking document chunks",
+)
+
+RAG_RETRIEVED_CHUNKS = Histogram(
+    "doclens_rag_retrieved_chunks",
+    "Number of document chunks returned by retrieval",
+    buckets=(0, 1, 2, 3, 5, 10, 20, float("inf")),
+)
 
 
 # --------------------------------------------------
@@ -111,8 +144,35 @@ class AskRequest(BaseModel):
 
 
 # --------------------------------------------------
+# Authentication event monitoring
+# --------------------------------------------------
+
+class AuthEvent(BaseModel):
+    outcome: str
+
+
+@app.post("/internal/auth-event", include_in_schema=False)
+def record_auth_event(
+    event: AuthEvent,
+    _: None = Depends(require_internal_auth),
+):
+    if event.outcome == "success":
+        AUTH_LOGIN_SUCCESS.inc()
+    elif event.outcome == "failure":
+        AUTH_LOGIN_FAILURE.inc()
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid authentication event."
+        )
+
+    return {"recorded": True}
+
+
+# --------------------------------------------------
 # Health check
 # --------------------------------------------------
+
 
 @app.get("/")
 def root():
@@ -308,12 +368,21 @@ def ask_question(
     # 4. Cross-encoder reranking
     # --------------------------------------------------
 
-    results = hybrid_search(
-        query=question,
-        query_embedding=question_embedding,
-        limit=3,
-        document_name=request.document_name
-    )
+       retrieval_start = time.perf_counter()
+
+    try:
+        results = hybrid_search(
+            query=question,
+            query_embedding=question_embedding,
+            limit=3,
+            document_name=request.document_name
+        )
+    finally:
+        RAG_RETRIEVAL_DURATION.observe(
+            time.perf_counter() - retrieval_start
+        )
+
+    RAG_RETRIEVED_CHUNKS.observe(len(results))
 
     # Log retrieval results without logging
     # the user's full question.
