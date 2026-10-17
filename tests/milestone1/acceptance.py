@@ -60,7 +60,7 @@ def wait_for_services(owner, client, *, timeout=60):
 
 
 @contextmanager
-def services():
+def services(*, legacy_v1=False):
     suffix=secrets.token_hex(5); pg='doclens-m1-pg-'+suffix; obj='doclens-m1-s3-'+suffix
     password=secrets.token_urlsafe(24)
     with tempfile.TemporaryDirectory(prefix='doclens-m1-') as temp:
@@ -88,7 +88,11 @@ def services():
 "$mc" --config-dir /tmp/mc admin policy attach local originals-only --user "$MINIO_APP_USER" >/dev/null''')
             app_password=next(line.split('=',1)[1] for line in envfile.read_text().splitlines() if line.startswith('MINIO_APP_PASSWORD='))
             with psycopg.connect(owner,autocommit=True) as conn:
-                migrate(conn); logins(conn,password,password)
+                if legacy_v1:
+                    conn.execute((ROOT/'backend/platform_migrations/001_foundation.sql').read_text())
+                else:
+                    migrate(conn)
+                logins(conn,password,password)
             runtime=owner.replace('postgres:'+quote(password),'doclens_web:'+quote(password),1)
             auth=owner.replace('postgres:'+quote(password),'doclens_identity:'+quote(password),1)
             os.environ['PLATFORM_SYNTHETIC_HTTP']='1'

@@ -18,6 +18,7 @@ from psycopg.types.json import Jsonb
 from starlette.concurrency import run_in_threadpool
 
 from chunking import chunk_text
+from platform_jobs import Jobs
 from platform_core import Database, Embeddings, Identity, Originals, password_matches, password_hash, token_hash
 
 MAX_BYTES = 10 * 1024 * 1024
@@ -200,36 +201,37 @@ def create_app(database=None, originals=None, embeddings=None):
         if not api.state.admission.acquire(blocking=False):
             raise HTTPException(429, 'Upload capacity reached. Try again later.')
         try:
-            raw = await bounded_body(request, MAX_BYTES + 16384)
-            # Construct a bounded request stream for Starlette's parser.
-            async def stream():
-                yield raw
-            from starlette.formparsers import MultiPartParser, MultiPartException
-            try:
-                form = await MultiPartParser(request.headers, stream(), max_files=1, max_fields=1,
-                                              max_part_size=8192).parse()
-            except MultiPartException:
-                raise HTTPException(400, 'Invalid upload.') from None
-            try:
-                if set(form.keys()) != {'file','metadata'} or len(form.multi_items()) != 2:
-                    raise HTTPException(400, 'A PDF and metadata are required.')
-                file = form['file']
-                from starlette.datastructures import UploadFile
-                if not isinstance(file, UploadFile) or file.content_type != 'application/pdf':
-                    raise HTTPException(400, 'A PDF is required.')
-                meta = Metadata.model_validate_json(form['metadata'])
-                if not meta.synthetic:
-                    raise HTTPException(400, 'Only synthetic documents are admitted in this milestone.')
-                data = await file.read(MAX_BYTES + 1)
-                if not data or len(data)>MAX_BYTES:
-                    raise HTTPException(413, 'PDF must be between 1 byte and 10 MiB.')
-                filename = (file.filename or 'document.pdf').replace('\\','/').rsplit('/',1)[-1][:255]
-                result = await run_in_threadpool(publish, identity, kind, target, meta, data, filename)
-            finally:
-                await form.close()
-            return result
+            meta,data,filename=await parse_upload(request)
+            return await run_in_threadpool(publish,identity,kind,target,meta,data,filename)
         finally:
             api.state.admission.release()
+
+    @api.post('/{kind}/{scope_id}/ingestions',status_code=202)
+    async def enqueue(kind: str, scope_id: str, request: Request):
+        if os.getenv('PLATFORM_DURABLE_JOBS_ENABLED')!='1':
+            raise HTTPException(404,'Not found.')
+        identity=request.state.identity; target=uuid(scope_id)
+        def check():
+            with api.state.db.transaction(identity) as conn:
+                scope(conn,kind,target,True)
+        await run_in_threadpool(check)
+        key=request.headers.get('idempotency-key','')
+        if not re.fullmatch(r'[A-Za-z0-9._:-]{16,128}',key):
+            raise HTTPException(400,'A 16–128 character Idempotency-Key is required.')
+        if not api.state.admission.acquire(blocking=False):
+            raise HTTPException(429,'Upload capacity reached. Try again later.')
+        try:
+            meta,data,filename=await parse_upload(request)
+            jobs=Jobs(api.state.db,api.state.originals)
+            return await run_in_threadpool(jobs.submit,identity,kind,target,key,meta,data,filename)
+        finally:
+            api.state.admission.release()
+
+    @api.get('/jobs/{job_id}')
+    def job_status(job_id: str,request: Request):
+        if os.getenv('PLATFORM_DURABLE_JOBS_ENABLED')!='1':
+            raise HTTPException(404,'Not found.')
+        return Jobs(api.state.db,api.state.originals).status(request.state.identity,uuid(job_id))
 
     def publish(identity, kind, target, meta, data, filename):
         items = []
@@ -388,9 +390,37 @@ def create_app(database=None, originals=None, embeddings=None):
                 return {'results':results,'mode':query.mode}
         return await run_in_threadpool(retrieve)
 
-    # Jobs, reports, exports and hosted generation are deliberately not registered.
+    # Worker claims/transitions, reports, exports and hosted generation are not registered.
     # Unknown routes still require authentication and return 404 without object info.
     return api
+
+
+async def parse_upload(request: Request):
+    raw=await bounded_body(request,MAX_BYTES+16384)
+    async def stream():
+        yield raw
+    from starlette.formparsers import MultiPartParser, MultiPartException
+    from starlette.datastructures import UploadFile
+    try:
+        form=await MultiPartParser(request.headers,stream(),max_files=1,max_fields=1,max_part_size=8192).parse()
+    except MultiPartException:
+        raise HTTPException(400,'Invalid upload.') from None
+    try:
+        if set(form.keys())!={'file','metadata'} or len(form.multi_items())!=2:
+            raise HTTPException(400,'A PDF and metadata are required.')
+        file=form['file']
+        if not isinstance(file,UploadFile) or file.content_type!='application/pdf':
+            raise HTTPException(400,'A PDF is required.')
+        meta=Metadata.model_validate_json(form['metadata'])
+        if not meta.synthetic:
+            raise HTTPException(400,'Only synthetic documents are admitted in this milestone.')
+        data=await file.read(MAX_BYTES+1)
+        if not data or len(data)>MAX_BYTES:
+            raise HTTPException(413,'PDF must be between 1 byte and 10 MiB.')
+        filename=(file.filename or 'document.pdf').replace('\\','/').rsplit('/',1)[-1][:255]
+        return meta,data,filename
+    finally:
+        await form.close()
 
 
 async def bounded_body(request: Request, maximum: int):

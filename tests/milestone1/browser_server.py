@@ -19,6 +19,7 @@ from fastapi.testclient import TestClient
 
 
 def main():
+    os.environ['PLATFORM_DURABLE_JOBS_ENABLED']='1'
     with services() as s:
         with psycopg.connect(s['owner']) as conn:
             seed_synthetic(conn,os.environ['PLATFORM_FIXTURE_PASSWORD'])

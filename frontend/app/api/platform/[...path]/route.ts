@@ -12,10 +12,16 @@ const routes = [
   new RegExp(`^workspaces/${ID}/references/${ID}$`),
 ];
 
+const durableRoutes = [
+  new RegExp(`^(workspaces|libraries)/${ID}/ingestions$`),
+  new RegExp(`^jobs/${ID}$`),
+];
+
 async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   if (process.env.DOCLENS_PLATFORM_ENABLED !== "1") return new NextResponse(null, { status: 404 });
   const path = (await context.params).path.join("/");
-  if (!routes.some(route => route.test(path))) return new NextResponse(null, { status: 404 });
+  const durable = process.env.PLATFORM_DURABLE_JOBS_ENABLED === "1" && durableRoutes.some(route => route.test(path));
+  if (!routes.some(route => route.test(path)) && !durable) return new NextResponse(null, { status: 404 });
   if (!process.env.PLATFORM_PUBLIC_ORIGIN) return NextResponse.json({ detail: "Workspace service unavailable." }, { status: 503 });
   if (!["GET", "HEAD"].includes(request.method) && request.headers.get("origin") !== process.env.PLATFORM_PUBLIC_ORIGIN) {
     return NextResponse.json({ detail: "Request origin is not allowed." }, { status: 403 });
@@ -28,7 +34,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   if (!base) return NextResponse.json({ detail: "Workspace service unavailable." }, { status: 503 });
   const headers = new Headers();
   if (token && !isLogin) headers.set("Authorization", `Bearer ${token}`);
-  for (const name of ["content-type", "content-length", "range"]) {
+  for (const name of ["content-type", "content-length", "range", "idempotency-key"]) {
     const value = request.headers.get(name);
     if (value) headers.set(name, value);
   }

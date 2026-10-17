@@ -1,5 +1,6 @@
 """Exercise the built non-root API image against private real SQL/object services."""
 import os
+import argparse
 from pathlib import Path
 import secrets
 import socket
@@ -14,6 +15,10 @@ from platform_api import create_app
 import psycopg
 import requests
 from fastapi.testclient import TestClient
+
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--durable-jobs',action='store_true')
+args=parser.parse_args()
 
 with services() as s:
     with psycopg.connect(s['owner']) as conn:
@@ -37,6 +42,7 @@ with services() as s:
         'AWS_DEFAULT_PROFILE':'doclens-nonexistent-default-profile',
         'AWS_CONFIG_FILE':'/nonexistent/aws/config',
         'AWS_SHARED_CREDENTIALS_FILE':'/nonexistent/aws/credentials',
+        'PLATFORM_DURABLE_JOBS_ENABLED':'1' if args.durable_jobs else '0',
         'PLATFORM_SYNTHETIC_HTTP':'1'}.items())+'\n')
     envfile.chmod(0o600)
     name='doclens-m1-api-'+secrets.token_hex(5)
@@ -62,6 +68,22 @@ with services() as s:
         bob=session.post(base+'/session',json={'email':'bob@synthetic.invalid','password':s['password']},timeout=10).json()['token']
         denied=session.get(base+f'/versions/{version_id}/original',headers={'Authorization':'Bearer '+bob,'Range':'bytes=0-9'},timeout=10)
         assert denied.status_code==404
+        if args.durable_jobs:
+            import uuid
+            key=str(uuid.uuid4());queued_pdf=pdf('Synthetic durable image admission fixture.')
+            meta=json.dumps({'title':'Queued image fixture','source':'Synthetic image test','jurisdiction':'Test','received_date':'2026-10-17','synthetic':True})
+            url=base+f'/workspaces/{fid("a-private")}/ingestions'
+            queued=session.post(url,headers={**auth,'Idempotency-Key':key},data={'metadata':meta},
+                                files={'file':('queued.pdf',queued_pdf,'application/pdf')},timeout=10)
+            assert queued.status_code==202,queued.status_code
+            job=queued.json();assert job['state']=='queued'
+            replay=session.post(url,headers={**auth,'Idempotency-Key':key},data={'metadata':meta},
+                                files={'file':('queued.pdf',queued_pdf,'application/pdf')},timeout=10)
+            assert replay.status_code==202 and replay.json()['job_id']==job['job_id']
+            assert session.get(base+'/jobs/'+job['job_id'],headers=auth,timeout=10).json()['state']=='queued'
+            assert session.get(base+'/jobs/'+job['job_id'],headers={'Authorization':'Bearer '+bob},timeout=10).status_code==404
+            assert session.get(base+'/versions/'+job['version_id']+'/original',headers=auth,timeout=10).status_code==404
+            print('PASS durable admission/status/replay and unpublished-version denial inside non-root Python 3.11 API image')
         with psycopg.connect(s['owner']) as conn: conn.execute('UPDATE platform.sessions SET revoked=true')
         assert session.get(base+f'/versions/{version_id}/original',headers=auth,timeout=10).status_code==401
         print('PASS non-root Python 3.11 API image: pip check, live identity/workspace RLS, retained original range, cross-firm denial, revocation')

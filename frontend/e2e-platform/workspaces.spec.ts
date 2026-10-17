@@ -86,3 +86,23 @@ test("streaming gateway preserves a 10 MiB PDF and rejects an oversized original
     expect(response.status()).toBe(status);
   }
 });
+
+
+test("opt-in durable admission forwards idempotency and protects queued status", async ({page})=>{
+  await login(page,"alice");
+  const workspace=(await (await page.request.get('/api/platform/workspaces')).json()).workspaces[0].id;
+  const key='browser-durable-'+Date.now();
+  const data={metadata:JSON.stringify({title:'Queued synthetic source',source:'Synthetic durable browser fixture',jurisdiction:'Test',received_date:'2026-10-17',synthetic:true}),
+    file:{name:'queued.pdf',mimeType:'application/pdf',buffer:readFileSync(join(fixtures,'fixture.pdf'))}};
+  const options={headers:{Origin:'http://127.0.0.1:3200','Idempotency-Key':key},multipart:data};
+  const first=await page.request.post(`/api/platform/workspaces/${workspace}/ingestions`,options);
+  expect(first.status()).toBe(202);
+  const job=await first.json();expect(job.state).toBe('queued');
+  const replay=await page.request.post(`/api/platform/workspaces/${workspace}/ingestions`,options);
+  expect(replay.status()).toBe(202);expect((await replay.json()).job_id).toBe(job.job_id);
+  expect((await (await page.request.get(`/api/platform/jobs/${job.job_id}`)).json()).state).toBe('queued');
+  expect((await page.request.get(`/api/platform/versions/${job.version_id}/original`)).status()).toBe(404);
+  await page.getByRole('button',{name:'Sign out',exact:true}).click();
+  await login(page,'bob');
+  expect((await page.request.get(`/api/platform/jobs/${job.job_id}`)).status()).toBe(404);
+});
