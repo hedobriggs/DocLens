@@ -2,7 +2,7 @@
 
 Repository: `hedobriggs/DocLens`. Review ref: `refs/heads/ui/main-compatible-usability`.
 Baseline: `31eb3455cd5dc02c47f343d62328d41c8a2c3458`.
-This is a new, single-commit UI port directly on that baseline. The earlier Mac review at `d0980c6c5ea07032cc5c060ff726b8042c9bef51` does not approve this integration. Its recovery branch is not merged or copied wholesale. Independent review is pending; nothing has been merged, deployed, migrated or installed on the Mac.
+This is a new UI port based directly on that baseline. The earlier Mac review at `d0980c6c5ea07032cc5c060ff726b8042c9bef51` does not approve this integration. Its recovery branch is not merged or copied wholesale. Independent review is pending; nothing has been merged, deployed, migrated or installed on the Mac.
 
 ## Scope and deliberate compatibility differences
 
@@ -83,7 +83,7 @@ These are the integrated main-based UI captures, not screenshots reused from the
 
 Six keyboard checks: Tab reaches Monitoring, Log out and Upload in order; Enter opens the file chooser; Enter expands the deduplicated source reference; Tab moves from question to enabled Send. The harness waits for React's click handler, font readiness and two animation frames before keyboard interaction, addressing the earlier recovery review's readiness concern. This uses React19 test instrumentation, not a new production hydration API. Both fresh-process repeats pass; the earlier flake's underlying cause is not claimed proven.
 
-[Primary JSON](../validation/main-ui/dashboard-results.json) and [cold-repeat JSON](../validation/main-ui/dashboard-cold-results.json) contain actual computed colors, samples and assertions. Text colors are converted to sRGB through Canvas; alpha backgrounds are composited through ancestors before applying WCAG luminance formulas. Visible text in dashboard plus Administration navigation is checked at4.5:1 (3:1 for large text), enabled textarea placeholders separately, solid focus outlines against surrounding background at3:1. Disabled controls are excluded. Fresh runs: 200 text/focus samples each, no failures; minimum text **6.78:1**, measured Upload outline **18.31:1** and citation outline **9.89:1**. These are sampled states, not full WCAG certification; opacity/hover states, arbitrary Markdown, nontext control boundaries and screen-reader announcements are not exhaustively audited.
+[Primary JSON](../validation/main-ui/dashboard-results.json) and [cold-repeat JSON](../validation/main-ui/dashboard-cold-results.json) contain actual computed colors, samples and assertions. Text colors are converted to sRGB through Canvas; alpha backgrounds are composited through ancestors before applying WCAG luminance formulas. Visible text in dashboard plus Administration navigation is checked at4.5:1 (3:1 for large text), enabled textarea placeholders separately, solid focus outlines against surrounding background at3:1. Disabled controls are excluded. Fresh runs: 200 text/focus samples each, no failures; minimum text **6.78:1**, measured Upload outline **15.61:1** in the primary run and **18.31:1** in the cold repeat, and citation outline **9.89:1** in both. The varying Upload measurement remains above3:1; font/frame readiness does not guarantee all hover/color transitions have settled. Treat exact focus ratios as sampled values, not deterministic constants. These are sampled states, not full WCAG certification; opacity/hover states, arbitrary Markdown, nontext control boundaries and screen-reader announcements are not exhaustively audited.
 
 ## Native coverage and outstanding boundaries
 
@@ -92,3 +92,5 @@ Six keyboard checks: Tab reaches Monitoring, Log out and Upload in order; Enter 
 Detailed progress, cancellation propagation and a legacy-chat PDF viewer require separate work; they are not supplied by this port. Platform backend browser acceptance was not rerun; the additional smoke verifies actual Next isolation routes only. The frontend recovery helper and32-page PDF discrepancy remain separate. No migration, original-file ownership inference or deletion is performed.
 
 This is a main-based code review artifact, **not a safe Mac installation instruction**. The preserved Mac application has different limits and behavior. Do not replace that checkout, overwrite local changes or run a deployment based only on this document. Await the independent review and a separate preservation-aware Mac update procedure.
+
+Evidence-only clarification: product code and test harnesses were validated at `cdbe3d008bd00363b07bda3f0251f140fb4d442a`; the subsequent documentation correction records the two distinct measured Upload focus ratios. It changes no product or test code. Review the full baseline-to-tip range.
