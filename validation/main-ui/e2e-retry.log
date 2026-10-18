@@ -1,0 +1,33 @@
+
+> frontend@0.1.0 test:e2e
+> playwright test
+
+[WebServer] (node:60190) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:60198) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 13 tests using 1 worker
+
+(node:60214) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/uploads.spec.ts:9:5 › monitoring requires admin and provides a link, not a popup (857ms)
+  ✓   2 e2e/uploads.spec.ts:25:7 › slow.pdf: real proxy status and UI resets (1.6s)
+  ✓   3 e2e/uploads.spec.ts:25:7 › timeout.pdf: real proxy status and UI resets (3.7s)
+  ✓   4 e2e/uploads.spec.ts:25:7 › bodytimeout.pdf: real proxy status and UI resets (3.6s)
+  ✓   5 e2e/uploads.spec.ts:25:7 › failure.pdf: real proxy status and UI resets (447ms)
+  ✓   6 e2e/uploads.spec.ts:25:7 › invalid.pdf: real proxy status and UI resets (466ms)
+  ✓   7 e2e/uploads.spec.ts:25:7 › disconnect.pdf: real proxy status and UI resets (468ms)
+  ✓   8 e2e/uploads.spec.ts:25:7 › schema.pdf: real proxy status and UI resets (398ms)
+  ✓   9 e2e/uploads.spec.ts:41:7 › UI clears uploading state: network (407ms)
+  ✓  10 e2e/uploads.spec.ts:41:7 › UI clears uploading state: non-json (438ms)
+  ✓  11 e2e/uploads.spec.ts:41:7 › UI clears uploading state: unauthorized (399ms)
+  ✓  12 e2e/uploads.spec.ts:41:7 › UI clears uploading state: oversize (440ms)
+  ✓  13 e2e/uploads.spec.ts:59:5 › 25 MiB request forwards and invalid requests have distinct status codes (411ms)
+
+  13 passed (15.2s)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

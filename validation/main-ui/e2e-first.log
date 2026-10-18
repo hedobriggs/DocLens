@@ -1,0 +1,151 @@
+
+> frontend@0.1.0 test:e2e
+> playwright test
+
+[WebServer] (node:58953) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:58961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 13 tests using 1 worker
+
+(node:58981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/uploads.spec.ts:9:5 › monitoring requires admin and provides a link, not a popup (932ms)
+  ✓   2 e2e/uploads.spec.ts:25:7 › slow.pdf: real proxy status and UI resets (1.6s)
+  ✓   3 e2e/uploads.spec.ts:25:7 › timeout.pdf: real proxy status and UI resets (3.6s)
+  ✓   4 e2e/uploads.spec.ts:25:7 › bodytimeout.pdf: real proxy status and UI resets (3.7s)
+  ✓   5 e2e/uploads.spec.ts:25:7 › failure.pdf: real proxy status and UI resets (449ms)
+  ✓   6 e2e/uploads.spec.ts:25:7 › invalid.pdf: real proxy status and UI resets (427ms)
+  ✓   7 e2e/uploads.spec.ts:25:7 › disconnect.pdf: real proxy status and UI resets (397ms)
+  ✓   8 e2e/uploads.spec.ts:25:7 › schema.pdf: real proxy status and UI resets (441ms)
+  ✘   9 e2e/uploads.spec.ts:41:7 › UI clears uploading state: network (457ms)
+(node:59477) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 e2e/uploads.spec.ts:41:7 › UI clears uploading state: non-json (524ms)
+(node:59610) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 e2e/uploads.spec.ts:41:7 › UI clears uploading state: unauthorized (480ms)
+(node:59745) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  12 e2e/uploads.spec.ts:41:7 › UI clears uploading state: oversize (600ms)
+(node:59904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 e2e/uploads.spec.ts:59:5 › 25 MiB request forwards and invalid requests have distinct status codes (419ms)
+
+
+  1) e2e/uploads.spec.ts:41:7 › UI clears uploading state: network ─────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="mt-2 text-xs leading-5 text-red-300">Failed to fetch</p> aka getByText('Failed to fetch')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      53 |     await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
+      54 |     expect(await page.locator('input[type=file]').inputValue()).toBe('');
+    > 55 |     await expect(page.getByRole('alert')).toBeVisible();
+         |                                           ^
+      56 |   });
+      57 | }
+      58 |
+        at /workspace/DocLens/frontend/e2e/uploads.spec.ts:55:43
+
+    Error Context: test-results/uploads-UI-clears-uploading-state-network/error-context.md
+
+  2) e2e/uploads.spec.ts:41:7 › UI clears uploading state: non-json ────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="mt-2 text-xs leading-5 text-red-300">Upload failed (HTTP 502). Check the server upload…</p> aka getByText('Upload failed (HTTP 502).')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      53 |     await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
+      54 |     expect(await page.locator('input[type=file]').inputValue()).toBe('');
+    > 55 |     await expect(page.getByRole('alert')).toBeVisible();
+         |                                           ^
+      56 |   });
+      57 | }
+      58 |
+        at /workspace/DocLens/frontend/e2e/uploads.spec.ts:55:43
+
+    Error Context: test-results/uploads-UI-clears-uploading-state-non-json/error-context.md
+
+  3) e2e/uploads.spec.ts:41:7 › UI clears uploading state: unauthorized ────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="mt-2 text-xs leading-5 text-red-300">Please sign in again.</p> aka getByText('Please sign in again.')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      53 |     await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
+      54 |     expect(await page.locator('input[type=file]').inputValue()).toBe('');
+    > 55 |     await expect(page.getByRole('alert')).toBeVisible();
+         |                                           ^
+      56 |   });
+      57 | }
+      58 |
+        at /workspace/DocLens/frontend/e2e/uploads.spec.ts:55:43
+
+    Error Context: test-results/uploads-UI-clears-uploading-state-unauthorized/error-context.md
+
+  4) e2e/uploads.spec.ts:41:7 › UI clears uploading state: oversize ────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="mt-2 text-xs leading-5 text-red-300">PDF files must be 50 MiB or smaller.</p> aka getByText('PDF files must be 50 MiB or')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      53 |     await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
+      54 |     expect(await page.locator('input[type=file]').inputValue()).toBe('');
+    > 55 |     await expect(page.getByRole('alert')).toBeVisible();
+         |                                           ^
+      56 |   });
+      57 | }
+      58 |
+        at /workspace/DocLens/frontend/e2e/uploads.spec.ts:55:43
+
+    Error Context: test-results/uploads-UI-clears-uploading-state-oversize/error-context.md
+
+  4 failed
+    e2e/uploads.spec.ts:41:7 › UI clears uploading state: network ──────────────────────────────────
+    e2e/uploads.spec.ts:41:7 › UI clears uploading state: non-json ─────────────────────────────────
+    e2e/uploads.spec.ts:41:7 › UI clears uploading state: unauthorized ─────────────────────────────
+    e2e/uploads.spec.ts:41:7 › UI clears uploading state: oversize ─────────────────────────────────
+  9 passed (19.1s)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

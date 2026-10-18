@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Dashboard controls and the retained administration link share a visible focus indicator. */
+.doclens-dashboard :is(button, textarea, summary, a):focus-visible,
+.doclens-dashboard-navigation a:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}

@@ -1,0 +1,3 @@
+Error: {"problem":"Platform landing redirect changed","status":307,"location":"/workspaces","expected":"http://127.0.0.1:39263/workspaces"}
+    at /workspace/DocLens/tests/main_ui_mode_smoke.cjs:11:148
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

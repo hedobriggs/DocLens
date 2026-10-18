@@ -52,7 +52,7 @@ for (const mode of ['network','non-json','unauthorized','oversize'] as const) {
     }
     await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
     expect(await page.locator('input[type=file]').inputValue()).toBe('');
-    await expect(page.locator('p.text-red-400')).toBeVisible();
+    await expect(page.locator('main').getByRole('alert')).toBeVisible();
   });
 }
 

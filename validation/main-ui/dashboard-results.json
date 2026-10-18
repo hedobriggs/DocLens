@@ -1,0 +1,2404 @@
+{
+  "mode": "after",
+  "viewports": [
+    "1440x900",
+    "1280x800"
+  ],
+  "screenshots": [
+    "after-empty.png",
+    "after-keyboard-focus.png",
+    "after-processing.png",
+    "after-interrupted-request.png",
+    "after-success.png",
+    "after-error.png",
+    "after-answer-citations.png",
+    "after-citation-expanded.png",
+    "after-answer-1280x800.png",
+    "after-answer-1440x900.png"
+  ],
+  "keyboard": [
+    "Tab reaches retained Monitoring link",
+    "Tab reaches Log out",
+    "Tab reaches Upload PDF",
+    "Enter opens file chooser after hydration",
+    "Enter expands deduplicated citation reference",
+    "Tab reaches Send question from question field"
+  ],
+  "focus": {
+    "style": "solid",
+    "width": "3px",
+    "color": "rgb(255, 255, 255)"
+  },
+  "contrast": [
+    {
+      "state": "empty",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "0",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "files",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "No documents uploaded yet.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Ask questions grounded in your documents.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "D",
+      "ratio": 6.983907018675381,
+      "minimum": 4.5,
+      "color": "lab(65.0361 -1.42065 -56.9802)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Ask your documents",
+      "ratio": 20.15701984292255,
+      "minimum": 3,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Upload a PDF, select it, and ask a question. DocLens will retrieve relevant information and generate",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "empty",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "0",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "files",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "No documents uploaded yet.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Ask questions grounded in your documents.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "D",
+      "ratio": 6.983907018675381,
+      "minimum": 4.5,
+      "color": "lab(65.0361 -1.42065 -56.9802)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Ask your documents",
+      "ratio": 20.15701984292255,
+      "minimum": 3,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Upload a PDF, select it, and ask a question. DocLens will retrieve relevant information and generate",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "keyboard-focus",
+      "text": "keyboard focus outline",
+      "ratio": 15.610400816960103,
+      "minimum": 3
+    },
+    {
+      "state": "processing",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "synthetic-contract.pdf",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Uploading and processing. Waiting for confirmation; detailed progress is not available.",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Cancellation is not supported by this uploader. Leaving this tab may not stop processing.",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "0",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "files",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "No documents uploaded yet.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Ask questions grounded in your documents.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "D",
+      "ratio": 6.983907018675381,
+      "minimum": 4.5,
+      "color": "lab(65.0361 -1.42065 -56.9802)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Ask your documents",
+      "ratio": 20.15701984292255,
+      "minimum": 3,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Upload a PDF, select it, and ask a question. DocLens will retrieve relevant information and generate",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "processing",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Synthetic upstream interruption; processing outcome unknown.",
+      "ratio": 10.502632017545666,
+      "minimum": 4.5,
+      "color": "lab(76.5514 36.422 15.5335)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "0",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "files",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "No documents uploaded yet.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Ask questions grounded in your documents.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "D",
+      "ratio": 6.983907018675381,
+      "minimum": 4.5,
+      "color": "lab(65.0361 -1.42065 -56.9802)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Ask your documents",
+      "ratio": 20.15701984292255,
+      "minimum": 3,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Upload a PDF, select it, and ask a question. DocLens will retrieve relevant information and generate",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "interrupted-request",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "success",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "success",
+      "text": "synthetic-contract.pdf is ready for questions.",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "1",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "file",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "synthetic-contract.pdf",
+      "ratio": 12.405418980701638,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Ready",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "success",
+      "text": "· 1 KiB",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Searching synthetic-contract.pdf",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "D",
+      "ratio": 6.983907018675381,
+      "minimum": 4.5,
+      "color": "lab(65.0361 -1.42065 -56.9802)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Ask your documents",
+      "ratio": 20.15701984292255,
+      "minimum": 3,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Upload a PDF, select it, and ask a question. DocLens will retrieve relevant information and generate",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "success",
+      "text": "textarea placeholder",
+      "ratio": 7.025796882052011,
+      "minimum": 4.5
+    },
+    {
+      "state": "error",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "error",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Synthetic upload rejection.",
+      "ratio": 10.502632017545666,
+      "minimum": 4.5,
+      "color": "lab(76.5514 36.422 15.5335)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "1",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "file",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "synthetic-contract.pdf",
+      "ratio": 12.405418980701638,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Ready",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "error",
+      "text": "· 1 KiB",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Searching synthetic-contract.pdf",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "D",
+      "ratio": 6.983907018675381,
+      "minimum": 4.5,
+      "color": "lab(65.0361 -1.42065 -56.9802)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Ask your documents",
+      "ratio": 20.15701984292255,
+      "minimum": 3,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Upload a PDF, select it, and ask a question. DocLens will retrieve relevant information and generate",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "error",
+      "text": "textarea placeholder",
+      "ratio": 7.025796882052011,
+      "minimum": 4.5
+    },
+    {
+      "state": "answer-citations",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "synthetic-contract.pdf is ready for questions.",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "1",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "file",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "synthetic-contract.pdf",
+      "ratio": 12.405418980701638,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Ready",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "· 1 KiB",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Searching synthetic-contract.pdf",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "What notice is required?",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "The agreement requires",
+      "ratio": 14.989548062509229,
+      "minimum": 4.5,
+      "color": "lab(91.7353 -0.998765 -4.76968)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "written notice",
+      "ratio": 18.47883697391179,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": ".",
+      "ratio": 14.989548062509229,
+      "minimum": 4.5,
+      "color": "lab(91.7353 -0.998765 -4.76968)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Sources",
+      "ratio": 7.025796882052011,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Show source reference:",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "synthetic-contract.pdf",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "·",
+      "ratio": 6.779314392063223,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Page",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "7",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "answer-citations",
+      "text": "textarea placeholder",
+      "ratio": 7.025796882052011,
+      "minimum": 4.5
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Monitoring",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "DocLens",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "by Hedobriggs",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Log out",
+      "ratio": 12.431161181835861,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "PDF uploads · up to",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "50",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "MiB",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "+ Upload PDF",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "synthetic-contract.pdf is ready for questions.",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Choose a document",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "1",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "file",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Files uploaded in this tab. Select one to set the chat’s search scope.",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "synthetic-contract.pdf",
+      "ratio": 12.405418980701638,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Ready",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "· 1 KiB",
+      "ratio": 7.0112480017165,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.022637447135717033,
+        0.07231064975009611,
+        0.18648212226066896
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Document Chat",
+      "ratio": 20.15701984292255,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Searching synthetic-contract.pdf",
+      "ratio": 7.66385500147017,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Search source: documents only",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "What notice is required?",
+      "ratio": 6.832214471392099,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0784313725490196,
+        0.2784313725490196,
+        0.9019607843137255
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "The agreement requires",
+      "ratio": 14.989548062509229,
+      "minimum": 4.5,
+      "color": "lab(91.7353 -0.998765 -4.76968)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "written notice",
+      "ratio": 18.47883697391179,
+      "minimum": 4.5,
+      "color": "rgb(255, 255, 255)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": ".",
+      "ratio": 14.989548062509229,
+      "minimum": 4.5,
+      "color": "lab(91.7353 -0.998765 -4.76968)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Sources",
+      "ratio": 7.025796882052011,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.0584236831987697,
+        0.07331026528258362,
+        0.14029988465974624
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Show source reference:",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "synthetic-contract.pdf",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "·",
+      "ratio": 6.779314392063223,
+      "minimum": 4.5,
+      "color": "lab(65.5349 -2.25151 -14.5072)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Page",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "7",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Check page",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "7",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "in your original copy of",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "synthetic-contract.pdf",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": ". Original-page viewing is not available in this chat.",
+      "ratio": 11.995045021208123,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.058823529411764705,
+        0.09019607843137255,
+        0.16862745098039217
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "Your questions and retrieved passages are sent to Google Gemini to generate answers. Verify answers ",
+      "ratio": 13.56011544268685,
+      "minimum": 4.5,
+      "color": "lab(84.7652 -1.94535 -7.93337)",
+      "background": [
+        0.00784313725490196,
+        0.023529411764705882,
+        0.09411764705882353
+      ]
+    },
+    {
+      "state": "citation-expanded",
+      "text": "textarea placeholder",
+      "ratio": 7.025796882052011,
+      "minimum": 4.5
+    },
+    {
+      "state": "citation-expanded",
+      "text": "keyboard focus outline",
+      "ratio": 9.88787347274251,
+      "minimum": 3
+    }
+  ],
+  "contrast_failures": [],
+  "upload_calls": 6,
+  "api": "browser-intercepted synthetic responses; real built dashboard, no backend storage or Gemini calls",
+  "console_errors": [],
+  "hydration_gate": "React click handler attached; fonts and two animation frames settled",
+  "cancellation": "Unsupported in main; disclosure checked, no cancel control or new abort semantics"
+}

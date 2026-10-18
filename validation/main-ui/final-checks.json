@@ -1,0 +1,64 @@
+[
+  {
+    "name": "frozen-build",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "frozen-lint",
+    "command": [
+      "npm",
+      "run",
+      "lint",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "frozen-e2e",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "frozen-dashboard",
+    "command": [
+      "node",
+      "tests/main_ui_review.cjs",
+      "after",
+      "/workspace/main-ui-integration/frozen-dashboard"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "frozen-dashboard-cold-retry",
+    "command": [
+      "node",
+      "tests/main_ui_review.cjs",
+      "after",
+      "/workspace/main-ui-integration/frozen-dashboard-cold-retry"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "frozen-platform-mode",
+    "command": [
+      "node",
+      "tests/main_ui_mode_smoke.cjs",
+      "/workspace/main-ui-integration/frozen-platform-mode"
+    ],
+    "exit_code": 0
+  }
+]

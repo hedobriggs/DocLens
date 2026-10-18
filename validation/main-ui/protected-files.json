@@ -1,0 +1,155 @@
+{
+  "baseline": "31eb3455cd5dc02c47f343d62328d41c8a2c3458",
+  "files": [
+    {
+      "path": "backend/.dockerignore",
+      "sha256": "c733842f22946f21294408b7bbdc89e1287b0dd3eeab9f815e019861cd547bfb",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/.gitignore",
+      "sha256": "372851a37b30216c915fff37d64aeccad565aff62a1c8a21105031d38ae32f6e",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/Dockerfile",
+      "sha256": "1006a6ba844397112a09bdb4fc78327a72d798eb0037a205b14e7c009b28b8f6",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/Dockerfile.platform",
+      "sha256": "abbdf07ff8e54be4fdbeb1f3a7179ded439e4c9a5f242139909091173aa85782",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/chunking.py",
+      "sha256": "874c16cbeecc7cb063a1ce1c8675b76c1ddc25e5d38d0cba1ab14b41c6058cb1",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/embeddings.py",
+      "sha256": "82292a4a72dc85683b8cc93c22a722745d32bc9f6b13722bc8aa400de16cfd83",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/generation.py",
+      "sha256": "1a2ab0cf7070c1d6348bd9b9ac9f27d03ab2b5cffb42b2d98ec0739dcbffb872",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/main.py",
+      "sha256": "cee9abc57d12f446daf31859779c837b90ac7583fd1e89375de233ba6f73c27c",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/observability.py",
+      "sha256": "d3bd19c4dabbb841cb0f58cff56cbeec239e963aacb3fa71be58d491f15d48ad",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform-requirements.txt",
+      "sha256": "bf8f6013a0dcfdcae52f30151e405f83f7cad061677ba39bf6d05f5139def48e",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_admin.py",
+      "sha256": "b80f5578c2e288b70fbc8f67c65b04e03b6592a40bcb5d0f907fccc66dee06c7",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_api.py",
+      "sha256": "aad08a5dec2e71b13bdadc34df65014dde6b084e6794e4629f7f26131dd9cd4f",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_core.py",
+      "sha256": "51ffe26804176b12b1460ab0269592a0fbe7a89c3ec74de0180f6a0b01d7a9f2",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_jobs.py",
+      "sha256": "823e23d8fe34a71daad329e6f03971fb6aafa7bfe172fb5a6e36b9f615b096be",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_migrations/001_foundation.sql",
+      "sha256": "5e6b0beaf0d5817ae9d66b987854973e165109097b77050c8bf5409ab4fc760e",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_migrations/002_durable_jobs.sql",
+      "sha256": "303b597400043200e6224e1f4d78e9ee34aa7e7a62b142410efc3249710989f8",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/platform_migrations/003_null_safe_admission.sql",
+      "sha256": "188cbf5fb29d269f3178db0499ce1b08ea376560c49d6ebfabec30b50ec0a374",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/requirements.txt",
+      "sha256": "21974023fddbfac272315d9871830e9661ce57c2b906913d1fae4529e762bebe",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/test_retrieval.py",
+      "sha256": "3b210a3d373ec75942568af7036a72bb192e15b54d0648730e52284af0a86f29",
+      "baseline_identical": true
+    },
+    {
+      "path": "backend/vector_store.py",
+      "sha256": "7e7ddff53403250ac0d5e063257f395db7af3e63e039188041ea7580432fa6e8",
+      "baseline_identical": true
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha256": "884cfc84258a9ba38c660873a863876031fa8c409faa005940ebe65a09622eb7",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/app/api/ask/route.ts",
+      "sha256": "e59aae7b0a69b53d0498f7fc8ab0085c79496372cb7ab3d7ed0b269f7bee80d1",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/app/api/auth/login/route.ts",
+      "sha256": "1b00b3f034ab4abbf3e3389cc284fe9e0cab590dbf64ac6f785251ed9773bf9d",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/app/api/auth/logout/route.ts",
+      "sha256": "3881f5aeb4b5e55bfe39aa432795b747ca53180b94bc3457ac37450172793f8e",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/app/api/documents/process/route.ts",
+      "sha256": "746a682d8322f6a9f34abf20bea5c8010ea3d0fbe5e5a666d2fc7286911930b6",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/app/api/platform/[...path]/route.ts",
+      "sha256": "bac29a9bcdc8531881f85531af7532e6c80de2b0b65356d484cde4f296555ee6",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/lib/auth.ts",
+      "sha256": "c99fd2e3409277b3c5227c5dbf59fcf9cb8e9d3b9d6a4dc5758599a65abad512",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "sha256": "9d3739e3869ee66c40440f3999804dfff034d35ec315c886601ef7fcf37c8f43",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/package.json",
+      "sha256": "ac0c8260f7a9de7712271b196b16ae1b4f0b3468b124efe76cf4130d427673ea",
+      "baseline_identical": true
+    },
+    {
+      "path": "frontend/proxy.ts",
+      "sha256": "d3f5d6b79d696a15203f589dee7c44e0134957016336e8e27ca1de927f96795e",
+      "baseline_identical": true
+    }
+  ]
+}
