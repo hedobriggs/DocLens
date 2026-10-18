@@ -1,0 +1,44 @@
+ExpectError: expect(locator).toBeDisabled() failed
+
+Locator:  getByRole('button', { name: '+ Upload PDF', exact: true })
+Expected: disabled
+Received: enabled
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeDisabled" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms
+  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })
+    14 × locator resolved to <button type="button" aria-describedby="upload-limits" class="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">+ Upload PDF</button>
+       - unexpected value "enabled"
+
+    at captureRawStack (/workspace/DocLens/frontend/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/workspace/DocLens/frontend/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toBeDisabled (/workspace/DocLens/frontend/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at /workspace/DocLens/tests/main_ui_keyboard.cjs:25:103 {
+  matcherResult: {
+    message: 'expect(locator).toBeDisabled() failed\n' +
+      '\n' +
+      "Locator:  getByRole('button', { name: '+ Upload PDF', exact: true })\n" +
+      'Expected: disabled\n' +
+      'Received: enabled\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeDisabled" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })\n" +
+      '    14 × locator resolved to <button type="button" aria-describedby="upload-limits" class="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">+ Upload PDF</button>\n' +
+      '       - unexpected value "enabled"\n',
+    pass: false,
+    actual: 'enabled',
+    name: 'toBeDisabled',
+    expected: 'disabled',
+    log: [
+      `  - Expect "toBeDisabled" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })",
+      '    14 × locator resolved to <button type="button" aria-describedby="upload-limits" class="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">+ Upload PDF</button>',
+      '       - unexpected value "enabled"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- button "+ Upload PDF"'
+  }
+}

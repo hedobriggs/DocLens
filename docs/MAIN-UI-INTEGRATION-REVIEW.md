@@ -1,5 +1,7 @@
 # Main-compatible dashboard usability — independent review
 
+Follow-up review: [filename wrapping and keyboard evidence](MAIN-UI-FOLLOWUP-REVIEW.md). The original measurements and readiness discussion below describe the earlier integration; the follow-up supersedes its keyboard-readiness method.
+
 Repository: `hedobriggs/DocLens`. Review ref: `refs/heads/ui/main-compatible-usability`.
 Baseline: `31eb3455cd5dc02c47f343d62328d41c8a2c3458`.
 This is a new UI port based directly on that baseline. The earlier Mac review at `d0980c6c5ea07032cc5c060ff726b8042c9bef51` does not approve this integration. Its recovery branch is not merged or copied wholesale. Independent review is pending; nothing has been merged, deployed, migrated or installed on the Mac.

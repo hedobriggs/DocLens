@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "target": "BODY",
+      "trusted": true,
+      "activation": true,
+      "focus": true
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "target": "A",
+      "trusted": true,
+      "activation": true,
+      "focus": true
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "target": "BUTTON",
+      "trusted": true,
+      "activation": true,
+      "focus": true
+    },
+    {
+      "type": "keydown",
+      "key": "Enter",
+      "target": "BUTTON",
+      "trusted": true,
+      "activation": true,
+      "focus": true
+    },
+    {
+      "type": "click",
+      "target": "BUTTON",
+      "trusted": true,
+      "activation": true,
+      "focus": true
+    },
+    {
+      "type": "click",
+      "target": "INPUT",
+      "trusted": false,
+      "activation": true,
+      "focus": true
+    }
+  ],
+  "focus": true,
+  "active": "+ Upload PDF"
+}

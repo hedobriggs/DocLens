@@ -1,0 +1,8 @@
+page.waitForEvent: Timeout 5000ms exceeded while waiting for event "filechooser"
+=========================== logs ===========================
+waiting for event "filechooser"
+============================================================
+    at /workspace/main-ui-followup/keyboard-late-listener.cjs:29:146 {
+  log: [],
+  name: 'TimeoutError'
+}

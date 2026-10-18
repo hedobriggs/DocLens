@@ -4,7 +4,7 @@ const {spawn}=require('node:child_process'),{createRequire}=require('node:module
 const root=path.resolve(__dirname,'..'),req=createRequire(path.join(root,'frontend/package.json'));
 const {chromium}=req('playwright'),{expect}=req('@playwright/test');
 const mode=process.argv[2]||'after',out=path.resolve(process.argv[3]||'/tmp/doclens-main-ui-review');
-fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser;
+fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser,reviewPage;
 (async()=>{
  const secret=crypto.randomBytes(32).toString('hex');const {SignJWT}=await import(req.resolve('jose'));
  const token=await new SignJWT({role:'admin'}).setProtectedHeader({alg:'HS256'}).setIssuer('doclens').setAudience('doclens-frontend').setIssuedAt().setExpirationTime('1h').sign(new TextEncoder().encode(secret));
@@ -12,14 +12,14 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser;
  const log=fs.openSync(path.join(out,mode+'-next.log'),'w');
  child=spawn('node',['node_modules/next/dist/bin/next','start','--hostname','127.0.0.1','--port',String(port)],{cwd:path.join(root,'frontend'),env:{...process.env,DOCLENS_SESSION_SECRET:secret,DOCLENS_PLATFORM_ENABLED:'0',NEXT_TELEMETRY_DISABLED:'1'},stdio:['ignore',log,log]});
  const origin='http://127.0.0.1:'+port;
- for(let i=0;i<150;i++){if(child.exitCode!==null)throw Error('Next exited');try{if((await fetch(origin)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
+ await expect.poll(async()=>{if(child.exitCode!==null)throw Error('Next exited');try{return (await fetch(origin)).status}catch{return 0}},{timeout:20000}).toBe(200);
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
  const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1});
  await context.addCookies([{name:'doclens_session',value:token,domain:'127.0.0.1',path:'/',httpOnly:true,secure:false,sameSite:'Lax'}]);
- const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- let behavior='success',calls=0,askBody,pending;
- await page.route('**/api/documents/process',async route=>{calls++;if(behavior==='hang'){pending=route;return;} if(behavior==='network')return route.abort(); if(behavior==='error')return route.fulfill({status:413,json:{detail:'Synthetic upload rejection.'}});return route.fulfill({json:{filename:'synthetic-contract.pdf',total_chunks:224,indexed:true}});});
- await page.route('**/api/ask',async route=>{askBody=route.request().postDataJSON();return route.fulfill({json:{answer:'The agreement requires **written notice**.',citations:[{document_name:'synthetic-contract.pdf',page_number:7,chunk_id:'p7-c1'},{document_name:'synthetic-contract.pdf',page_number:7,chunk_id:'p7-c2'}]}});});
+ const page=await context.newPage(),errors=[],chooserEvents=[];reviewPage=page;page.on('filechooser',()=>chooserEvents.push('filechooser'));page.on('pageerror',e=>errors.push(e.message));
+ let behavior='success',calls=0,askBody,pending,currentName='synthetic-contract.pdf';
+ await page.route('**/api/documents/process',async route=>{calls++;if(behavior==='hang'){pending=route;return;} if(behavior==='network')return route.abort(); if(behavior==='error')return route.fulfill({status:413,json:{detail:'Synthetic upload rejection.'}});return route.fulfill({json:{filename:currentName,total_chunks:224,indexed:true}});});
+ await page.route('**/api/ask',async route=>{askBody=route.request().postDataJSON();return route.fulfill({json:{answer:'The agreement requires **written notice**.',citations:[{document_name:currentName,page_number:7,chunk_id:'p7-c1'},{document_name:currentName,page_number:7,chunk_id:'p7-c2'}]}});});
  const shots=[];async function shot(state){const file=`${mode}-${state}.png`;await page.screenshot({path:path.join(out,'screenshots',file),fullPage:true});shots.push(file);}
  const contrast=[];
  async function measure(state){contrast.push(...await page.evaluate(state=>{
@@ -35,13 +35,13 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser;
   if(active&&active.matches(':focus-visible')){const style=getComputedStyle(active);if(style.outlineStyle==='solid')results.push({state,text:'keyboard focus outline',ratio:ratio(rgba(style.outlineColor),bg(active.parentElement)),minimum:3});}
   return results;
  },state));}
- await page.goto(origin+'/dashboard');await page.waitForFunction(()=>{const b=[...document.querySelectorAll('button')].find(x=>x.textContent.includes('Upload PDF'));return b&&Object.keys(b).some(k=>k.startsWith('__reactProps$')&&typeof b[k]?.onClick==='function')});await page.evaluate(async()=>{await document.fonts.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))});await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeVisible();await shot('empty');await measure('empty');
+ await page.goto(origin+'/dashboard');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await page.bringToFront();await expect.poll(()=>page.evaluate(()=>document.hasFocus())).toBe(true);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeVisible();await shot('empty');await measure('empty');
  const keyboard=[];
  await page.keyboard.press('Tab');await expect(page.getByRole('link',{name:'Monitoring',exact:true})).toBeFocused();keyboard.push('Tab reaches retained Monitoring link');
  await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Log out',exact:true})).toBeFocused();keyboard.push('Tab reaches Log out');
  await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeFocused();keyboard.push('Tab reaches Upload PDF');
  const focus=await page.evaluate(()=>{const s=getComputedStyle(document.activeElement);return {style:s.outlineStyle,width:s.outlineWidth,color:s.outlineColor}});
- await shot('keyboard-focus');await measure('keyboard-focus');const chooser=page.waitForEvent('filechooser');await page.keyboard.press('Enter');await (await chooser).setFiles([]);keyboard.push('Enter opens file chooser after hydration');
+ await shot('keyboard-focus');await measure('keyboard-focus');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeFocused();const chooser=page.waitForEvent('filechooser');await page.keyboard.press('Enter');await (await chooser).setFiles([]);keyboard.push('Enter opens file chooser after hydration');
  const input=page.locator('input[type=file]'),file={name:'synthetic-contract.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF controlled browser fixture')};
  behavior='hang';await input.setInputFiles(file);await expect(page.getByText('synthetic-contract.pdf',{exact:true})).toBeVisible();await expect(page.getByText(/Waiting for confirmation/)).toBeVisible();await expect(page.getByText(/Cancellation is not supported/)).toBeVisible();await expect(page.getByRole('button',{name:'Cancel upload',exact:true})).toHaveCount(0);await expect(page.getByRole('progressbar')).toHaveCount(0);await shot('processing');await measure('processing');
  await pending.fulfill({status:503,json:{detail:'Synthetic upstream interruption; processing outcome unknown.'}});await expect(page.getByText('Synthetic upstream interruption; processing outcome unknown.',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await shot('interrupted-request');await measure('interrupted-request');
@@ -58,6 +58,30 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser;
   for(const size of [{width:1280,height:800},{width:1440,height:900}]){await page.setViewportSize(size);const geometry=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,height:innerHeight,send:document.querySelector('button[aria-label="Send question"]').getBoundingClientRect().bottom}));if(geometry.width>geometry.viewport||geometry.send>geometry.height)throw Error('Viewport overflow: '+JSON.stringify(geometry));await shot(`answer-${size.width}x${size.height}`);}
   if(focus.style!=='solid'||parseFloat(focus.width)<3)throw Error('Missing visible focus ring');
  }
+ const clipping=[];
+ for(const size of [{width:1280,height:800},{width:1440,height:900}]){
+  await page.setViewportSize(size);
+  for(const [kind,name] of [['unbroken','Contract_'+ 'Evidence'.repeat(28)+'.pdf'],['spaced',('Annual agreement evidence and obligations ').repeat(5)+'.pdf']]){
+   currentName=name;behavior='success';await input.setInputFiles({...file,name});await expect(page.getByRole('status')).toHaveText(name+' is ready for questions.');await expect(text).toHaveAttribute('placeholder','Ask about the selected document...');
+   await text.fill('Check this long-name source');await page.getByRole('button',{name:'Send question'}).click();await expect(page.getByRole('button',{name:'Send question'})).toBeDisabled();await expect(text).toBeEnabled();
+   const details=page.locator('details').last();await details.locator('summary').click();
+   const targets=[['completion',page.getByRole('status')],['toolbar',page.getByText('Searching '+name,{exact:true})],['citation-summary',details.locator('summary')],['citation-body',details.locator('p')]];
+   for(const [label,locator] of targets){
+    await locator.scrollIntoViewIfNeeded();
+    const sample=await locator.evaluate(el=>{
+     const box=el.getBoundingClientRect(),range=document.createRange();range.selectNodeContents(el);
+     const rects=[...range.getClientRects()].filter(r=>r.width&&r.height).map(r=>({left:r.left,right:r.right,top:r.top,bottom:r.bottom}));
+     const problems=[];if(el.scrollWidth>el.clientWidth+1||el.scrollHeight>el.clientHeight+1)problems.push('element overflow');
+     for(const r of rects){if(r.left<box.left-1||r.right>box.right+1)problems.push('text exceeds element');if(r.left<0||r.right>innerWidth+1||r.top<0||r.bottom>innerHeight+1)problems.push('text outside viewport');
+      for(let parent=el.parentElement;parent;parent=parent.parentElement){const s=getComputedStyle(parent),p=parent.getBoundingClientRect();if(/auto|scroll|hidden|clip/.test(s.overflowX)&&(r.left<p.left-1||r.right>p.left+parent.clientWidth+1))problems.push('ancestor horizontal clip');if(/auto|scroll|hidden|clip/.test(s.overflowY)&&(r.top<p.top-1||r.bottom>p.top+parent.clientHeight+1))problems.push('ancestor vertical clip');}}
+     return {clientWidth:el.clientWidth,scrollWidth:el.scrollWidth,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,textRectangles:rects,problems:[...new Set(problems)]};
+    });clipping.push({viewport:size,kind,label,...sample});
+   }
+   await shot(`long-${kind}-${size.width}x${size.height}`);await measure(`long-${kind}-${size.width}x${size.height}`);
+  }
+ }
+ fs.writeFileSync(path.join(out,'clipping.json'),JSON.stringify(clipping,null,2)+'\n');
+ const clipped=clipping.filter(x=>x.problems.length);if(clipped.length)throw Error('Clipped filename content: '+JSON.stringify(clipped.map(x=>({viewport:x.viewport,kind:x.kind,label:x.label,problems:x.problems}))));
  const failures=contrast.filter(x=>x.ratio<x.minimum);if(mode==='after'&&failures.length)throw Error('Contrast failures: '+JSON.stringify(failures));if(errors.length)throw Error(errors.join('\n'));
- fs.writeFileSync(path.join(out,mode+'-results.json'),JSON.stringify({mode,viewports:mode==='after'?['1440x900','1280x800']:['1440x900'],screenshots:shots,keyboard,focus,contrast,contrast_failures:failures,upload_calls:calls,api:'browser-intercepted synthetic responses; real built dashboard, no backend storage or Gemini calls',console_errors:errors,hydration_gate:'React click handler attached; fonts and two animation frames settled',cancellation:'Unsupported in main; disclosure checked, no cancel control or new abort semantics'},null,2)+'\n');console.log(JSON.stringify({mode,screenshots:shots.length,contrast_measurements:contrast.length,contrast_failures:failures.length,keyboard}));
-})().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();if(child)child.kill('SIGTERM');});
+ fs.writeFileSync(path.join(out,mode+'-results.json'),JSON.stringify({mode,viewports:mode==='after'?['1440x900','1280x800']:['1440x900'],screenshots:shots,clipping,chooserEvents,keyboard,focus,contrast,contrast_failures:failures,upload_calls:calls,api:'browser-intercepted synthetic responses; real built dashboard, no backend storage or Gemini calls',console_errors:errors,hydration_gate:'Public Upload enabled state and document focus; no React private fields or frame/sleep delays',cancellation:'Unsupported in main; disclosure checked, no cancel control or new abort semantics'},null,2)+'\n');console.log(JSON.stringify({mode,screenshots:shots.length,contrast_measurements:contrast.length,contrast_failures:failures.length,keyboard}));
+})().catch(async e=>{if(reviewPage)fs.writeFileSync(path.join(out,'failure-state.json'),JSON.stringify(await reviewPage.evaluate(()=>({focus:document.hasFocus(),active:document.activeElement?.textContent,ready:!document.querySelector('button[aria-describedby="upload-limits"]')?.disabled})).catch(()=>({closed:true})),null,2));console.error(e);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();if(child)child.kill('SIGTERM');});

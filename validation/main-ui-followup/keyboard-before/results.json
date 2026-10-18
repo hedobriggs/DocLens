@@ -1,0 +1,23 @@
+{
+  "cases": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 0,
+      "controlledHydration": true,
+      "events": [],
+      "beforeHydration": {
+        "disabled": false
+      },
+      "error": "Error: expect(locator).toBeDisabled() failed\n\nLocator:  getByRole('button', { name: '+ Upload PDF', exact: true })\nExpected: disabled\nReceived: enabled\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeDisabled\" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })\n    14 × locator resolved to <button type=\"button\" aria-describedby=\"upload-limits\" class=\"w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50\">+ Upload PDF</button>\n       - unexpected value \"enabled\"\n",
+      "pass": false,
+      "domEvents": []
+    }
+  ],
+  "errors": [
+    "Error: expect(locator).toBeDisabled() failed\n\nLocator:  getByRole('button', { name: '+ Upload PDF', exact: true })\nExpected: disabled\nReceived: enabled\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeDisabled\" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })\n    14 × locator resolved to <button type=\"button\" aria-describedby=\"upload-limits\" class=\"w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50\">+ Upload PDF</button>\n       - unexpected value \"enabled\"\n"
+  ],
+  "method": "Hold hydration scripts; require disabled SSR Upload, release scripts, await enabled; trusted Tab/Enter after document focus. 20 new browser contexts, no retry or fixed sleeps."
+}

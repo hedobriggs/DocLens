@@ -1,0 +1,964 @@
+[
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "unbroken",
+    "label": "completion",
+    "clientWidth": 255,
+    "scrollWidth": 1697,
+    "clientHeight": 40,
+    "scrollHeight": 40,
+    "textRectangles": [
+      {
+        "left": 16,
+        "right": 1712.65625,
+        "top": 202,
+        "bottom": 218
+      },
+      {
+        "left": 16,
+        "right": 152.96875,
+        "top": 222,
+        "bottom": 238
+      }
+    ],
+    "problems": [
+      "element overflow",
+      "text exceeds element",
+      "text outside viewport",
+      "ancestor horizontal clip"
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "unbroken",
+    "label": "toolbar",
+    "clientWidth": 1454,
+    "scrollWidth": 1454,
+    "clientHeight": 32,
+    "scrollHeight": 32,
+    "textRectangles": [
+      {
+        "left": 0,
+        "right": 54.046875,
+        "top": 141,
+        "bottom": 155
+      },
+      {
+        "left": 0,
+        "right": 1454.28125,
+        "top": 157,
+        "bottom": 171
+      }
+    ],
+    "problems": [
+      "text outside viewport",
+      "ancestor horizontal clip"
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "unbroken",
+    "label": "citation-summary",
+    "clientWidth": 604,
+    "scrollWidth": 604,
+    "clientHeight": 80,
+    "scrollHeight": 80,
+    "textRectangles": [
+      {
+        "left": 74.703125,
+        "right": 201.4375,
+        "top": 550,
+        "bottom": 564
+      },
+      {
+        "left": 62,
+        "right": 665.046875,
+        "top": 570,
+        "bottom": 584
+      },
+      {
+        "left": 62,
+        "right": 663.0625,
+        "top": 590,
+        "bottom": 604
+      },
+      {
+        "left": 62,
+        "right": 312.171875,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 62,
+        "right": 665.046875,
+        "top": 570,
+        "bottom": 584
+      },
+      {
+        "left": 62,
+        "right": 663.0625,
+        "top": 590,
+        "bottom": 604
+      },
+      {
+        "left": 62,
+        "right": 312.171875,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 312.171875,
+        "right": 322.84375,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 312.171875,
+        "right": 322.84375,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 322.84375,
+        "right": 350.875,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 350.875,
+        "right": 354.21875,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 354.21875,
+        "right": 360.90625,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 322.84375,
+        "right": 350.875,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 350.875,
+        "right": 354.21875,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 354.21875,
+        "right": 360.90625,
+        "top": 610,
+        "bottom": 624
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "unbroken",
+    "label": "citation-body",
+    "clientWidth": 384,
+    "scrollWidth": 1458,
+    "clientHeight": 60,
+    "scrollHeight": 60,
+    "textRectangles": [
+      {
+        "left": 62,
+        "right": 129.390625,
+        "top": 612,
+        "bottom": 626
+      },
+      {
+        "left": 129.390625,
+        "right": 136.078125,
+        "top": 612,
+        "bottom": 626
+      },
+      {
+        "left": 136.078125,
+        "right": 259.484375,
+        "top": 612,
+        "bottom": 626
+      },
+      {
+        "left": 62,
+        "right": 1516.28125,
+        "top": 632,
+        "bottom": 646
+      },
+      {
+        "left": 1516.28125,
+        "right": 1519.625,
+        "top": 632,
+        "bottom": 646
+      },
+      {
+        "left": 62,
+        "right": 324.15625,
+        "top": 652,
+        "bottom": 666
+      }
+    ],
+    "problems": [
+      "element overflow",
+      "text exceeds element",
+      "text outside viewport",
+      "ancestor horizontal clip"
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "spaced",
+    "label": "completion",
+    "clientWidth": 255,
+    "scrollWidth": 255,
+    "clientHeight": 140,
+    "scrollHeight": 140,
+    "textRectangles": [
+      {
+        "left": 16,
+        "right": 217.59375,
+        "top": 202,
+        "bottom": 218
+      },
+      {
+        "left": 16,
+        "right": 260.40625,
+        "top": 222,
+        "bottom": 238
+      },
+      {
+        "left": 16,
+        "right": 227.71875,
+        "top": 242,
+        "bottom": 258
+      },
+      {
+        "left": 16,
+        "right": 216.828125,
+        "top": 262,
+        "bottom": 278
+      },
+      {
+        "left": 16,
+        "right": 240.9375,
+        "top": 282,
+        "bottom": 298
+      },
+      {
+        "left": 16,
+        "right": 217.59375,
+        "top": 302,
+        "bottom": 318
+      },
+      {
+        "left": 16,
+        "right": 251.03125,
+        "top": 322,
+        "bottom": 338
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "spaced",
+    "label": "toolbar",
+    "clientWidth": 768,
+    "scrollWidth": 768,
+    "clientHeight": 32,
+    "scrollHeight": 32,
+    "textRectangles": [
+      {
+        "left": 308,
+        "right": 1070.5625,
+        "top": 141,
+        "bottom": 155
+      },
+      {
+        "left": 308,
+        "right": 801.03125,
+        "top": 157,
+        "bottom": 171
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "spaced",
+    "label": "citation-summary",
+    "clientWidth": 604,
+    "scrollWidth": 604,
+    "clientHeight": 60,
+    "scrollHeight": 60,
+    "textRectangles": [
+      {
+        "left": 382.703125,
+        "right": 512.109375,
+        "top": 570,
+        "bottom": 584
+      },
+      {
+        "left": 512.109375,
+        "right": 921.078125,
+        "top": 570,
+        "bottom": 584
+      },
+      {
+        "left": 370,
+        "right": 939.765625,
+        "top": 590,
+        "bottom": 604
+      },
+      {
+        "left": 370,
+        "right": 586.15625,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 512.109375,
+        "right": 921.078125,
+        "top": 570,
+        "bottom": 584
+      },
+      {
+        "left": 370,
+        "right": 939.765625,
+        "top": 590,
+        "bottom": 604
+      },
+      {
+        "left": 370,
+        "right": 586.15625,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 586.15625,
+        "right": 596.828125,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 586.15625,
+        "right": 596.828125,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 596.828125,
+        "right": 624.859375,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 624.859375,
+        "right": 628.203125,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 628.203125,
+        "right": 634.890625,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 596.828125,
+        "right": 624.859375,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 624.859375,
+        "right": 628.203125,
+        "top": 610,
+        "bottom": 624
+      },
+      {
+        "left": 628.203125,
+        "right": 634.890625,
+        "top": 610,
+        "bottom": 624
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "kind": "spaced",
+    "label": "citation-body",
+    "clientWidth": 384,
+    "scrollWidth": 384,
+    "clientHeight": 100,
+    "scrollHeight": 100,
+    "textRectangles": [
+      {
+        "left": 370,
+        "right": 437.390625,
+        "top": 572,
+        "bottom": 586
+      },
+      {
+        "left": 437.390625,
+        "right": 444.078125,
+        "top": 572,
+        "bottom": 586
+      },
+      {
+        "left": 444.078125,
+        "right": 570.15625,
+        "top": 572,
+        "bottom": 586
+      },
+      {
+        "left": 570.15625,
+        "right": 742.953125,
+        "top": 572,
+        "bottom": 586
+      },
+      {
+        "left": 370,
+        "right": 703.59375,
+        "top": 592,
+        "bottom": 606
+      },
+      {
+        "left": 370,
+        "right": 738.28125,
+        "top": 612,
+        "bottom": 626
+      },
+      {
+        "left": 370,
+        "right": 686.90625,
+        "top": 632,
+        "bottom": 646
+      },
+      {
+        "left": 686.90625,
+        "right": 738.921875,
+        "top": 632,
+        "bottom": 646
+      },
+      {
+        "left": 370,
+        "right": 586.796875,
+        "top": 652,
+        "bottom": 666
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "unbroken",
+    "label": "completion",
+    "clientWidth": 255,
+    "scrollWidth": 1697,
+    "clientHeight": 40,
+    "scrollHeight": 40,
+    "textRectangles": [
+      {
+        "left": 16,
+        "right": 1712.65625,
+        "top": 202,
+        "bottom": 218
+      },
+      {
+        "left": 16,
+        "right": 152.96875,
+        "top": 222,
+        "bottom": 238
+      }
+    ],
+    "problems": [
+      "element overflow",
+      "text exceeds element",
+      "text outside viewport",
+      "ancestor horizontal clip"
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "unbroken",
+    "label": "toolbar",
+    "clientWidth": 1454,
+    "scrollWidth": 1454,
+    "clientHeight": 32,
+    "scrollHeight": 32,
+    "textRectangles": [
+      {
+        "left": 0,
+        "right": 54.046875,
+        "top": 141,
+        "bottom": 155
+      },
+      {
+        "left": 0,
+        "right": 1454.28125,
+        "top": 157,
+        "bottom": 171
+      }
+    ],
+    "problems": [
+      "text outside viewport",
+      "ancestor horizontal clip"
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "unbroken",
+    "label": "citation-summary",
+    "clientWidth": 604,
+    "scrollWidth": 604,
+    "clientHeight": 80,
+    "scrollHeight": 80,
+    "textRectangles": [
+      {
+        "left": 154.703125,
+        "right": 281.4375,
+        "top": 650,
+        "bottom": 664
+      },
+      {
+        "left": 142,
+        "right": 745.046875,
+        "top": 670,
+        "bottom": 684
+      },
+      {
+        "left": 142,
+        "right": 743.0625,
+        "top": 690,
+        "bottom": 704
+      },
+      {
+        "left": 142,
+        "right": 392.171875,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 142,
+        "right": 745.046875,
+        "top": 670,
+        "bottom": 684
+      },
+      {
+        "left": 142,
+        "right": 743.0625,
+        "top": 690,
+        "bottom": 704
+      },
+      {
+        "left": 142,
+        "right": 392.171875,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 392.171875,
+        "right": 402.84375,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 392.171875,
+        "right": 402.84375,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 402.84375,
+        "right": 430.875,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 430.875,
+        "right": 434.21875,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 434.21875,
+        "right": 440.90625,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 402.84375,
+        "right": 430.875,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 430.875,
+        "right": 434.21875,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 434.21875,
+        "right": 440.90625,
+        "top": 710,
+        "bottom": 724
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "unbroken",
+    "label": "citation-body",
+    "clientWidth": 384,
+    "scrollWidth": 1458,
+    "clientHeight": 60,
+    "scrollHeight": 60,
+    "textRectangles": [
+      {
+        "left": 142,
+        "right": 209.390625,
+        "top": 712,
+        "bottom": 726
+      },
+      {
+        "left": 209.390625,
+        "right": 216.078125,
+        "top": 712,
+        "bottom": 726
+      },
+      {
+        "left": 216.078125,
+        "right": 339.484375,
+        "top": 712,
+        "bottom": 726
+      },
+      {
+        "left": 142,
+        "right": 1596.28125,
+        "top": 732,
+        "bottom": 746
+      },
+      {
+        "left": 1596.28125,
+        "right": 1599.625,
+        "top": 732,
+        "bottom": 746
+      },
+      {
+        "left": 142,
+        "right": 404.15625,
+        "top": 752,
+        "bottom": 766
+      }
+    ],
+    "problems": [
+      "element overflow",
+      "text exceeds element",
+      "text outside viewport",
+      "ancestor horizontal clip"
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "spaced",
+    "label": "completion",
+    "clientWidth": 255,
+    "scrollWidth": 255,
+    "clientHeight": 140,
+    "scrollHeight": 140,
+    "textRectangles": [
+      {
+        "left": 16,
+        "right": 217.59375,
+        "top": 202,
+        "bottom": 218
+      },
+      {
+        "left": 16,
+        "right": 260.40625,
+        "top": 222,
+        "bottom": 238
+      },
+      {
+        "left": 16,
+        "right": 227.71875,
+        "top": 242,
+        "bottom": 258
+      },
+      {
+        "left": 16,
+        "right": 216.828125,
+        "top": 262,
+        "bottom": 278
+      },
+      {
+        "left": 16,
+        "right": 240.9375,
+        "top": 282,
+        "bottom": 298
+      },
+      {
+        "left": 16,
+        "right": 217.59375,
+        "top": 302,
+        "bottom": 318
+      },
+      {
+        "left": 16,
+        "right": 251.03125,
+        "top": 322,
+        "bottom": 338
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "spaced",
+    "label": "toolbar",
+    "clientWidth": 928,
+    "scrollWidth": 928,
+    "clientHeight": 32,
+    "scrollHeight": 32,
+    "textRectangles": [
+      {
+        "left": 308,
+        "right": 1222.671875,
+        "top": 141,
+        "bottom": 155
+      },
+      {
+        "left": 308,
+        "right": 648.265625,
+        "top": 157,
+        "bottom": 171
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "spaced",
+    "label": "citation-summary",
+    "clientWidth": 604,
+    "scrollWidth": 604,
+    "clientHeight": 60,
+    "scrollHeight": 60,
+    "textRectangles": [
+      {
+        "left": 462.703125,
+        "right": 592.109375,
+        "top": 670,
+        "bottom": 684
+      },
+      {
+        "left": 592.109375,
+        "right": 1001.078125,
+        "top": 670,
+        "bottom": 684
+      },
+      {
+        "left": 450,
+        "right": 1019.765625,
+        "top": 690,
+        "bottom": 704
+      },
+      {
+        "left": 450,
+        "right": 666.15625,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 592.109375,
+        "right": 1001.078125,
+        "top": 670,
+        "bottom": 684
+      },
+      {
+        "left": 450,
+        "right": 1019.765625,
+        "top": 690,
+        "bottom": 704
+      },
+      {
+        "left": 450,
+        "right": 666.15625,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 666.15625,
+        "right": 676.828125,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 666.15625,
+        "right": 676.828125,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 676.828125,
+        "right": 704.859375,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 704.859375,
+        "right": 708.203125,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 708.203125,
+        "right": 714.890625,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 676.828125,
+        "right": 704.859375,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 704.859375,
+        "right": 708.203125,
+        "top": 710,
+        "bottom": 724
+      },
+      {
+        "left": 708.203125,
+        "right": 714.890625,
+        "top": 710,
+        "bottom": 724
+      }
+    ],
+    "problems": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "kind": "spaced",
+    "label": "citation-body",
+    "clientWidth": 384,
+    "scrollWidth": 384,
+    "clientHeight": 100,
+    "scrollHeight": 100,
+    "textRectangles": [
+      {
+        "left": 450,
+        "right": 517.390625,
+        "top": 672,
+        "bottom": 686
+      },
+      {
+        "left": 517.390625,
+        "right": 524.078125,
+        "top": 672,
+        "bottom": 686
+      },
+      {
+        "left": 524.078125,
+        "right": 650.15625,
+        "top": 672,
+        "bottom": 686
+      },
+      {
+        "left": 650.15625,
+        "right": 822.953125,
+        "top": 672,
+        "bottom": 686
+      },
+      {
+        "left": 450,
+        "right": 783.59375,
+        "top": 692,
+        "bottom": 706
+      },
+      {
+        "left": 450,
+        "right": 818.28125,
+        "top": 712,
+        "bottom": 726
+      },
+      {
+        "left": 450,
+        "right": 766.90625,
+        "top": 732,
+        "bottom": 746
+      },
+      {
+        "left": 766.90625,
+        "right": 818.921875,
+        "top": 732,
+        "bottom": 746
+      },
+      {
+        "left": 450,
+        "right": 666.796875,
+        "top": 752,
+        "bottom": 766
+      }
+    ],
+    "problems": []
+  }
+]

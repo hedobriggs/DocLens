@@ -1,0 +1,230 @@
+{
+  "cases": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 0,
+      "controlledHydration": true,
+      "events": [],
+      "beforeHydration": {
+        "disabled": true
+      },
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "MonitoringDocLensby HedobriggsLog outPDF uploads ·",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "A",
+          "text": "Monitoring",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "A",
+          "text": "Monitoring",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "A",
+          "text": "Monitoring",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 1,
+      "controlledHydration": false,
+      "events": [],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "error": "TimeoutError: page.waitForEvent: Timeout 5000ms exceeded while waiting for event \"filechooser\"\n=========================== logs ===========================\nwaiting for event \"filechooser\"\n============================================================",
+      "pass": false,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "MonitoringDocLensby HedobriggsLog outPDF uploads ·",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "A",
+          "text": "Monitoring",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "A",
+          "text": "Monitoring",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "A",
+          "text": "Monitoring",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    }
+  ],
+  "errors": [
+    "TimeoutError: page.waitForEvent: Timeout 5000ms exceeded while waiting for event \"filechooser\"\n=========================== logs ===========================\nwaiting for event \"filechooser\"\n============================================================"
+  ],
+  "method": "Hold hydration scripts; require disabled SSR Upload, release scripts, await enabled; trusted Tab/Enter after document focus. 20 new browser contexts, no retry or fixed sleeps."
+}

@@ -1,0 +1,8 @@
+page.waitForEvent: Timeout 30000ms exceeded while waiting for event "filechooser"
+=========================== logs ===========================
+waiting for event "filechooser"
+============================================================
+    at /workspace/DocLens/tests/mac_ui_review.cjs:40:300 {
+  log: [],
+  name: 'TimeoutError'
+}

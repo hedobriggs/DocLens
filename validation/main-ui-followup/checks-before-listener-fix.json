@@ -1,0 +1,45 @@
+[
+  {
+    "name": "build-final",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "regressions",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "dashboard",
+    "command": [
+      "node",
+      "tests/main_ui_review.cjs",
+      "after",
+      "/workspace/main-ui-followup/dashboard"
+    ],
+    "exit_code": 1
+  }
+]
