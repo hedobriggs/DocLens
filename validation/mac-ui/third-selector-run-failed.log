@@ -1,0 +1,40 @@
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByText(/32 MiB/)
+Expected: visible
+Error: strict mode violation: getByText(/32 MiB/) resolved to 2 elements:
+    1) <p id="upload-limits" class="mb-2 text-xs leading-5 text-slate-300">Text-based PDFs · up to 32 MiB · 300 pages</p> aka getByText('Text-based PDFs · up to 32')
+    2) <p role="alert" class="mt-2 text-xs leading-5 text-red-300">PDF must contain 1 byte to 32 MiB.</p> aka getByText('PDF must contain 1 byte to 32')
+
+Call log:
+  - Expect "toBeVisible" getByText(/32 MiB/) with timeout 5000ms
+  - waiting for getByText(/32 MiB/)
+
+    at captureRawStack (/workspace/DocLens/frontend/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/workspace/DocLens/frontend/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toBeVisible (/workspace/DocLens/frontend/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at /workspace/DocLens/tests/mac_upload_browser.cjs:78:42 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      'Locator: getByText(/32 MiB/)\n' +
+      'Expected: visible\n' +
+      'Error: strict mode violation: getByText(/32 MiB/) resolved to 2 elements:\n' +
+      `    1) <p id="upload-limits" class="mb-2 text-xs leading-5 text-slate-300">Text-based PDFs · up to 32 MiB · 300 pages</p> aka getByText('Text-based PDFs · up to 32')\n` +
+      `    2) <p role="alert" class="mt-2 text-xs leading-5 text-red-300">PDF must contain 1 byte to 32 MiB.</p> aka getByText('PDF must contain 1 byte to 32')\n` +
+      '\n' +
+      'Call log:\n' +
+      '  - Expect "toBeVisible" getByText(/32 MiB/) with timeout 5000ms\n' +
+      '  - waiting for getByText(/32 MiB/)\n',
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      '  - Expect "toBeVisible" getByText(/32 MiB/) with timeout 5000ms',
+      '  - waiting for getByText(/32 MiB/)'
+    ],
+    timeout: undefined,
+    ariaSnapshot: undefined
+  }
+}

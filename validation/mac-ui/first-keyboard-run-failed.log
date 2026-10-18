@@ -1,0 +1,44 @@
+ExpectError: expect(locator).toBeFocused() failed
+
+Locator:  getByRole('button', { name: '+ Upload PDF', exact: true })
+Expected: focused
+Received: inactive
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeFocused" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms
+  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })
+    14 × locator resolved to <button type="button" aria-describedby="upload-limits" class="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">+ Upload PDF</button>
+       - unexpected value "inactive"
+
+    at captureRawStack (/workspace/DocLens/frontend/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/workspace/DocLens/frontend/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toBeFocused (/workspace/DocLens/frontend/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at /workspace/DocLens/tests/mac_ui_review.cjs:37:276 {
+  matcherResult: {
+    message: 'expect(locator).toBeFocused() failed\n' +
+      '\n' +
+      "Locator:  getByRole('button', { name: '+ Upload PDF', exact: true })\n" +
+      'Expected: focused\n' +
+      'Received: inactive\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeFocused" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })\n" +
+      '    14 × locator resolved to <button type="button" aria-describedby="upload-limits" class="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">+ Upload PDF</button>\n' +
+      '       - unexpected value "inactive"\n',
+    pass: false,
+    actual: 'inactive',
+    name: 'toBeFocused',
+    expected: 'focused',
+    log: [
+      `  - Expect "toBeFocused" getByRole('button', { name: '+ Upload PDF', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('button', { name: '+ Upload PDF', exact: true })",
+      '    14 × locator resolved to <button type="button" aria-describedby="upload-limits" class="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">+ Upload PDF</button>',
+      '       - unexpected value "inactive"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- button "+ Upload PDF"'
+  }
+}

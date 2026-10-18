@@ -24,3 +24,9 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Keep keyboard focus visible on every dashboard control, including citations. */
+.doclens-dashboard :is(button, textarea, select, summary, a):focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}

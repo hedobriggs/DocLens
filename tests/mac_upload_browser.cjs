@@ -6,6 +6,7 @@ const root=path.resolve(__dirname,'..');const frontRequire=createRequire(path.jo
 const {chromium}=frontRequire('playwright');const {expect}=frontRequire('@playwright/test');
 const mode=process.argv[2]||'fixed';const frontend=path.resolve(process.argv[3]||path.join(root,'frontend'));
 const out=path.resolve(process.argv[4]||'/tmp/doclens-browser-evidence');fs.mkdirSync(out,{recursive:true});
+const readyLabel=mode==='baseline'?'Ready · 3 chunks':'Ready · 1 KiB';
 const results={mode};const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let behavior='success',closed=false;let child,browser;const intervals=new Set();
 const server=http.createServer((req,res)=>{
@@ -59,7 +60,7 @@ async function waitReady(origin){for(let i=0;i<200;i++){if(child.exitCode!==null
   await route.fulfill({status:200,json:{filename:'existing.pdf',total_chunks:3,indexed:true}});
  });
  const input=page.locator('input[type=file]');const file={name:'existing.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF synthetic UI fixture; real PDF parsing is tested separately')};
- await input.setInputFiles(file);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await expect(page.getByText('Ready · 3 chunks',{exact:true})).toBeVisible();
+ await input.setInputFiles(file);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await expect(page.getByText(readyLabel,{exact:true})).toBeVisible();
  if(mode==='baseline'){
   ui='hang';await input.setInputFiles(file);await expect(page.getByRole('button',{name:'Processing...',exact:true})).toBeDisabled();
   await page.clock.fastForward(11*60*1000);await expect(page.getByRole('button',{name:'Processing...',exact:true})).toBeDisabled();
@@ -68,14 +69,14 @@ async function waitReady(origin){for(let i=0;i<200;i++){if(child.exitCode!==null
   const cases=[];
   for(const name of ['401','413','429','503','504','network','invalidjson','shape']){
    ui=name;await input.setInputFiles(file);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
-   await expect(page.getByText('Ready · 3 chunks',{exact:true})).toBeVisible();if(await input.inputValue()!=='')throw new Error('Input not reset');cases.push(name);
+   await expect(page.getByText(readyLabel,{exact:true})).toBeVisible();if(await input.inputValue()!=='')throw new Error('Input not reset');cases.push(name);
   }
   ui='hang';await input.setInputFiles(file);await expect(page.getByRole('button',{name:'Processing...',exact:true})).toBeDisabled();
   await page.getByRole('button',{name:'Cancel upload',exact:true}).click();await expect(page.getByText(/Upload cancelled/)).toBeVisible();await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();cases.push('cancel');
   await input.setInputFiles(file);await expect(page.getByRole('button',{name:'Processing...',exact:true})).toBeDisabled();await page.clock.fastForward(135001);
   await expect(page.getByText(/Upload timed out/)).toBeVisible();await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();cases.push('135-second browser deadline, virtual clock');
   const previous=calls;await input.setInputFiles({name:'too-large.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(32*1024*1024+1)});
-  await expect(page.getByText(/32 MiB/)).toBeVisible();if(calls!==previous)throw new Error('Oversize file was transmitted');cases.push('client size limit');
+  await expect(page.getByText('PDF must contain 1 byte to 32 MiB.',{exact:true})).toBeVisible();if(calls!==previous)throw new Error('Oversize file was transmitted');cases.push('client size limit');
   await page.evaluate(()=>{window.savedFormData=window.FormData;window.FormData=class{constructor(){throw new Error('synthetic FormData failure')}};});
   await input.setInputFiles(file);await expect(page.getByText('synthetic FormData failure',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
   await page.evaluate(()=>{window.FormData=window.savedFormData;});cases.push('synchronous FormData failure');results.ui_recovery_cases=cases;
