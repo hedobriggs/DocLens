@@ -1,0 +1,3 @@
+PASS: synthetic-old.pdf one-page exact synthetic text and hash; PyMuPDF 1.26.5
+PASS: synthetic-new.pdf one-page exact synthetic text and hash; PyMuPDF 1.26.5
+Not ingestion, model, datastore, Mac or migration validation.

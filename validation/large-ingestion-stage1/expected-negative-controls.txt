@@ -1,0 +1,38 @@
+EXPECTED NEGATIVE CONTROL: corrupt-original
+test_original_bytes_hashes_sizes_and_pdf_offsets (test_stage1_contract.PreservationExamples.test_original_bytes_hashes_sizes_and_pdf_offsets) ... FAIL
+
+======================================================================
+FAIL: test_original_bytes_hashes_sizes_and_pdf_offsets (test_stage1_contract.PreservationExamples.test_original_bytes_hashes_sizes_and_pdf_offsets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/large_ingestion/test_stage1_contract.py", line 30, in test_original_bytes_hashes_sizes_and_pdf_offsets
+    self.assertEqual(hashlib.sha256(data).hexdigest(),original['sha256'])
+AssertionError: '6bfd17a8ded01bdd0b1560534c48dca16204005eb590d1a74dd43788772ebf73' != 'e19ab6f4bfccbfe3a9a095c888ac3c78c96c3de832a9d9e5001561136b0bbc72'
+- 6bfd17a8ded01bdd0b1560534c48dca16204005eb590d1a74dd43788772ebf73
++ e19ab6f4bfccbfe3a9a095c888ac3c78c96c3de832a9d9e5001561136b0bbc72
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+PASS: intentionally damaged synthetic copy rejected; repository fixture untouched
+EXPECTED NEGATIVE CONTROL: retarget-historical-citation
+test_graph_references_and_exact_excerpt_identity (test_stage1_contract.PreservationExamples.test_graph_references_and_exact_excerpt_identity) ... FAIL
+
+======================================================================
+FAIL: test_graph_references_and_exact_excerpt_identity (test_stage1_contract.PreservationExamples.test_graph_references_and_exact_excerpt_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/large_ingestion/test_stage1_contract.py", line 56, in test_graph_references_and_exact_excerpt_identity
+    self.assertEqual(passage['version_id'],citation['version_id'])
+AssertionError: 'b5697f4d-5a00-5241-a398-07fd07901c01' != 'a43bca5e-3fc1-5975-829f-719ff54fef1d'
+- b5697f4d-5a00-5241-a398-07fd07901c01
++ a43bca5e-3fc1-5975-829f-719ff54fef1d
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)
+PASS: intentionally damaged synthetic copy rejected; repository fixture untouched

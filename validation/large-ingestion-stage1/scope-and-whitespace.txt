@@ -1,0 +1,21 @@
+PASS: all staged changes are additions under the three Stage 1 docs/tests/evidence directories.
+PASS: 133 baseline tracked files are byte-identical (normal suite).
+PASS: 11 fixture/oracle checks; two expected negative controls caught in temporary copies; subsequent normal suite passes.
+PASS: final staged whitespace check; PDF-only binary attributes preserve valid PDF bytes.
+LIMIT: fixture/PDF/source checks only, not runtime/Mac/migration validation.
+No service, schema, API, limits, data or deployment changes.
+A	docs/large-ingestion/REVIEW.md
+A	docs/large-ingestion/STAGE-1-CONTRACT.md
+A	docs/large-ingestion/VALIDATION.md
+A	tests/large_ingestion/fixtures/.gitattributes
+A	tests/large_ingestion/fixtures/README.md
+A	tests/large_ingestion/fixtures/preservation.json
+A	tests/large_ingestion/fixtures/synthetic-new.pdf
+A	tests/large_ingestion/fixtures/synthetic-old.pdf
+A	tests/large_ingestion/reproduce_negative.py
+A	tests/large_ingestion/test_stage1_contract.py
+A	validation/large-ingestion-stage1/contract-tests.txt
+A	validation/large-ingestion-stage1/environment-and-fixtures.json
+A	validation/large-ingestion-stage1/expected-negative-controls.txt
+A	validation/large-ingestion-stage1/first-whitespace-failure.json
+A	validation/large-ingestion-stage1/pdf-parser.txt

@@ -1,0 +1,14 @@
+{
+  "baseline": "31eb3455cd5dc02c47f343d62328d41c8a2c3458",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "protected_baseline_files": 133,
+  "fixture_sha256": {
+    ".gitattributes": "be53ec565f9b5b6e4c61343a3f29bb73fd11cf7e7297fed2a7e938ded3240102",
+    "README.md": "540f41acb3d01454bede692e20be61adf922119e26d783571602d5501402a663",
+    "preservation.json": "b9bfab3a10fb0d365eb8eb76eca7fd11a171d9c534efe5aaf499db3c8bcca4bb",
+    "synthetic-new.pdf": "05c1d27f1798aac671a778942fae5368098310e1a2ef836d8935e96bb3412e66",
+    "synthetic-old.pdf": "e19ab6f4bfccbfe3a9a095c888ac3c78c96c3de832a9d9e5001561136b0bbc72"
+  },
+  "scope": "contract and synthetic examples only; no runtime implementation or actual Mac data"
+}

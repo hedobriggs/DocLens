@@ -1,0 +1,7 @@
+{
+  "command": "git diff --cached --check",
+  "exit_code": 2,
+  "stdout": "tests/large_ingestion/fixtures/synthetic-new.pdf:22: trailing whitespace.\n+0000000000 65535 f \ntests/large_ingestion/fixtures/synthetic-new.pdf:23: trailing whitespace.\n+0000000009 00000 n \ntests/large_ingestion/fixtures/synthetic-new.pdf:24: trailing whitespace.\n+0000000058 00000 n \ntests/large_ingestion/fixtures/synthetic-new.pdf:25: trailing whitespace.\n+0000000115 00000 n \ntests/large_ingestion/fixtures/synthetic-new.pdf:26: trailing whitespace.\n+0000000241 00000 n \ntests/large_ingestion/fixtures/synthetic-new.pdf:27: trailing whitespace.\n+0000000311 00000 n \ntests/large_ingestion/fixtures/synthetic-old.pdf:22: trailing whitespace.\n+0000000000 65535 f \ntests/large_ingestion/fixtures/synthetic-old.pdf:23: trailing whitespace.\n+0000000009 00000 n \ntests/large_ingestion/fixtures/synthetic-old.pdf:24: trailing whitespace.\n+0000000058 00000 n \ntests/large_ingestion/fixtures/synthetic-old.pdf:25: trailing whitespace.\n+0000000115 00000 n \ntests/large_ingestion/fixtures/synthetic-old.pdf:26: trailing whitespace.\n+0000000241 00000 n \ntests/large_ingestion/fixtures/synthetic-old.pdf:27: trailing whitespace.\n+0000000311 00000 n \n",
+  "stderr": "",
+  "diagnosis": "Valid fixed-width PDF xref entries interpreted as source text; fixture-local attributes now mark PDFs binary. Text evidence remains checked."
+}
