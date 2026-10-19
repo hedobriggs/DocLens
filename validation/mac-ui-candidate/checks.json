@@ -15,7 +15,8 @@
     "candidate three-container synthetic PDF/authentication/browser/restart/storage test",
     "curated context reproduction and image source hashes",
     "26 protected files unchanged",
-    "original local container IDs and volume names unchanged after final fixture teardown"
+    "original local container IDs and volume names unchanged after final fixture teardown",
+    "Final baseline-to-head whitespace check after evidence normalization"
   ],
   "failed_or_interrupted": [
     "temporary interpreter missing; rerun with persistent backend venv passed",
@@ -23,7 +24,8 @@
     "npm11 initial container build failed Google-font fetch; combined system CA trust retry passed",
     "initial internal Docker network suppressed published ports; minimal reproduction confirms, corrected isolated bridge",
     "initial synthetic Qdrant named volume hit Docker-root WAL free-space refusal; new private temp storage used",
-    "interrupted recovery readiness wait after ephemeral ports changed; helper re-discovers ports, two full later runs passed"
+    "interrupted recovery readiness wait after ephemeral ports changed; helper re-discovers ports, two full later runs passed",
+    "Initial packaging whitespace check failed on service logs; evidence-only normalization followed by passing baseline-to-head check"
   ],
   "not_run": [
     "physical Mac",

@@ -1,7 +1,7 @@
 # Separate Mac UI candidate — independent review
 
 Repository/ref: `hedobriggs/DocLens`, `refs/heads/candidate/mac-reviewed-ui`.
-Parent: previously reviewed Mac UI `d0980c6c5ea07032cc5c060ff726b8042c9bef51`, itself based on reviewed Mac application `76b81c1bf5a23fd62e344e893b1bff45e24e8cb4`.
+Mac UI baseline: previously reviewed Mac UI `d0980c6c5ea07032cc5c060ff726b8042c9bef51`, itself based on reviewed Mac application `76b81c1bf5a23fd62e344e893b1bff45e24e8cb4`.
 UI improvements adapted from approved `02815cccb0371faa791d55bab0c09991e3aa6a44`. This does not merge platform main or its backend into the Mac recovery application. Main remains31eb3455cd5dc02c47f343d62328d41c8a2c3458; this candidate is unmerged and not deployed.
 
 ## What changes and what is preserved
@@ -87,3 +87,5 @@ No failed run is omitted or reclassified as an application pass. Generated priva
 **Physical MacBook Air, native macOS Docker Desktop, Safari and VoiceOver: not tested.** Browser viewports are representative CSS sizes, scale1, not confirmation of actual Mac display scaling. No customer PDF/data, original dataset import, migration, deletion, main merge or deployment is authorized/performed. The actual32-page PDF/page-count discrepancy remains a separate investigation; synthetic success does not resolve it.
 
 This candidate is for independent review. It does not authorize replacing the original Mac checkout, running the paused recovery helper, or attaching candidate services to original volumes. Any later Mac trial needs its own source/backup checks and separate candidate location/storage; no such Mac action has been performed here.
+
+Packaging correction: the initial candidate commit `deedc4829211546cde68acb7beb1eb94282d5dd5` included trailing whitespace in copied service logs, and the command sequence committed despite the failed whitespace check. The evidence-only follow-up normalizes log line endings; product code, test harnesses and tested images are unchanged. The failed diagnostic is retained as `whitespace-first-failed.log`; the baseline-to-final check passes after normalization.
