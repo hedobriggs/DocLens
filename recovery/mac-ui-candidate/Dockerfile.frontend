@@ -1,0 +1,13 @@
+# Separate candidate build; the Mac's original Dockerfile is unchanged.
+FROM node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+WORKDIR /app
+COPY . .
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+RUN --mount=type=secret,id=proxy_ca,required=true --mount=type=secret,id=system_ca,required=true \
+    NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm install --global npm@11.9.0 --strict-ssl=true --cache /tmp/candidate-npm-cache --no-audit --no-fund && \
+    NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm ci --strict-ssl=true --fetch-retries=0 --fetch-timeout=30000 --loglevel=http --cache /tmp/candidate-npm-cache --no-audit --no-fund && \
+    NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca SSL_CERT_FILE=/run/secrets/system_ca NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS=1 NEXT_TELEMETRY_DISABLED=1 npm run build && \
+    rm -rf /tmp/candidate-npm-cache .next/cache
+EXPOSE 3000
+CMD ["npm", "start"]

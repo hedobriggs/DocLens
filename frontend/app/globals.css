@@ -30,3 +30,8 @@ body {
   outline: 3px solid #93c5fd;
   outline-offset: 3px;
 }
+
+/* Long filenames must also reduce flex min-content widths. */
+.doclens-filename {
+  overflow-wrap: anywhere;
+}

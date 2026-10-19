@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_candidate_stack.py", line 106, in <module>
+    save()
+
+  File "/workspace/DocLens/tests/mac_candidate_stack.py", line 27, in ready
+    time.sleep(.2) # condition-based readiness polling, not an application deadline increase
+    ^^^^^^^^^^^^^^
+KeyboardInterrupt

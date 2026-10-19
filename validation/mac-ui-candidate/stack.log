@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/workspace/DocLens/tests/mac_candidate_stack.py", line 62, in <module>
+    endpoints={service:'http://127.0.0.1:'+dc('port',service,str(port)).rsplit(':',1)[1] for service,port in [('frontend',3000),('backend',8000),('qdrant',6333)]}
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/DocLens/tests/mac_candidate_stack.py", line 60, in dc
+    def dc(*args):return subprocess.check_output(compose+list(args),text=True,stderr=subprocess.PIPE).strip()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['docker', '--host=unix:///var/run/docker.sock', 'compose', '--env-file', '/tmp/doclens-mac-candidate-private-mzu3bwes/control.env', '-p', 'doclens-ui-candidate-46526868a1', '-f', '/workspace/DocLens/recovery/mac-ui-candidate/compose.yml', 'port', 'frontend', '3000']' returned non-zero exit status 1.

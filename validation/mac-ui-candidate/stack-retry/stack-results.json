@@ -1,0 +1,83 @@
+{
+  "project": "doclens-ui-candidate-3986f873aa",
+  "data": "synthetic-only",
+  "tests": {},
+  "private_inputs_exported": false,
+  "images": {
+    "frontend": "sha256:cf241ebaede03f9bc43feb4c686834baf139833b70e1842dbc55627378c9cffb",
+    "backend_dependencies": "sha256:240bdd1bc9ca5ade1cbaea15823e39ad2f6d08ee41f19a4f52f4f1d2b2004153"
+  },
+  "resources": {
+    "frontend": {
+      "memory_bytes": 536870912,
+      "swap_total_bytes": 536870912,
+      "nano_cpus": 0,
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "32773"
+          }
+        ]
+      },
+      "mounts": []
+    },
+    "backend": {
+      "memory_bytes": 1610612736,
+      "swap_total_bytes": 1610612736,
+      "nano_cpus": 2000000000,
+      "ports": {
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "32772"
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "type": "bind",
+          "destination": "/app",
+          "rw": false,
+          "name": null
+        },
+        {
+          "type": "bind",
+          "destination": "/models",
+          "rw": false,
+          "name": null
+        }
+      ]
+    },
+    "qdrant": {
+      "memory_bytes": 0,
+      "swap_total_bytes": 0,
+      "nano_cpus": 0,
+      "ports": {
+        "6333/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "32771"
+          }
+        ],
+        "6334/tcp": null
+      },
+      "mounts": [
+        {
+          "type": "volume",
+          "destination": "/qdrant/storage",
+          "rw": true,
+          "name": "doclens-ui-candidate-3986f873aa_candidate_qdrant"
+        }
+      ]
+    }
+  },
+  "endpoints": {
+    "frontend": "http://127.0.0.1:32773",
+    "backend": "http://127.0.0.1:32772",
+    "qdrant": "http://127.0.0.1:32771"
+  },
+  "storage_volume": "doclens-ui-candidate-3986f873aa_candidate_qdrant",
+  "original_local_containers_unchanged": true,
+  "original_local_volume_names_unchanged": true
+}

@@ -1,0 +1,13 @@
+{
+  "port_bindings": {
+    "3000/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": ""
+      }
+    ]
+  },
+  "network_ports": {},
+  "port_command_exit": 1,
+  "port_command_output": "Error: No public port '3000' published for doclens-ui-candidate-netprobe-1ab5b1a2\n"
+}

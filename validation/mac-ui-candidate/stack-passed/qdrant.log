@@ -1,0 +1,80 @@
+qdrant-1  |            _                 _    
+qdrant-1  |   __ _  __| |_ __ __ _ _ __ | |_  
+qdrant-1  |  / _` |/ _` | '__/ _` | '_ \| __| 
+qdrant-1  | | (_| | (_| | | | (_| | | | | |_  
+qdrant-1  |  \__, |\__,_|_|  \__,_|_| |_|\__| 
+qdrant-1  |     |_|                           
+qdrant-1  | 
+qdrant-1  | Version: 1.15.5, build: 48203e41
+qdrant-1  | Access web UI at http://localhost:6333/dashboard
+qdrant-1  | 
+qdrant-1  | 2026-10-19T23:11:09.879290Z  WARN qdrant: There is a potential issue with the filesystem for storage path ./storage. Details: Data will be lost on system restart - tmpfs is memory-based
+qdrant-1  | 2026-10-19T23:11:09.879315Z  INFO storage::content_manager::consensus::persistent: Initializing new raft state at ./storage/raft_state.json
+qdrant-1  | 2026-10-19T23:11:09.881158Z  INFO qdrant: Distributed mode disabled
+qdrant-1  | 2026-10-19T23:11:09.881184Z  INFO qdrant: Telemetry reporting enabled, id: 17ddcdee-649b-4cd9-b53f-bdc58f449e1e
+qdrant-1  | 2026-10-19T23:11:09.889046Z  WARN qdrant::startup: Failed to create init file indicator: Permission denied (os error 13)
+qdrant-1  | 2026-10-19T23:11:09.889738Z  INFO qdrant::actix: TLS disabled for REST API
+qdrant-1  | 2026-10-19T23:11:09.889869Z  INFO qdrant::actix: Qdrant HTTP listening on 6333
+qdrant-1  | 2026-10-19T23:11:09.889882Z  INFO actix_server::builder: starting 4 workers
+qdrant-1  | 2026-10-19T23:11:09.889885Z  INFO actix_server::server: Actix runtime found; starting in Actix runtime
+qdrant-1  | 2026-10-19T23:11:09.889887Z  INFO actix_server::server: starting service: "actix-web-service-0.0.0.0:6333", workers: 4, listening on: 0.0.0.0:6333
+qdrant-1  | 2026-10-19T23:11:09.895087Z  INFO qdrant::tonic: Qdrant gRPC listening on 6334
+qdrant-1  | 2026-10-19T23:11:09.895102Z  INFO qdrant::tonic: TLS disabled for gRPC API
+qdrant-1  | 2026-10-19T23:11:14.709744Z  INFO actix_web::middleware::logger: 172.18.0.3 "GET /collections/document_chunks/exists HTTP/1.1" 200 83 "-" "python-client/1.16.1 python/3.11.17" 0.000202
+qdrant-1  | 2026-10-19T23:11:14.711925Z  INFO storage::content_manager::toc::collection_meta_ops: Creating collection document_chunks
+qdrant-1  | 2026-10-19T23:11:14.719129Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/document_chunks HTTP/1.1" 200 71 "-" "python-client/1.16.1 python/3.11.17" 0.007313
+qdrant-1  | 2026-10-19T23:11:14.721277Z  INFO actix_web::middleware::logger: 172.18.0.3 "GET /collections/doclens_document_publications/exists HTTP/1.1" 200 80 "-" "python-client/1.16.1 python/3.11.17" 0.000082
+qdrant-1  | 2026-10-19T23:11:14.722341Z  INFO storage::content_manager::toc::collection_meta_ops: Creating collection doclens_document_publications
+qdrant-1  | 2026-10-19T23:11:14.727958Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/doclens_document_publications HTTP/1.1" 200 71 "-" "python-client/1.16.1 python/3.11.17" 0.005674
+qdrant-1  | 2026-10-19T23:11:14.730985Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/document_chunks/points?wait=true HTTP/1.1" 200 92 "-" "python-client/1.16.1 python/3.11.17" 0.000884
+qdrant-1  | 2026-10-19T23:11:14.732935Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/doclens_document_publications/points?wait=true HTTP/1.1" 200 91 "-" "python-client/1.16.1 python/3.11.17" 0.000365
+qdrant-1  | 2026-10-19T23:11:14.740417Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/document_chunks/points/scroll HTTP/1.1" 200 4575 "-" "python-requests/2.32.5" 0.001308
+qdrant-1  | 2026-10-19T23:11:14.898516Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/document_chunks/points/scroll HTTP/1.1" 200 4575 "-" "python-requests/2.32.5" 0.000694
+qdrant-1  | 2026-10-19T23:11:14.911669Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/document_chunks/points/scroll HTTP/1.1" 200 4575 "-" "python-requests/2.32.5" 0.000522
+qdrant-1  | 2026-10-19T23:11:22.417151Z  INFO actix_web::middleware::logger: 172.18.0.3 "GET /collections/document_chunks/exists HTTP/1.1" 200 82 "-" "python-client/1.16.1 python/3.11.17" 0.000197
+qdrant-1  | 2026-10-19T23:11:22.418030Z  INFO actix_web::middleware::logger: 172.18.0.3 "GET /collections/doclens_document_publications/exists HTTP/1.1" 200 79 "-" "python-client/1.16.1 python/3.11.17" 0.000060
+qdrant-1  | 2026-10-19T23:11:22.445494Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/document_chunks/points?wait=true HTTP/1.1" 200 91 "-" "python-client/1.16.1 python/3.11.17" 0.006336
+qdrant-1  | 2026-10-19T23:11:22.474788Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/document_chunks/points?wait=true HTTP/1.1" 200 91 "-" "python-client/1.16.1 python/3.11.17" 0.005491
+qdrant-1  | 2026-10-19T23:11:22.482549Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/document_chunks/points?wait=true HTTP/1.1" 200 91 "-" "python-client/1.16.1 python/3.11.17" 0.001495
+qdrant-1  | 2026-10-19T23:11:22.483911Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/doclens_document_publications/points?wait=true HTTP/1.1" 200 89 "-" "python-client/1.16.1 python/3.11.17" 0.000497
+qdrant-1  | 2026-10-19T23:11:23.620569Z  INFO actix_web::middleware::logger: 172.18.0.3 "GET /collections/document_chunks/exists HTTP/1.1" 200 79 "-" "python-client/1.16.1 python/3.11.17" 0.000540
+qdrant-1  | 2026-10-19T23:11:23.621790Z  INFO actix_web::middleware::logger: 172.18.0.3 "GET /collections/doclens_document_publications/exists HTTP/1.1" 200 79 "-" "python-client/1.16.1 python/3.11.17" 0.000074
+qdrant-1  | 2026-10-19T23:11:23.624509Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/document_chunks/points?wait=true HTTP/1.1" 200 91 "-" "python-client/1.16.1 python/3.11.17" 0.000808
+qdrant-1  | 2026-10-19T23:11:23.625930Z  INFO actix_web::middleware::logger: 172.18.0.3 "PUT /collections/doclens_document_publications/points?wait=true HTTP/1.1" 200 91 "-" "python-client/1.16.1 python/3.11.17" 0.000534
+qdrant-1  | 2026-10-19T23:11:23.839023Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/document_chunks/points/scroll HTTP/1.1" 200 505644 "-" "python-requests/2.32.5" 0.013929
+qdrant-1  | 2026-10-19T23:11:23.855924Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/doclens_document_publications/points/scroll HTTP/1.1" 200 320 "-" "python-requests/2.32.5" 0.000444
+qdrant-1  | 2026-10-19T23:11:23.930345Z  INFO actix_server::server: SIGTERM received; starting graceful shutdown
+qdrant-1  | 2026-10-19T23:11:23.930421Z  INFO actix_server::worker: graceful worker shutdown; finishing 1 connections
+qdrant-1  | 2026-10-19T23:11:23.930383Z  INFO actix_server::accept: accept thread stopped
+qdrant-1  | 2026-10-19T23:11:23.930434Z  INFO actix_server::worker: shutting down idle worker
+qdrant-1  | 2026-10-19T23:11:23.930496Z  INFO actix_server::worker: graceful worker shutdown; finishing 1 connections
+qdrant-1  |            _                 _    
+qdrant-1  |   __ _  __| |_ __ __ _ _ __ | |_  
+qdrant-1  |  / _` |/ _` | '__/ _` | '_ \| __| 
+qdrant-1  | | (_| | (_| | | | (_| | | | | |_  
+qdrant-1  |  \__, |\__,_|_|  \__,_|_| |_|\__| 
+qdrant-1  |     |_|                           
+qdrant-1  | 
+qdrant-1  | Version: 1.15.5, build: 48203e41
+qdrant-1  | Access web UI at http://localhost:6333/dashboard
+qdrant-1  | 
+qdrant-1  | 2026-10-19T23:11:24.191513Z  WARN qdrant: There is a potential issue with the filesystem for storage path ./storage. Details: Data will be lost on system restart - tmpfs is memory-based
+qdrant-1  | 2026-10-19T23:11:24.191537Z  INFO storage::content_manager::consensus::persistent: Loading raft state from ./storage/raft_state.json
+qdrant-1  | 2026-10-19T23:11:24.192355Z  INFO storage::content_manager::toc: Loading collection: doclens_document_publications
+qdrant-1  | 2026-10-19T23:11:24.223378Z  INFO collection::shards::local_shard: Recovering shard ./storage/collections/doclens_document_publications/0: 0/3 (0%)
+qdrant-1  | 2026-10-19T23:11:24.223730Z  INFO collection::shards::local_shard: Recovered collection doclens_document_publications: 3/3 (100%)
+qdrant-1  | 2026-10-19T23:11:24.223837Z  INFO storage::content_manager::toc: Loading collection: document_chunks
+qdrant-1  | 2026-10-19T23:11:24.245612Z  INFO collection::shards::local_shard: Recovering shard ./storage/collections/document_chunks/0: 0/5 (0%)
+qdrant-1  | 2026-10-19T23:11:24.251223Z  INFO collection::shards::local_shard: Recovered collection document_chunks: 5/5 (100%)
+qdrant-1  | 2026-10-19T23:11:24.251408Z  INFO qdrant: Distributed mode disabled
+qdrant-1  | 2026-10-19T23:11:24.251434Z  INFO qdrant: Telemetry reporting enabled, id: 941077f5-3b90-4851-b7fd-1596acbe2bff
+qdrant-1  | 2026-10-19T23:11:24.258556Z  WARN qdrant::startup: Failed to create init file indicator: Permission denied (os error 13)
+qdrant-1  | 2026-10-19T23:11:24.258831Z  INFO qdrant::actix: TLS disabled for REST API
+qdrant-1  | 2026-10-19T23:11:24.258943Z  INFO qdrant::actix: Qdrant HTTP listening on 6333
+qdrant-1  | 2026-10-19T23:11:24.258957Z  INFO actix_server::builder: starting 4 workers
+qdrant-1  | 2026-10-19T23:11:24.258966Z  INFO actix_server::server: Actix runtime found; starting in Actix runtime
+qdrant-1  | 2026-10-19T23:11:24.258969Z  INFO actix_server::server: starting service: "actix-web-service-0.0.0.0:6333", workers: 4, listening on: 0.0.0.0:6333
+qdrant-1  | 2026-10-19T23:11:24.264011Z  INFO qdrant::tonic: Qdrant gRPC listening on 6334
+qdrant-1  | 2026-10-19T23:11:24.264039Z  INFO qdrant::tonic: TLS disabled for gRPC API
+qdrant-1  | 2026-10-19T23:11:29.944616Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/document_chunks/points/scroll HTTP/1.1" 200 505644 "-" "python-requests/2.32.5" 0.022641
+qdrant-1  | 2026-10-19T23:11:29.962687Z  INFO actix_web::middleware::logger: 172.18.0.1 "POST /collections/doclens_document_publications/points/scroll HTTP/1.1" 200 319 "-" "python-requests/2.32.5" 0.000672

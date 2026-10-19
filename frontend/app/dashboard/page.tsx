@@ -5,6 +5,7 @@ import {
   FormEvent,
   useRef,
   useState,
+  useSyncExternalStore,
   useEffect,
 } from "react";
 
@@ -28,7 +29,10 @@ type Message = {
   citations?: Citation[];
 };
 
+const subscribeToClientReady = () => () => {};
+
 export default function Dashboard() {
+  const isClientReady = useSyncExternalStore(subscribeToClientReady, () => true, () => false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const askAbortRef = useRef<AbortController | null>(null);
   const uploadAbortRef = useRef<AbortController | null>(null);
@@ -321,7 +325,7 @@ export default function Dashboard() {
               type="button"
               onClick={openFilePicker}
               aria-describedby="upload-limits"
-              disabled={isUploading}
+              disabled={!isClientReady || isUploading}
               className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isUploading
@@ -329,7 +333,7 @@ export default function Dashboard() {
                 : "+ Upload PDF"}
             </button>
 
-            <div role="status" aria-live="polite" aria-atomic="true" className="mt-2 text-sm text-slate-300">
+            <div role="status" aria-live="polite" aria-atomic="true" className="doclens-filename mt-2 text-sm text-slate-300">
               {isUploading ? (
                 <>
                   <p className="break-words font-medium">{pendingFilename}</p>
@@ -394,7 +398,7 @@ export default function Dashboard() {
                     {document.name}
                   </p>
 
-                  <p className="mt-1 break-words text-xs text-slate-400">
+                  <p className="doclens-filename mt-1 text-xs text-slate-400">
                     {document.status}
                     {document.sizeBytes !== undefined &&
                       ` · ${document.sizeBytes >= 1024 * 1024 ? `${(document.sizeBytes / (1024 * 1024)).toFixed(1)} MiB` : `${Math.max(1, Math.ceil(document.sizeBytes / 1024))} KiB`}`}
@@ -410,12 +414,12 @@ export default function Dashboard() {
 
           {/* CHAT TOOLBAR */}
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
-            <div>
+            <div className="min-w-0 flex-1">
               <h1 className="font-semibold">
                 Document Chat
               </h1>
 
-              <p className="mt-1 break-words text-xs text-slate-400">
+              <p className="doclens-filename mt-1 text-xs text-slate-400">
                 {selectedDocument
                   ? `Searching ${selectedDocument}`
                   : "Ask questions grounded in your documents."}
@@ -468,8 +472,8 @@ export default function Dashboard() {
                       <div
                         className={
                           message.role === "user"
-                            ? "max-w-2xl rounded-2xl bg-blue-700 px-4 py-3 text-sm text-white"
-                            : "max-w-2xl rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-200"
+                            ? "min-w-0 max-w-2xl rounded-2xl bg-blue-700 px-4 py-3 text-sm text-white"
+                            : "min-w-0 max-w-2xl rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-200"
                         }
                       >
                         {/* MESSAGE CONTENT */}
@@ -545,7 +549,7 @@ export default function Dashboard() {
                                 (citation, citationIndex) => (
                                   <details
                                     key={`${citation.document_name}-${citation.page_number}-${citationIndex}`}
-                                    className="max-w-full rounded-lg border border-slate-500 bg-slate-900 px-3 py-2 text-xs text-slate-300"
+                                    className="doclens-filename min-w-0 max-w-full rounded-lg border border-slate-500 bg-slate-900 px-3 py-2 text-xs text-slate-300"
                                   >
                                     <summary className="cursor-pointer rounded break-words leading-5">
                                       Show source reference: {" "}
@@ -563,7 +567,7 @@ export default function Dashboard() {
                                     </span>
                                     </summary>
                                     <p className="mt-2 max-w-sm leading-5">
-                                      Check page {citation.page_number} in your original copy of {citation.document_name}. Original-page viewing is not available in this app.
+                                      Check page {citation.page_number} in your original copy of {citation.document_name}. Original-page viewing is not available in this chat.
                                     </p>
                                   </details>
                                 )
@@ -605,7 +609,7 @@ export default function Dashboard() {
                 }
                 placeholder={
                   selectedDocument
-                    ? `Ask about ${selectedDocument}...`
+                    ? "Ask about the selected document..."
                     : "Upload and select a document first..."
                 }
                 disabled={

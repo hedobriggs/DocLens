@@ -1,0 +1,134 @@
+backend-1  | INFO:     Started server process [1]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.4:56016 - "POST /internal/auth-event HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:12:57,341 | INFO | doclens | Embedding started | total_chunks=2 | batch_size=32
+backend-1  | 2026-10-19 23:12:57,358 | INFO | doclens | Embedding progress | completed=2 | total=2 | elapsed=0.0s
+backend-1  | 2026-10-19 23:12:57,358 | INFO | doclens | Embedding completed | total_chunks=2 | elapsed=0.0s
+backend-1  | 2026-10-19 23:12:57,360 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:12:57,368 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:12:57,369 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/doclens_document_publications/exists "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:12:57,376 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:12:57,378 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:12:57,380 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:12:57,381 | INFO | doclens | PDF processed | bytes=1210 | pages=2 | chunks=2
+backend-1  | INFO:     172.18.0.4:56024 - "POST /documents/process HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.4:56024 - "POST /documents/process HTTP/1.1" 400 Bad Request
+backend-1  | INFO:     172.18.0.4:56024 - "POST /documents/process HTTP/1.1" 413 Request Entity Too Large
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:12:57,884 | INFO | doclens | Embedding started | total_chunks=224 | batch_size=32
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:12:58,979 | INFO | doclens | Embedding progress | completed=32 | total=224 | elapsed=1.1s
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:00,002 | INFO | doclens | Embedding progress | completed=64 | total=224 | elapsed=2.1s
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:01,150 | INFO | doclens | Embedding progress | completed=96 | total=224 | elapsed=3.3s
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:02,428 | INFO | doclens | Embedding progress | completed=128 | total=224 | elapsed=4.5s
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:03,576 | INFO | doclens | Embedding progress | completed=160 | total=224 | elapsed=5.7s
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:04,810 | INFO | doclens | Embedding progress | completed=192 | total=224 | elapsed=6.9s
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:05,830 | INFO | doclens | Embedding progress | completed=224 | total=224 | elapsed=7.9s
+backend-1  | 2026-10-19 23:13:05,830 | INFO | doclens | Embedding completed | total_chunks=224 | elapsed=7.9s
+backend-1  | 2026-10-19 23:13:05,834 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:05,835 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/doclens_document_publications/exists "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:05,865 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | INFO:     172.18.0.1:59728 - "GET / HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:05,894 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:05,906 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:05,908 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:05,908 | INFO | doclens | PDF processed | bytes=12680928 | pages=32 | chunks=224
+backend-1  | INFO:     172.18.0.4:56024 - "POST /documents/process HTTP/1.1" 200 OK
+backend-1  | 2026-10-19 23:13:06,985 | INFO | doclens | Embedding started | total_chunks=2 | batch_size=32
+backend-1  | 2026-10-19 23:13:06,999 | INFO | doclens | Embedding progress | completed=2 | total=2 | elapsed=0.0s
+backend-1  | 2026-10-19 23:13:06,999 | INFO | doclens | Embedding completed | total_chunks=2 | elapsed=0.0s
+backend-1  | 2026-10-19 23:13:07,001 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/document_chunks/exists "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:07,002 | INFO | httpx | HTTP Request: GET http://qdrant:6333/collections/doclens_document_publications/exists "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:07,004 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/document_chunks/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:07,007 | INFO | httpx | HTTP Request: PUT http://qdrant:6333/collections/doclens_document_publications/points?wait=true "HTTP/1.1 200 OK"
+backend-1  | 2026-10-19 23:13:07,007 | INFO | doclens | PDF processed | bytes=1210 | pages=2 | chunks=2
+backend-1  | INFO:     172.18.0.4:56024 - "POST /documents/process HTTP/1.1" 200 OK
+backend-1  | INFO:     Shutting down
+backend-1  | INFO:     Waiting for application shutdown.
+backend-1  | INFO:     Application shutdown complete.
+backend-1  | INFO:     Finished server process [1]
+backend-1  | INFO:     Started server process [1]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:     172.18.0.1:47412 - "GET / HTTP/1.1" 200 OK

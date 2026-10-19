@@ -1,0 +1,57 @@
+# Standalone synthetic fixture. Do NOT combine with the original docker-compose.yml.
+# The runner supplies a random project name, explicit env file and fresh empty storage directories.
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.15.5@sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863
+    user: "${CANDIDATE_UID:?}:${CANDIDATE_GID:?}"
+    ports: ["127.0.0.1::6333"]
+    volumes:
+      - type: bind
+        source: ${CANDIDATE_QDRANT_DATA:?Fresh synthetic directory required}
+        target: /qdrant/storage
+      - type: bind
+        source: ${CANDIDATE_QDRANT_SNAPSHOTS:?Fresh synthetic snapshot directory required}
+        target: /qdrant/snapshots
+    restart: "no"
+  backend:
+    image: ${CANDIDATE_BACKEND_IMAGE:?Set an immutable reviewed dependency image}
+    user: "0"
+    command: ["python", "-c", "import os,sys,runpy; os.environ.update(NO_PROXY='qdrant,backend,localhost,127.0.0.1',no_proxy='qdrant,backend,localhost,127.0.0.1'); sys.argv=['uvicorn','main:app','--host','0.0.0.0','--port','8000','--workers','1']; runpy.run_module('uvicorn',run_name='__main__')"]
+    cpus: 2.0
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    ports: ["127.0.0.1::8000"]
+    env_file:
+      - path: ${CANDIDATE_RUNTIME_ENV:?Synthetic env required}
+        format: raw
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      DOCLENS_INFERENCE_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+      HF_HOME: /models
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+    volumes:
+      - type: bind
+        source: ${CANDIDATE_BACKEND_SOURCE:?Curated backend snapshot required}
+        target: /app
+        read_only: true
+      - type: bind
+        source: ${CANDIDATE_MODEL_CACHE:?Read-only model cache required}
+        target: /models/hub/models--sentence-transformers--all-MiniLM-L6-v2
+        read_only: true
+    depends_on: [qdrant]
+    restart: "no"
+  frontend:
+    image: ${CANDIDATE_FRONTEND_IMAGE:?Set a separately built candidate image}
+    ports: ["127.0.0.1::3000"]
+    mem_limit: 512m
+    memswap_limit: 512m
+    env_file:
+      - path: ${CANDIDATE_RUNTIME_ENV:?Synthetic env required}
+        format: raw
+    depends_on: [backend]
+    restart: "no"
+networks:
+  default: {}
