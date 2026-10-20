@@ -17,8 +17,9 @@ from pydantic import BaseModel
 from chunking import chunk_text
 from embeddings import create_embedding, create_embeddings
 from vector_store import (
-    hybrid_search,
+    hybrid_search, complete_document_context,
 )
+from document_coverage import needs_document_coverage, CoverageUnavailable
 from generation import generate_answer
 
 
@@ -149,6 +150,7 @@ Instrumentator(
 class AskRequest(BaseModel):
     question: str
     document_name: Optional[str] = None
+    comprehensive: bool = False
 
 
 # --------------------------------------------------
@@ -221,34 +223,20 @@ def ask_question(
             detail="Question cannot be empty."
         )
 
-    # Create semantic embedding for the question
-    question_embedding = create_embedding(
-        question
-    )
-
-    # --------------------------------------------------
-    # Hybrid retrieval + reranking
-    #
-    # Combines:
-    # 1. Dense semantic search
-    # 2. BM25 keyword search
-    # 3. Reciprocal Rank Fusion (RRF)
-    # 4. Cross-encoder reranking
-    # --------------------------------------------------
-
+    comprehensive = request.comprehensive or needs_document_coverage(question)
     retrieval_start = time.perf_counter()
-
     try:
-        results = hybrid_search(
-            query=question,
-            query_embedding=question_embedding,
-            limit=3,
-            document_name=request.document_name
-        )
+        if comprehensive:
+            results = complete_document_context(request.document_name)
+        else:
+            results = hybrid_search(
+                query=question, query_embedding=create_embedding(question),
+                limit=3, document_name=request.document_name,
+            )
+    except CoverageUnavailable as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     finally:
-        RAG_RETRIEVAL_DURATION.observe(
-            time.perf_counter() - retrieval_start
-        )
+        RAG_RETRIEVAL_DURATION.observe(time.perf_counter() - retrieval_start)
 
     RAG_RETRIEVED_CHUNKS.observe(len(results))
 
@@ -274,7 +262,8 @@ def ask_question(
     # Generate grounded answer + sources actually used
     generation_result = generate_answer(
         question=question,
-        retrieved_chunks=results
+        retrieved_chunks=results,
+        comprehensive=comprehensive,
     )
 
     answer = generation_result["answer"]
@@ -295,6 +284,8 @@ def ask_question(
     for source_id in source_ids:
 
         # Gemini source numbering starts at 1
+        if not isinstance(source_id, int) or isinstance(source_id, bool):
+            continue
         result_index = source_id - 1
 
         if 0 <= result_index < len(results):

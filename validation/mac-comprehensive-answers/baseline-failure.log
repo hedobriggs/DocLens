@@ -1,0 +1,11 @@
+2026-10-20 01:53:46,602 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 01:53:46,603 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 01:53:46,610 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=3
+2026-10-20 01:53:46,610 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 01:53:46,610 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 01:53:46,610 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 01:53:46,610 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=2
+BASELINE REPRODUCTION: original ask_question with controlled ranked three passages and controlled generation.
+Answer: Aster Research; Birch Analytics
+Missing employers: ['Cobalt Systems', 'Delta Robotics', 'Elm Computing']
+FAILURE CONFIRMED: only 2 of 5 employers reachable by generation. This is not a live Gemini result.

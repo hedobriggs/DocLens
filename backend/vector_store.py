@@ -371,3 +371,12 @@ def list_documents():
         )
     ]
 
+
+
+def complete_document_context(document_name):
+    """Capture visibility once; retained revisions keep paginated reads consistent."""
+    from document_coverage import gather_document, CoverageUnavailable
+    if not document_name:
+        raise CoverageUnavailable('Select one document for a comprehensive question.')
+    snapshot = visible_filter(client, document_name)
+    return gather_document(client, COLLECTION_NAME, document_name, snapshot)

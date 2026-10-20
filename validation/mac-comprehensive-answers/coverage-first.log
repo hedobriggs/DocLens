@@ -1,0 +1,46 @@
+test_coverage_all_five_with_original_citations_and_real_prompt (__main__.Coverage.test_coverage_all_five_with_original_citations_and_real_prompt) ... 2026-10-20 01:53:26,032 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 01:53:26,033 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=7
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=4 | page=4 | chunk=p4-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=5 | page=5 | chunk=p5-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=6 | page=6 | chunk=p6-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Retrieved result | rank=7 | page=7 | chunk=p7-c1
+2026-10-20 01:53:26,037 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=5
+2026-10-20 01:53:26,038 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 200 OK"
+ok
+test_coverage_explicit_mode_and_normal_search_unchanged (__main__.Coverage.test_coverage_explicit_mode_and_normal_search_unchanged) ... 2026-10-20 01:53:26,070 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 01:53:26,071 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 01:53:26,073 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=3
+2026-10-20 01:53:26,073 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 01:53:26,073 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 01:53:26,073 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 01:53:26,073 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=1
+2026-10-20 01:53:26,074 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 200 OK"
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=7
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=4 | page=4 | chunk=p4-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=5 | page=5 | chunk=p5-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=6 | page=6 | chunk=p6-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Retrieved result | rank=7 | page=7 | chunk=p7-c1
+2026-10-20 01:53:26,075 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=1
+2026-10-20 01:53:26,075 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 200 OK"
+ok
+test_coverage_pagination_and_publication_race_preserve_snapshot (__main__.Coverage.test_coverage_pagination_and_publication_race_preserve_snapshot) ... 2026-10-20 01:53:26,106 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 01:53:26,107 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_coverage_requires_scope_and_never_generates_truncated_answers (__main__.Coverage.test_coverage_requires_scope_and_never_generates_truncated_answers) ... 2026-10-20 01:53:26,135 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 01:53:26,136 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 01:53:26,139 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 422 Unprocessable Entity"
+2026-10-20 01:53:26,140 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 422 Unprocessable Entity"
+2026-10-20 01:53:26,142 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 422 Unprocessable Entity"
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.741s
+
+OK

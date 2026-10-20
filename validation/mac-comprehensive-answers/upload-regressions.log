@@ -1,0 +1,45 @@
+test_auth_declared_size_chunked_size_and_body_deadline_before_parsing (__main__.UploadLimits.test_auth_declared_size_chunked_size_and_body_deadline_before_parsing) ... 2026-10-20 01:53:48,279 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-20 01:53:48,279 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_catalog_survives_reopen_and_existing_citation_metadata_is_preserved (__main__.UploadLimits.test_catalog_survives_reopen_and_existing_citation_metadata_is_preserved) ... ok
+test_disconnect_stops_work_before_publication (__main__.UploadLimits.test_disconnect_stops_work_before_publication) ... ok
+test_embedding_failure_preserves_existing_points_and_hides_exception_text (__main__.UploadLimits.test_embedding_failure_preserves_existing_points_and_hides_exception_text) ... 2026-10-20 01:53:48,447 | INFO | doclens | Qdrant collection created | collection=document_chunks
+2026-10-20 01:53:48,453 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 503 Service Unavailable"
+ok
+test_exact_file_byte_limit_and_one_byte_over_preserve_index (__main__.UploadLimits.test_exact_file_byte_limit_and_one_byte_over_preserve_index) ... 2026-10-20 01:53:48,467 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-20 01:53:48,467 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 01:53:48,469 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+ok
+test_health_and_metrics_responsive_and_second_upload_rejected_while_embedding_busy (__main__.UploadLimits.test_health_and_metrics_responsive_and_second_upload_rejected_while_embedding_busy) ... 2026-10-20 01:53:48,481 | INFO | httpx | HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-20 01:53:48,484 | INFO | httpx | HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2026-10-20 01:53:48,485 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 429 Too Many Requests"
+2026-10-20 01:53:48,486 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-20 01:53:48,486 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_hybrid_search_uses_one_revision_when_publication_races_dense_and_bm25 (__main__.UploadLimits.test_hybrid_search_uses_one_revision_when_publication_races_dense_and_bm25) ... 2026-10-20 01:53:48,495 | INFO | doclens | Qdrant collection created | collection=document_chunks
+2026-10-20 01:53:48,502 | INFO | doclens | Qdrant collection created | collection=document_chunks
+ok
+test_limits_and_scans_leave_old_revision_unchanged (__main__.UploadLimits.test_limits_and_scans_leave_old_revision_unchanged) ... 2026-10-20 01:53:48,541 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-20 01:53:48,544 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-20 01:53:48,547 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-20 01:53:48,550 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 413 Request Entity Too Large"
+2026-10-20 01:53:48,552 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 400 Bad Request"
+2026-10-20 01:53:48,553 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 400 Bad Request"
+ok
+test_lost_publication_acknowledgement_retains_old_and_only_complete_new_revision (__main__.UploadLimits.test_lost_publication_acknowledgement_retains_old_and_only_complete_new_revision) ... ok
+test_openapi_preserves_multipart_upload_and_required_auth_header (__main__.UploadLimits.test_openapi_preserves_multipart_upload_and_required_auth_header) ... 2026-10-20 01:53:48,579 | INFO | httpx | HTTP Request: GET http://testserver/openapi.json "HTTP/1.1 200 OK"
+ok
+test_partial_batch_and_pointer_failure_preserve_all_read_paths (__main__.UploadLimits.test_partial_batch_and_pointer_failure_preserve_all_read_paths) ... 2026-10-20 01:53:48,587 | INFO | doclens | Qdrant collection created | collection=document_chunks
+ok
+test_staging_cancellation_keeps_old_publication (__main__.UploadLimits.test_staging_cancellation_keeps_old_publication) ... ok
+test_timeout_holds_admission_until_worker_exits_and_never_publishes (__main__.UploadLimits.test_timeout_holds_admission_until_worker_exits_and_never_publishes) ... 2026-10-20 01:53:49,022 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 504 Gateway Timeout"
+2026-10-20 01:53:49,023 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 429 Too Many Requests"
+2026-10-20 01:53:49,038 | INFO | doclens | PDF processed | bytes=802 | pages=1 | chunks=1
+2026-10-20 01:53:49,038 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.923s
+
+OK
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
