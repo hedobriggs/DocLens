@@ -2,7 +2,15 @@
 
 Base/application approval: `66db29f0b072fd9821869f4ffef008883ce0509b` (against its approved base `2eadf4ad8b2cb0c851be68739afc9725b0ef27e6`). This change does not alter any application backend/frontend code, existing limits, resource controls, publication logic or recovery behavior.
 
-## Live Gemini: attempted, blocked; no passing result
+## Latest live evaluation: 3/3 passed after binding correction
+
+The running environment now supplies `GEMINI_API_KEY` and no longer supplies `GERMINI_API_KEY`. Rerunning the unchanged live evaluation produced three HTTP 200 responses; each contains all five synthetic employers and exactly the five expected document/page/chunk citations. Results and complete synthetic answers are retained in `validation/mac-live-gemini/attempts-3/`.
+
+Observed durations: 0.962 s, 7.361 s and 48.015 s. The slow third response is retained; this is not a latency guarantee or a browser/gateway timeout test. The evaluation uses real Gemini and the reviewed generation/citation implementation, real PDF ingestion/local Qdrant, and controlled embeddings. It does not establish physical Mac performance, Safari/VoiceOver coverage, or guaranteed completeness for arbitrary documents.
+
+Earlier failures remain in attempts-1 and attempts-2; attempts-2 used the old fallback binding while the renamed binding had not yet reached the running environment. No application code changed for this retry. The prior credential blocker is resolved. The corrected Mac trial procedure still requires independent review before execution; no original-installation update is authorized or performed.
+
+## Historical failure: initial live evaluation was blocked
 
 Run `backend/.venv/bin/python tests/mac_live_gemini_cv.py /new/evidence/directory` with the existing securely configured Gemini binding. The helper accepts no customer document input. It uses a synthetic seven-page CV with five known employers and two distractor pages, real PDF ingestion and local Qdrant, controlled embedding vectors, the reviewed complete-context path, real Gemini client, and unchanged application prompt/parser/citation mapping. It requests three independent answers from the application's `gemini-3.5-flash-lite` model. It requires all five employer names and the exact five employer-page citation identities, not merely a nonempty response. This is not an embedding-model or physical Mac performance test.
 

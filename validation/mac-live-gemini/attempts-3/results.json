@@ -1,0 +1,157 @@
+{
+  "application_commit": "66db29f0b072fd9821869f4ffef008883ce0509b",
+  "provider": "live Gemini",
+  "model": "gemini-3.5-flash-lite",
+  "fixture": "seven-page synthetic CV; five employers; two distractor pages",
+  "inference": "controlled embeddings; real PDF ingestion and local Qdrant",
+  "expected_employers": [
+    "Aster Research",
+    "Birch Analytics",
+    "Cobalt Systems",
+    "Delta Robotics",
+    "Elm Computing"
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": 200,
+      "response": {
+        "answer": "The employers listed in this CV are Aster Research, Birch Analytics, Cobalt Systems, Delta Robotics, and Elm Computing.",
+        "citations": [
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 1,
+            "chunk_id": "p1-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 2,
+            "chunk_id": "p2-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 4,
+            "chunk_id": "p4-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 5,
+            "chunk_id": "p5-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 6,
+            "chunk_id": "p6-c1"
+          }
+        ]
+      },
+      "all_five_present": true,
+      "correct_citations": true,
+      "passed": true,
+      "seconds": 0.962
+    },
+    {
+      "attempt": 2,
+      "status": 200,
+      "response": {
+        "answer": "The employers in this CV are Aster Research, Birch Analytics, Cobalt Systems, Delta Robotics, and Elm Computing.",
+        "citations": [
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 1,
+            "chunk_id": "p1-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 2,
+            "chunk_id": "p2-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 4,
+            "chunk_id": "p4-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 5,
+            "chunk_id": "p5-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 6,
+            "chunk_id": "p6-c1"
+          }
+        ]
+      },
+      "all_five_present": true,
+      "correct_citations": true,
+      "passed": true,
+      "seconds": 7.361
+    },
+    {
+      "attempt": 3,
+      "status": 200,
+      "response": {
+        "answer": "The employers listed in the CV are Aster Research, Birch Analytics, Cobalt Systems, Delta Robotics, and Elm Computing.",
+        "citations": [
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 1,
+            "chunk_id": "p1-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 2,
+            "chunk_id": "p2-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 4,
+            "chunk_id": "p4-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 5,
+            "chunk_id": "p5-c1"
+          },
+          {
+            "document_name": "synthetic-cv.pdf",
+            "page_number": 6,
+            "chunk_id": "p6-c1"
+          }
+        ]
+      },
+      "all_five_present": true,
+      "correct_citations": true,
+      "passed": true,
+      "seconds": 48.015
+    }
+  ],
+  "expected_citations": [
+    {
+      "document_name": "synthetic-cv.pdf",
+      "page_number": 1,
+      "chunk_id": "p1-c1"
+    },
+    {
+      "document_name": "synthetic-cv.pdf",
+      "page_number": 2,
+      "chunk_id": "p2-c1"
+    },
+    {
+      "document_name": "synthetic-cv.pdf",
+      "page_number": 4,
+      "chunk_id": "p4-c1"
+    },
+    {
+      "document_name": "synthetic-cv.pdf",
+      "page_number": 5,
+      "chunk_id": "p5-c1"
+    },
+    {
+      "document_name": "synthetic-cv.pdf",
+      "page_number": 6,
+      "chunk_id": "p6-c1"
+    }
+  ]
+}
