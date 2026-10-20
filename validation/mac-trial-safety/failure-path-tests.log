@@ -1,0 +1,11 @@
+test_evidence_verification_failure_is_not_masked (__main__.TrialSafety.test_evidence_verification_failure_is_not_masked) ... ok
+test_failed_clone_preserves_73 (__main__.TrialSafety.test_failed_clone_preserves_73) ... ok
+test_failed_commit_assertion (__main__.TrialSafety.test_failed_commit_assertion) ... ok
+test_failed_commit_lookup_preserves_74 (__main__.TrialSafety.test_failed_commit_lookup_preserves_74) ... ok
+test_failed_directory_change (__main__.TrialSafety.test_failed_directory_change) ... ok
+test_missing_bundle (__main__.TrialSafety.test_missing_bundle) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.074s
+
+OK

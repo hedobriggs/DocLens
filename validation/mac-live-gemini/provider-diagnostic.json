@@ -1,0 +1,11 @@
+{
+  "configured_binding": "GERMINI_API_KEY",
+  "readiness": "environment reports binding ready; actual provider rejected credential",
+  "diagnostic": "direct SDK call with retained client and synthetic diagnostic prompt",
+  "exception_class": "ClientError",
+  "http_status": 400,
+  "provider_reason": "API_KEY_INVALID",
+  "provider_message_classification": "API key not valid",
+  "secret_values_recorded": false,
+  "result": "BLOCKED: correct the existing secret securely in environment settings before another live evaluation"
+}

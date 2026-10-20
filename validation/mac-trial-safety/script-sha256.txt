@@ -1,0 +1,1 @@
+5f0154760b383e2fa9c3bfd6aa9264c9ab1480aec9557866b4553e0470aa7987  recovery/mac-ui-candidate/mac-synthetic-trial.sh

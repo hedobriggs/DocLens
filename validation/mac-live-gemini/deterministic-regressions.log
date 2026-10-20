@@ -1,0 +1,49 @@
+test_coverage_all_five_with_original_citations_and_real_prompt (__main__.Coverage.test_coverage_all_five_with_original_citations_and_real_prompt) ... 2026-10-20 02:17:52,042 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 02:17:52,043 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=7
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=4 | page=4 | chunk=p4-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=5 | page=5 | chunk=p5-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=6 | page=6 | chunk=p6-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Retrieved result | rank=7 | page=7 | chunk=p7-c1
+2026-10-20 02:17:52,046 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=5
+2026-10-20 02:17:52,047 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 200 OK"
+ok
+test_coverage_excludes_other_documents_and_rejects_missing_payload (__main__.Coverage.test_coverage_excludes_other_documents_and_rejects_missing_payload) ... 2026-10-20 02:17:52,066 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 02:17:52,067 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_coverage_explicit_mode_and_normal_search_unchanged (__main__.Coverage.test_coverage_explicit_mode_and_normal_search_unchanged) ... 2026-10-20 02:17:52,089 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 02:17:52,090 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 02:17:52,091 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=3
+2026-10-20 02:17:52,091 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 02:17:52,091 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 02:17:52,091 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 02:17:52,091 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=1
+2026-10-20 02:17:52,092 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 200 OK"
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieval completed | document=synthetic-cv.pdf | results=7
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=1 | page=1 | chunk=p1-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=2 | page=2 | chunk=p2-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=3 | page=3 | chunk=p3-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=4 | page=4 | chunk=p4-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=5 | page=5 | chunk=p5-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=6 | page=6 | chunk=p6-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Retrieved result | rank=7 | page=7 | chunk=p7-c1
+2026-10-20 02:17:52,093 | INFO | doclens | Answer generated | document=synthetic-cv.pdf | sources_used=1
+2026-10-20 02:17:52,093 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 200 OK"
+ok
+test_coverage_pagination_and_publication_race_preserve_snapshot (__main__.Coverage.test_coverage_pagination_and_publication_race_preserve_snapshot) ... 2026-10-20 02:17:52,112 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 02:17:52,112 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+ok
+test_coverage_requires_scope_and_never_generates_truncated_answers (__main__.Coverage.test_coverage_requires_scope_and_never_generates_truncated_answers) ... 2026-10-20 02:17:52,231 | INFO | doclens | PDF processed | bytes=3038 | pages=7 | chunks=7
+2026-10-20 02:17:52,231 | INFO | httpx | HTTP Request: POST http://testserver/documents/process "HTTP/1.1 200 OK"
+2026-10-20 02:17:52,234 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 422 Unprocessable Entity"
+2026-10-20 02:17:52,236 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 422 Unprocessable Entity"
+2026-10-20 02:17:52,238 | INFO | httpx | HTTP Request: POST http://testserver/ask "HTTP/1.1 422 Unprocessable Entity"
+ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.648s
+
+OK
