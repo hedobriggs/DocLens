@@ -37,3 +37,11 @@ and storage reservations, is retained on `archive/platform-milestone-2` at
 `31eb3455cd5dc02c47f343d62328d41c8a2c3458`. It is not part of the default PDF
 application after the authorized consolidation. Existing platform databases and
 volumes remain untouched; restoring its code is not a data migration.
+
+Root Compose startup adds one short-lived setup container, not a background job
+system. It has no network, sees initial credentials only as a read-only secret,
+and writes role-separated private settings to `app_config`. The backend/frontend
+mount that volume read-only as different non-root UIDs. Settings and session
+identities persist across down/up; mismatching input, partial setup and an existing
+unowned index cause rejection without replacement. API/frontend entrypoints load
+only their own settings; parsing, inference, retrieval and publication are unchanged.

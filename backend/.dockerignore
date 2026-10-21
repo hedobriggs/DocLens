@@ -1,9 +1,12 @@
-.env
-.venv
-venv
-__pycache__
-*.pyc
-qdrant_data
-.git
-.DS_Store
-test_retrieval.py
+# Source-only allowlist for automatic Compose builds. No env/data/backups.
+**
+!backend_start.py
+!chunking.py
+!document_coverage.py
+!document_publication.py
+!embeddings.py
+!generation.py
+!main.py
+!requirements.txt
+!upload_processing.py
+!vector_store.py

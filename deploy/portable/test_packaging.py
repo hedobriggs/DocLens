@@ -39,6 +39,21 @@ class Packaging(unittest.TestCase):
                 with self.assertRaises(SystemExit): configure.main()
             self.assertFalse((root / '.runtime').exists())
 
+    def test_automatic_compose_contexts_are_source_only_allowlists(self):
+        manifest = json.loads((HERE/'application-manifest.json').read_text())
+        root = HERE.parents[1]
+        for service in ['backend','frontend']:
+            lines = [line for line in (root/service/'.dockerignore').read_text().splitlines()
+                     if line and not line.startswith('#')]
+            self.assertEqual(lines[0], '**')
+            self.assertTrue(all(line.startswith('!') for line in lines[1:]))
+            files = {line[1:] for line in lines[1:] if not line.endswith('/')}
+            expected = {str(Path(name).relative_to(service)) for name in manifest['sha256']
+                        if name.startswith(service+'/') and not name.endswith('/.dockerignore')}
+            self.assertEqual(files, expected)
+            self.assertFalse(files & {'.env','.env.local','private.backup','original.pdf'})
+            self.assertFalse(any('*' in name for name in files))
+
     def test_release_manifest_matches_real_build_inputs(self):
         # This caught the legal UI integration retaining stale dashboard hashes.
         # Run the actual builder's checks/contexts without requiring Docker.

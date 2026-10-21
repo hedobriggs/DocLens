@@ -1,7 +1,60 @@
-# Standard repository-root entry point; services remain defined in one place.
-# New installs use a separate project, never the old Mac 'doclens' volumes.
+# Fresh installs: copy .env.example to private .env, then docker compose up.
+# The old Mac project/volumes are never mounted. Existing manual installs retain
+# their saved launcher/configuration; automatic setup refuses an unowned index.
 name: ${COMPOSE_PROJECT_NAME:-doclens-app}
-include:
-  - path: deploy/portable/compose.yaml
-    project_directory: deploy/portable
-    env_file: deploy/portable/.runtime/compose.env
+x-frontend-build: &frontend-build
+  context: ./frontend
+  dockerfile: ../deploy/portable/Dockerfile.frontend
+services:
+  setup:
+    image: ${FRONTEND_IMAGE:-doclens-portable-frontend:compose-auto}
+    platform: linux/amd64
+    pull_policy: build
+    build: *frontend-build
+    user: "0:0"
+    working_dir: /app
+    entrypoint: [node, /app/bootstrap.cjs, setup]
+    secrets: [initial_config]
+    volumes:
+      - app_config:/config
+      - index:/existing-index:ro
+    network_mode: none
+    read_only: true
+    cpus: 1.0
+    mem_limit: 128m
+    memswap_limit: 128m
+    restart: "no"
+  qdrant:
+    extends: {file: deploy/portable/compose.yaml, service: qdrant}
+    depends_on:
+      setup: {condition: service_completed_successfully}
+  backend:
+    extends: {file: deploy/portable/compose.yaml, service: backend}
+    image: ${BACKEND_IMAGE:-doclens-portable-backend:compose-auto}
+    pull_policy: build
+    env_file: !reset []
+    entrypoint: [python, /app/backend_start.py]
+    volumes:
+      - app_config:/config:ro
+    depends_on:
+      setup: {condition: service_completed_successfully}
+  frontend:
+    extends: {file: deploy/portable/compose.yaml, service: frontend}
+    image: ${FRONTEND_IMAGE:-doclens-portable-frontend:compose-auto}
+    pull_policy: build
+    build: *frontend-build
+    env_file: !reset []
+    entrypoint: [node, /app/bootstrap.cjs, frontend]
+    volumes:
+      - app_config:/config:ro
+    depends_on:
+      setup: {condition: service_completed_successfully}
+secrets:
+  initial_config: {file: .env}
+volumes:
+  index: {}
+  snapshots: {}
+  app_config: {}
+networks:
+  data: {internal: true}
+  edge: {}

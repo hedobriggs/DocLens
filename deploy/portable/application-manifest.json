@@ -1,7 +1,8 @@
 {
   "application_commit": "3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d",
-  "note": "Release candidate includes legal-workspace UI. layout.tsx metadata is normalized to DocLens in this cleanup; exact build inputs are verified below.",
+  "note": "Core application base plus legal UI, DocLens metadata and automatic startup helpers; exact build inputs are verified below.",
   "sha256": {
+    "backend/backend_start.py": "b2e0bd55660430f30f7ebe9dd0a01eede1eb0e299a625a8c3ab58e2aa1ba7eb6",
     "backend/chunking.py": "874c16cbeecc7cb063a1ce1c8675b76c1ddc25e5d38d0cba1ab14b41c6058cb1",
     "backend/document_coverage.py": "bae666f5515a196254ae5cc018e01aafc32a1d394a536ce4d006003eea91835f",
     "backend/document_publication.py": "c0a0834b1db613c42129bd8049fdf8da3f9b821718d846a37bc394fd9531dab1",
@@ -11,7 +12,7 @@
     "backend/requirements.txt": "21974023fddbfac272315d9871830e9661ce57c2b906913d1fae4529e762bebe",
     "backend/upload_processing.py": "99958a118c2aeac9d3eec127a2bf06fadc2eb89c6a28c2f9574dc5c20334bd5b",
     "backend/vector_store.py": "16cdc6d59e06ab15ebbff880ba69b6daf66770fe7f3d3058a071a5b78b16e6a0",
-    "frontend/.dockerignore": "eee1adc6c9bec1301032e1ba098d3f2d97b743be50467f7723023c5262c1c4dc",
+    "frontend/.dockerignore": "dabed9b3dfc924cc57691f2b0265d400740cd32585c8bfbe17a3ba566a370392",
     "frontend/app/api/ask/route.ts": "dcca85cfa61ea3339bdfc305d69c0fd730ea1bf94d3a492e54929e55da062024",
     "frontend/app/api/auth/login/route.ts": "12d9bdbe9b2796b2fd564b1ae8dd8ce5108912a5f4db811751237914c0b1696b",
     "frontend/app/api/auth/logout/route.ts": "3881f5aeb4b5e55bfe39aa432795b747ca53180b94bc3457ac37450172793f8e",
@@ -22,6 +23,7 @@
     "frontend/app/globals.css": "7b937b4c5061fc203582d8c51a83cae26f21e2e0d5bbd211c9e4a15778154da6",
     "frontend/app/layout.tsx": "4f03606546e9dfa93763a5d8b7fbb5342026f12036cd086d4108d9f586a8d141",
     "frontend/app/page.tsx": "c73da11c47a0bedda36407ab350dab98bdfa05128f6fce12706b9975db2cf460",
+    "frontend/bootstrap.cjs": "b6b9865ec63d711309349d690344a0a66835181fbd0f86fccbb686c75aa80dbd",
     "frontend/eslint.config.mjs": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493",
     "frontend/lib/auth.ts": "c99fd2e3409277b3c5227c5dbf59fcf9cb8e9d3b9d6a4dc5758599a65abad512",
     "frontend/next.config.ts": "614bce25b089c3f19b1e17a6346c74b858034040154c6621e7d35303004767cc",

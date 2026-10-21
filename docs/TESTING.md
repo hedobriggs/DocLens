@@ -65,29 +65,54 @@ Screenshots, raw logs, image inventories and approval bundles are external revie
 artifacts. Current test summaries belong in the review; previous committed
 artifacts remain in Git history. Do not add generated evidence back to this tree.
 
-## Standard repository-root Compose entry point
+## Automatic root Compose startup
 
-After building the two application images, run:
+Developer-only startup validation uses Node's built-in test runner:
+
+```sh
+node --test tests/test_bootstrap.cjs
+python3 deploy/portable/test_packaging.py
+```
+
+These cover input validation, literal dollar/shell characters, duplicate keys,
+password bounds, stable saved sessions, changed-credential refusal, existing-index
+refusal, partial-setup recovery and symlink rejection. Packaging checks enforce
+source-only Docker context allowlists. No host Node/Python is required by users
+running the application through Docker.
+
+After building the images, run:
 
 ```sh
 python3 tests/test_compose_root.py
 ```
 
-Uses Python's standard library and an isolated synthetic Docker project. It
-validates the included service definitions, resource limits, private ports and
-credential separation, then exercises actual PDF ingestion. It executes normal
-`docker compose down` and `up`, checking that all stored points, payloads and
-publication/citation identities survive. Fixture teardown removes only the
-fixture's own generated volumes and verifies unrelated Docker inventories match.
-Never use `down -v` on an installation whose documents you want to retain.
+This developer acceptance script uses only Python's standard library to create a
+fresh synthetic fixture. The application setup itself runs inside Docker: no
+`build.py` or `configure.py` invocation is part of it. Tests verify credentials
+and ports/resource separation, actual login and PDF embedding/indexing, app-role
+file permissions, stable settings and exact document/citation identities across
+normal down/up, and rejection/recovery of changed input credentials. Only the
+fixture's generated volumes are removed; unrelated Docker inventories must match.
+Optional `DOCLENS_TEST_BACKEND_IMAGE` / `DOCLENS_TEST_FRONTEND_IMAGE` select images
+built through Compose for a fresh-build evaluation.
 
-The first execution exposed a test assertion expecting numeric JSON values where
-Compose returns memory strings; that failure was retained externally and the
-assertion now converts the value explicitly. This did not require changing
-application resource controls. The root workflow still needs one-time private
-configuration and built images; daily start/stop requires no launcher script.
+Raw logs remain external artifacts. The first automatic test reached healthy
+application services but the reused smoke helper still called the old manual
+configuration wrapper. That test-fixture failure is retained; the helper now
+routes to the actual root Compose project without running manual setup. Public
+HTTPS, target Mac/browser coverage and backup restoration are separate validations.
 
-The corrected full run passed on Linux amd64 / Compose 2.40.3: actual login,
-five-page PDF embedding/indexing, failed-replacement preservation, normal down/up
-persistence, and unchanged unrelated container/volume inventories. Physical Mac
-and browser HTTPS acceptance remain outside this result.
+The fresh-image test exposed host-mode-dependent bind-mounted startup scripts.
+They are now packaged into the images with explicit readable permissions instead;
+no source-script host bind mounts are needed at runtime. That unhealthy-container
+failure, the test-fixture wrapper failure, and a fixture-directory reuse error are
+retained externally alongside the passing reruns. Strict Docker context allowlists
+also excluded synthetic private `.env` and backup canaries during Compose builds.
+
+Final automatic-startup validation passed: 9 bootstrap unit tests, 6 packaging
+checks and 11 legacy-launcher checks; actual Compose image builds; plain `up`
+without host setup scripts; synthetic login/indexing; role-based file denial;
+normal down/up preserving exact data and settings; changed-password rejection and
+recovery. Both newly built packaged images were used for the final full acceptance
+run, and unrelated container/volume inventories matched afterward. Application
+logic, dependencies, auth, upload limits and worker budgets were verified unchanged.

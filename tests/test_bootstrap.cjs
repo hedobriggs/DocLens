@@ -1,0 +1,20 @@
+// Synthetic startup validation; Node's built-in runner, no Docker/provider calls.
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {inputConfig,initialize}=require('../frontend/bootstrap.cjs');
+process.chdir(path.join(__dirname,'../frontend'));
+const bcrypt=require('../frontend/node_modules/bcryptjs');
+const password='Synthetic-$literal-Password-2026';
+const text=()=>`GEMINI_API_KEY=synthetic-not-a-provider-key\nDOCLENS_ADMIN_EMAIL=trial@synthetic.invalid\nDOCLENS_ADMIN_PASSWORD='${password}'\n`;
+function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'DocLens-bootstrap-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));const config=path.join(root,'config'),index=path.join(root,'index'),input=path.join(root,'input');fs.mkdirSync(config);fs.mkdirSync(index);fs.writeFileSync(input,text());return {root,config,index,input};}
+function saved(f){for(const role of ['frontend','backend'])fs.mkdirSync(path.join(f.config,role));const session='s'.repeat(48);fs.writeFileSync(path.join(f.config,'ready.json'),JSON.stringify({version:1}));fs.writeFileSync(path.join(f.config,'frontend/settings.json'),JSON.stringify({DOCLENS_ADMIN_EMAIL:'trial@synthetic.invalid',DOCLENS_ADMIN_PASSWORD_HASH:bcrypt.hashSync(password,4),DOCLENS_SESSION_SECRET:session}));fs.writeFileSync(path.join(f.config,'backend/settings.json'),JSON.stringify({GEMINI_API_KEY:'synthetic-not-a-provider-key',DOCLENS_SESSION_SECRET:session}));}
+function snapshot(root){return Object.fromEntries(fs.readdirSync(root,{recursive:true}).filter(n=>fs.statSync(path.join(root,n)).isFile()).map(n=>[n,fs.readFileSync(path.join(root,n),'utf8')]));}
+test('literal dollar signs and shell syntax are never evaluated',()=>{const p='$(do-not-execute)-Safe$Password';assert.equal(inputConfig(text().replace(password,p)).password,p);});
+test('placeholder/missing configuration is rejected',()=>{assert.throws(()=>inputConfig('GEMINI_API_KEY=replace-with-key\n'));});
+test('short and bcrypt-truncated passwords are rejected',()=>{for(const p of ['short','x'.repeat(73)])assert.throws(()=>inputConfig(text().replace(password,p)));});
+test('duplicate keys and unclosed quotes are rejected',()=>{assert.throws(()=>inputConfig(text()+'GEMINI_API_KEY=duplicate\n'));assert.throws(()=>inputConfig(text().replace(`'${password}'`,`'${password}`)));});
+test('matching saved settings preserve sessions and every byte',t=>{const f=fixture(t);saved(f);const before=snapshot(f.config);assert.match(initialize(f.config,f.index,f.input),/preserved/);assert.deepEqual(snapshot(f.config),before);});
+test('changed passwords or provider keys never overwrite saved settings',t=>{const f=fixture(t);saved(f);const before=snapshot(f.config);for(const changed of [text().replace(password,'Another-Safe-Password-2026'),text().replace('synthetic-not-a-provider-key','different-provider-key')]){fs.writeFileSync(f.input,changed);assert.throws(()=>initialize(f.config,f.index,f.input),/Saved settings differ/);assert.deepEqual(snapshot(f.config),before);}});
+test('an existing index without generated settings is never adopted',t=>{const f=fixture(t);fs.writeFileSync(path.join(f.index,'original'),'preserve');assert.throws(()=>initialize(f.config,f.index,f.input),/Existing index/);assert.deepEqual(fs.readdirSync(f.config),[]);assert.equal(fs.readFileSync(path.join(f.index,'original'),'utf8'),'preserve');});
+test('partial initialization is retained for recovery, not replaced',t=>{const f=fixture(t);fs.writeFileSync(path.join(f.config,'partial'),'preserve');assert.throws(()=>initialize(f.config,f.index,f.input),/Incomplete saved setup/);assert.equal(fs.readFileSync(path.join(f.config,'partial'),'utf8'),'preserve');});
+test('symlink input is rejected without reading or changing saved settings',t=>{const f=fixture(t);const link=path.join(f.root,'link');fs.symlinkSync(f.input,link);assert.throws(()=>initialize(f.config,f.index,link),/non-regular/);assert.deepEqual(fs.readdirSync(f.config),[]);});
