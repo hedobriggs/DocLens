@@ -1,0 +1,2232 @@
+{
+  "cases": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 0,
+      "controlledHydration": true,
+      "events": [
+        "filechooser"
+      ],
+      "beforeHydration": {
+        "disabled": true
+      },
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 1,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 2,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 3,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 4,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 5,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 6,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 7,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 8,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "iteration": 9,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 0,
+      "controlledHydration": true,
+      "events": [
+        "filechooser"
+      ],
+      "beforeHydration": {
+        "disabled": true
+      },
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 1,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 2,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 3,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 4,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 5,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 6,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 7,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 8,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "iteration": 9,
+      "controlledHydration": false,
+      "events": [
+        "filechooser"
+      ],
+      "beforeEnter": {
+        "documentFocus": true,
+        "activeText": "+ Upload PDF",
+        "disabled": false
+      },
+      "pass": true,
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BODY",
+          "text": "DocLensby HedobriggsLog outText-based PDFs · up to",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "Log out",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Tab",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusout",
+          "trusted": true,
+          "target": "SUMMARY",
+          "text": "Text processing limits",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "focusin",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "target": "BUTTON",
+          "text": "+ Upload PDF",
+          "documentFocus": true,
+          "userActivation": true
+        },
+        {
+          "type": "click",
+          "trusted": false,
+          "target": "INPUT",
+          "text": "",
+          "documentFocus": true,
+          "userActivation": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "method": "Hold hydration scripts; require disabled SSR Upload, release scripts, await enabled; trusted Tab/Enter after document focus. 20 new browser contexts, no retry or fixed sleeps."
+}

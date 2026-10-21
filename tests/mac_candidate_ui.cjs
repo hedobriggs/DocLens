@@ -79,6 +79,18 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser,re
    await shot(`long-${kind}-${size.width}x${size.height}`);await measure(`long-${kind}-${size.width}x${size.height}`);
   }
  }
+ if(mode==='after' && process.env.DOCLENS_LEGAL_VIEWPORT_CHECK==='1'){
+  currentName='synthetic-contract.pdf';behavior='success';
+  await input.setInputFiles(file);
+  await expect(page.getByRole('status')).toHaveText(currentName+' is ready for questions.');
+  await page.setViewportSize({width:375,height:812});
+  await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeVisible();
+  const mobile=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,
+   height:innerHeight,send:document.querySelector('button[aria-label="Send question"]').getBoundingClientRect().bottom}));
+  if(mobile.width>mobile.viewport||mobile.send>mobile.height)throw Error('Mobile viewport overflow: '+JSON.stringify(mobile));
+  fs.writeFileSync(path.join(out,'mobile-geometry.json'),JSON.stringify(mobile,null,2)+'\n');
+  await shot('mobile-375x812');await measure('mobile');
+ }
  fs.writeFileSync(path.join(out,'clipping.json'),JSON.stringify(clipping,null,2)+'\n');
  const clipped=clipping.filter(x=>x.problems.length);if(clipped.length)throw Error('Clipped filename content: '+JSON.stringify(clipped.map(x=>({viewport:x.viewport,kind:x.kind,label:x.label,problems:x.problems}))));
  const failures=contrast.filter(x=>x.ratio<x.minimum);if(mode==='after'&&failures.length)throw Error('Contrast failures: '+JSON.stringify(failures));if(errors.length)throw Error(errors.join('\n'));
