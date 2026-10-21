@@ -5,14 +5,40 @@ Upload a PDF, ask questions, and receive Gemini answers with page citations.
 ## Start here
 
 The portable Docker package in **[deploy/portable](deploy/portable/README.md)** is
-this branch's supported deployment path. Follow **[the quickstart](deploy/portable/QUICKSTART.md)**.
-Build the images from this checkout with:
+this branch's supported deployment path. Docker Desktop/Engine must be running.
+For first setup, create a private key file:
 
 ```sh
-python3 deploy/portable/build.py
+cp .env.example .env
+chmod 600 .env
 ```
 
-Then follow the quickstart to configure private credentials and start the services.
+Edit `.env` privately and replace the placeholder with your Gemini API key.
+Alternatively, supply `GEMINI_API_KEY` through your server's secret environment.
+Do not put a real key in `.env.example` or commit it. Then run:
+
+```sh
+./start
+```
+
+First startup builds missing images and asks for email, password and password
+confirmation. Later startups reuse the saved configuration without prompting.
+Open the address printed when the app is ready (default http://127.0.0.1:3000).
+If port 3000 is already occupied, use `./start --port 3001` on first setup.
+
+To stop only this checkout's deployment, preserving documents and credentials:
+
+```sh
+./stop
+```
+
+Run these scripts from the repository root. They also work when invoked by
+absolute path from another directory. An existing portable `.runtime` is reused;
+the new scripts do not reset a forgotten password or migrate another installation.
+For public servers with DNS/HTTPS, use the
+**[advanced setup instructions](deploy/portable/README.md)**. No public ports or
+TLS configuration are added by the simple local start command.
+
 Python 3, Docker and Compose 2.30+ are required. Images target Linux amd64;
 Apple Silicon and physical Mac validation remain outstanding. Images are not yet
 published to Docker Hub.

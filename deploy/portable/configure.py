@@ -18,6 +18,7 @@ parser.add_argument('--backend-image', default='doclens-portable-backend:66db29f
 parser.add_argument('--frontend-image', default='doclens-portable-frontend:66db29f')
 parser.add_argument('--synthetic-test', action='store_true', help='dummy provider key; synthetic smoke only, no real generation')
 parser.add_argument('--domain', help='public DNS hostname for optional HTTPS deployment')
+parser.add_argument('--key-from-environment', action='store_true', help='read GEMINI_API_KEY privately without prompting for it')
 
 
 def main():
@@ -42,7 +43,7 @@ def main():
         password = getpass.getpass('Administrator password (12+ characters): ')
         if password != getpass.getpass('Confirm password: '):
             raise SystemExit('Passwords differ; nothing saved.')
-        key = getpass.getpass('Gemini API key: ').strip()
+        key = os.environ.get('GEMINI_API_KEY', '').strip() if args.key_from_environment else getpass.getpass('Gemini API key: ').strip()
     if '@' not in email or len(password) < 12 or len(password.encode()) > 72 or not key:
         raise SystemExit('Email/key required; password must have 12+ characters and at most 72 UTF-8 bytes.')
     for value in (email, key, args.frontend_image, args.backend_image):

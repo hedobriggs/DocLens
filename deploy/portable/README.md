@@ -33,6 +33,15 @@ need additional capacity. Test representative data before increasing limits.
 
 ## Quick start on a NEW deployment
 
+For the simple local flow, follow the [root README](../../README.md): configure
+a private Gemini key once, then run `./start` / `./stop` from the repository root.
+The launcher builds missing images with the verified builder below, prompts only
+for email/password/confirmation on first setup, and preserves existing `.runtime`
+on later starts. A key in a root `.env` file must be a literal
+`GEMINI_API_KEY=...` line in a mode-0600 file; shell expressions are never executed.
+Use `./start --port 3001` on first setup if another app occupies port 3000.
+The advanced manual instructions below remain useful for HTTPS and synthetic tests.
+
 Use a separate directory and a fresh project. Do not run the repository's old
 `docker-compose.yml`, copy existing Mac volumes, or combine it with this file.
 Do not deploy on top of your RunPod installation or existing Mac checkout.

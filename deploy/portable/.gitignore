@@ -1,4 +1,5 @@
 .runtime*/
+.launcher.lock
 evidence/
 *.tar
 *.tar.gz

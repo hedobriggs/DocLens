@@ -1,5 +1,10 @@
 # Start here
 
+For a Git clone, the simplest local setup is now documented in the
+[root README](../../README.md): provide a private Gemini key once, then use
+`./start` and `./stop`. First startup prompts for email/password/confirmation;
+later starts reuse your saved settings. The archive/manual procedure follows.
+
 This package runs the same approved application source as the RunPod trial:
 `66db29f0b072fd9821869f4ffef008883ce0509b`. It does not contain your RunPod
 credentials or documents and does not update your Mac.

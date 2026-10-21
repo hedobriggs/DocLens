@@ -1,0 +1,12 @@
+{
+  "first_start": "interactive email, password, confirmation; private file key; healthy",
+  "synthetic_login": 200,
+  "indexed_chunks": 5,
+  "invalid_replacement_preserved": true,
+  "page_limit_preserved": true,
+  "stop_start": "passed with stdin closed on restart",
+  "records_after_stop_start": "exact points, payloads and publication records unchanged",
+  "login_after_restart": 200,
+  "platform": "Linux amd64; existing tested images reused",
+  "live_gemini": "not run"
+}

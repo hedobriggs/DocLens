@@ -77,3 +77,30 @@ refers to a Boolean disabling implicit token use, not an embedded token.
 
 The portable package is a tested deployment candidate, not a claim of production
 security certification or guaranteed compatibility with every cloud platform.
+# Simple start/stop launcher follow-up
+
+The root `start` and `stop` scripts delegate to a stdlib Python launcher and the
+existing scoped portable Compose wrapper. Application source and image contents
+are unchanged. The initializer now optionally reads the provider key from its
+environment; its original manual key prompt remains available.
+
+On Linux amd64, a fresh isolated checkout was configured through a real terminal:
+email, hidden password and hidden confirmation were requested; the synthetic
+provider key came from a private mode-0600 root `.env`. Existing tested image
+tags were reused. All services became healthy; anonymous upload was rejected,
+login returned 200, a synthetic five-page PDF indexed five chunks, invalid and
+301-page replacements preserved records, and the existing restart check passed.
+Then `./stop` and `./start </dev/null` succeeded. Exact points, payloads and
+publication records matched the pre-stop snapshot, and login still returned 200.
+No live Gemini calls or customer data were used. Only the trial's own containers
+and volumes were removed after testing.
+
+All 14 launcher/packaging tests passed: missing and placeholder keys, private-file
+permissions/literal parsing, symlink-runtime refusal, saved-port preservation,
+unconfigured stop, prompt-free restart, scoped stop, propagated build/Compose
+failure, and the original four packaging safety checks. Bash syntax and Git
+whitespace checks passed. See `evidence/launcher-tests.txt` and
+`evidence/launcher-result.json`. The automatic missing-image build path was
+tested with mocked failures; full image builds were validated previously below.
+This follow-up did not repeat a full image build or physical Mac/Apple Silicon
+acceptance. It does not reset an existing installation's password.
