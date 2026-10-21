@@ -1,0 +1,14 @@
+{
+  "anonymous_upload": 401,
+  "login": 200,
+  "real_model_ingestion_chunks": 5,
+  "invalid_replacement_preserved": true,
+  "page_limit_preserved": true,
+  "restart": "not run",
+  "live_answers": "not run",
+  "application_commit": "3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d",
+  "launcher_stop_start": "passed; startup stdin closed",
+  "records_after_launcher_stop_start": "all points, payloads and publication records unchanged",
+  "login_after_launcher_stop_start": 200,
+  "live_gemini": "not run"
+}

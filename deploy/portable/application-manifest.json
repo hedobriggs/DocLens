@@ -1,5 +1,5 @@
 {
-  "application_commit": "66db29f0b072fd9821869f4ffef008883ce0509b",
+  "application_commit": "3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d",
   "sha256": {
     "backend/.dockerignore": "c733842f22946f21294408b7bbdc89e1287b0dd3eeab9f815e019861cd547bfb",
     "backend/.gitignore": "372851a37b30216c915fff37d64aeccad565aff62a1c8a21105031d38ae32f6e",
@@ -25,9 +25,9 @@
     "frontend/app/api/auth/logout/route.ts": "3881f5aeb4b5e55bfe39aa432795b747ca53180b94bc3457ac37450172793f8e",
     "frontend/app/api/documents/process/route.ts": "7f9a33153d5c5af18395ad82089225a0a8d250905946e361d1ba6ee120c946a0",
     "frontend/app/dashboard/layout.tsx": "0fdf1cc0222db181ca6334c6f03732a48b42df0f87adb2f09cff4b224c94d8f4",
-    "frontend/app/dashboard/page.tsx": "8dd318d2fb1bc0c63057c35d3977d6a90c636fd58ecba4c49c17dc6b41e10367",
+    "frontend/app/dashboard/page.tsx": "85e3ddcf8127875db37e657e34b0d2052058f68d624ca4602c5e40a08f19032d",
     "frontend/app/favicon.ico": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932",
-    "frontend/app/globals.css": "eab815d91351795bd0e7b6f559ab52f68f53fb5031f40332a179364b9dfdbd25",
+    "frontend/app/globals.css": "7b937b4c5061fc203582d8c51a83cae26f21e2e0d5bbd211c9e4a15778154da6",
     "frontend/app/layout.tsx": "ac0a51f726d23d255be241c5f37e47119736c2c3cdf5feac57f85de677686ee5",
     "frontend/app/page.tsx": "c73da11c47a0bedda36407ab350dab98bdfa05128f6fce12706b9975db2cf460",
     "frontend/eslint.config.mjs": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493",

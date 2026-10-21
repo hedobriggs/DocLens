@@ -95,11 +95,14 @@ def main():
                         probe.bind(('127.0.0.1', port))
                     except OSError:
                         raise SystemExit('Port is unavailable. Choose another port, for example ./start --port 3001. Existing services were not changed.')
+            defaults = ['doclens-portable-backend:3a07c4d', 'doclens-portable-frontend:3a07c4d']
             images = [config.get(k, default) if config else default for k, default in
-                      [('BACKEND_IMAGE', 'doclens-portable-backend:66db29f'), ('FRONTEND_IMAGE', 'doclens-portable-frontend:66db29f')]]
+                      zip(('BACKEND_IMAGE', 'FRONTEND_IMAGE'), defaults)]
             missing = any(subprocess.run(['docker', 'image', 'inspect', image], stdout=subprocess.DEVNULL,
                                        stderr=subprocess.DEVNULL).returncode != 0 for image in images)
             if missing:
+                if config and images != defaults:
+                    raise SystemExit('Saved deployment images are missing. Restore those exact images or configure a fresh checkout; current source will not be built under older/custom tags.')
                 print('Building application images. First startup can take several minutes.', flush=True)
                 build_env = os.environ.copy()
                 build_env.pop('GEMINI_API_KEY', None)

@@ -107,6 +107,19 @@ class Launcher(unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError): self.invoke('start')
         self.assertFalse(any('up' in c for c, _ in self.calls))
 
+    def test_missing_old_images_are_not_rebuilt_from_new_source(self):
+        self.runtime()
+        config = self.here / '.runtime/compose.env'
+        with config.open('a') as stream:
+            stream.write('BACKEND_IMAGE=old-backend:old\nFRONTEND_IMAGE=old-frontend:old\n')
+        original = self.docker
+        def missing(command, **kwargs):
+            result = original(command, **kwargs)
+            return subprocess.CompletedProcess(command, 1) if 'inspect' in command else result
+        self.docker = missing
+        with self.assertRaisesRegex(SystemExit, 'Restore those exact images'): self.invoke('start')
+        self.assertFalse(any('build.py' in str(c) or 'up' in c for c, _ in self.calls))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -77,11 +77,12 @@ refers to a Boolean disabling implicit token use, not an embedded token.
 
 The portable package is a tested deployment candidate, not a claim of production
 security certification or guaranteed compatibility with every cloud platform.
-# Simple start/stop launcher follow-up
+
+## Simple start/stop launcher follow-up
 
 The root `start` and `stop` scripts delegate to a stdlib Python launcher and the
-existing scoped portable Compose wrapper. Application source and image contents
-are unchanged. The initializer now optionally reads the provider key from its
+existing scoped portable Compose wrapper. The initial launcher trial used the
+previously built `66db29f` application images. The initializer now optionally reads the provider key from its
 environment; its original manual key prompt remains available.
 
 On Linux amd64, a fresh isolated checkout was configured through a real terminal:
@@ -95,12 +96,39 @@ publication records matched the pre-stop snapshot, and login still returned 200.
 No live Gemini calls or customer data were used. Only the trial's own containers
 and volumes were removed after testing.
 
-All 14 launcher/packaging tests passed: missing and placeholder keys, private-file
+All 15 launcher/packaging tests passed: missing and placeholder keys, private-file
 permissions/literal parsing, symlink-runtime refusal, saved-port preservation,
 unconfigured stop, prompt-free restart, scoped stop, propagated build/Compose
-failure, and the original four packaging safety checks. Bash syntax and Git
+failure, missing old-image refusal (no rebuilding old tags from new source), and the
+original four packaging safety checks. Bash syntax and Git
 whitespace checks passed. See `evidence/launcher-tests.txt` and
 `evidence/launcher-result.json`. The automatic missing-image build path was
-tested with mocked failures; full image builds were validated previously below.
-This follow-up did not repeat a full image build or physical Mac/Apple Silicon
-acceptance. It does not reset an existing installation's password.
+tested with mocked failures. The launcher does not reset an existing installation's
+password. Physical Mac/Apple Silicon acceptance remains untested.
+
+
+### Concurrent UI integration
+
+The initial Git push was rejected because `3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d`
+added UI changes on the remote packaging branch. Those changes were merged
+without editing backend or frontend files. The previous build manifest still
+pinned the earlier dashboard/CSS hashes, so it would have rejected fresh builds;
+the manifest now pins the exact newer source and default image tags/labels are
+`3a07c4d`. Existing configured projects retain their saved tags. Old downloadable
+image archives remain at the earlier revision and are not advertised as current.
+
+Both current images were built successfully through the verified builder using
+the managed build CA with TLS verification enabled. The frontend production
+build/TypeScript passed. `image-manifest.json` records the new image IDs and
+checks for credential environment names without exposing any values. Source
+hash changes are restricted to the two frontend UI files from the remote commit.
+This integration is not an independent accessibility or UI review; the remote
+UI evidence and its limitations remain as provided by that change.
+
+The fresh-terminal launcher trial was repeated with both newly built `3a07c4d`
+images. Synthetic login, five-chunk PDF ingestion, invalid/page-limit replacement
+preservation, and `./stop` followed by `./start </dev/null` all passed. Exact
+records matched across that stop/start, and login still returned 200. See
+`evidence/launcher-current-result.json` and `evidence/launcher-current-build.log`.
+The trial used separate project storage and was cleaned up after verification.
+A whitespace check caught a trailing blank line, which was removed before commit.

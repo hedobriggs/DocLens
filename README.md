@@ -43,8 +43,8 @@ Python 3, Docker and Compose 2.30+ are required. Images target Linux amd64;
 Apple Silicon and physical Mac validation remain outstanding. Images are not yet
 published to Docker Hub.
 
-This package contains application source pinned to
-`66db29f0b072fd9821869f4ffef008883ce0509b`, including recovery controls and bounded
+This package contains application source with the latest branch UI, pinned to
+`3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d`, including recovery controls and bounded
 complete-document answers. Upload limits remain **32 MiB and 300 pages**.
 The package was tested with synthetic documents; see
 [validation evidence and limitations](deploy/portable/VALIDATION.md).

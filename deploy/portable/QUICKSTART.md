@@ -1,63 +1,51 @@
 # Start here
 
-For a Git clone, the simplest local setup is now documented in the
-[root README](../../README.md): provide a private Gemini key once, then use
-`./start` and `./stop`. First startup prompts for email/password/confirmation;
-later starts reuse your saved settings. The archive/manual procedure follows.
+Use the working `package/portable-docker` branch in a separate folder. Docker
+Desktop/Engine must be running; Python 3 and Docker Compose 2.30+ are required.
+Images target Linux amd64; physical Mac and Apple Silicon acceptance remain
+unverified here. Keep your original installation and data untouched.
 
-This package runs the same approved application source as the RunPod trial:
-`66db29f0b072fd9821869f4ffef008883ce0509b`. It does not contain your RunPod
-credentials or documents and does not update your Mac.
+## One-time private provider key
 
-Use a **new Docker-capable Linux amd64 server**, or a separate trial directory
-on Intel Mac Docker Desktop. Docker Compose 2.30+ and Python 3 are needed. The
-current native RunPod container has no Docker daemon; do not run these Compose
-commands there. See README.md for supported hosts and resource planning.
+From the repository root:
 
-1. Download and verify the release files against `SHA256SUMS`. On Linux use
-   `sha256sum -c SHA256SUMS`; on macOS use `shasum -a 256 -c SHA256SUMS`.
-2. Unzip `DocLens-portable-source.zip` into a NEW folder. Keep the image archive
-   nearby; record its full path. Never extract over the existing Mac checkout.
-3. Load the two custom images (replace the path with your download location):
+```sh
+cp .env.example .env
+chmod 600 .env
+```
 
-   ```sh
-   gzip -dc /absolute/path/DocLens-portable-linux-amd64-images.tar.gz | docker image load
-   ```
+Edit `.env` privately, replacing the placeholder with your Gemini API key.
+Alternatively supply `GEMINI_API_KEY` through your server's secret environment.
+Never commit a real key or paste it in chat. No shell expressions in `.env` are
+executed. Existing configured portable installations can skip this step: their
+private `.runtime` already contains the saved key.
 
-   Check both images appear in `docker image ls`. Alternatively, build from
-   source using `python3 deploy/portable/build.py` in the unpacked repository.
-4. In `DocLens-portable/deploy/portable`, pull Qdrant and perform a synthetic test:
+## Start and stop
 
-   ```sh
-   docker pull qdrant/qdrant:v1.15.5@sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863
-   python3 configure.py --synthetic-test --port 0
-   ./doclens up -d --no-build --wait --wait-timeout 180
-   python3 smoke.py --restart
-   ```
+```sh
+./start
+```
 
-   Run each command only after the previous command succeeds. This uses a dummy
-   Gemini key and tests actual PDF ingestion/storage without provider calls.
-   Preserve the output. It is an automated test, not a ready-to-use public app.
-5. For a real deployment, use ANOTHER fresh package directory/project; do not
-   overwrite the synthetic runtime files. Configure with:
+First setup builds missing images and asks for email, password (12+ characters,
+at most 72 UTF-8 bytes) and password confirmation. Save the password securely.
+Later starts reuse settings and do not prompt. Open the printed address, normally
+http://127.0.0.1:3000. For a fresh installation alongside an existing one, use
+`./start --port 3001`. An existing saved port is never silently changed.
 
-   ```sh
-   python3 configure.py --domain YOUR-REAL-DNS-HOSTNAME
-   ./doclens --https up -d --no-build --wait --wait-timeout 180
-   ```
+```sh
+./stop
+```
 
-   Replace the hostname; point its DNS to the server first and allow inbound
-   TCP 80/443. The initializer prompts privately for login details and Gemini
-   key. Open `https://YOUR-REAL-DNS-HOSTNAME` after Caddy has obtained a valid
-   certificate. Do not expose backend 8000 or database 6333/6334.
+This stops only this checkout's project. Named volumes and settings remain.
+It does not delete containers, images or documents. Avoid `down -v` and volume
+prune on any deployment with data you want to retain.
 
-Keep the persistent Docker volumes and `.runtime` files private. Never run
-`down -v` or volume prune on a deployment containing data you want to retain.
-Back up and test restore before relying on the service. README.md contains
-backup, restart, proxy trust and troubleshooting details; VALIDATION.md records
-exact test scope, initial failures and unverified platforms.
+The scripts preserve any existing portable `.runtime`, including its original
+image tags. They do not reset forgotten passwords, upgrade an installation's
+images, or migrate another project's data. Newly configured projects use the
+current `3a07c4d` image tags. Older `66db29f` image archives remain historical.
 
-Images have been built and exported, not published to a registry. Deployment to
-a real server, native Mac acceptance and migration of existing data are separate
-steps. Current upload limits remain 32 MiB / 300 pages; this package does not
-make a 2,786-page PDF acceptable as one upload.
+For public-server DNS/HTTPS, manual configuration, backups and synthetic tests,
+see [README.md](README.md). The simple launcher binds to loopback and does not
+configure cloud firewalls or public TLS. Upload limits remain 32 MiB / 300 pages.
+Read [VALIDATION.md](VALIDATION.md) for evidence and platform limitations.

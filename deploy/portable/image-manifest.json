@@ -1,20 +1,20 @@
 [
   {
-    "image": "doclens-portable-backend:66db29f",
-    "id": "sha256:17606c264ec38185a015daa2f021ee7c7beac70f8f8f4f1b90c62130ac1b2c12",
+    "image": "doclens-portable-backend:3a07c4d",
+    "id": "sha256:0e764cbe683f93ca3e74bccfcb69ae37e14de3d60440aa566e00744dfcaa9fd3",
     "size_bytes": 1716368518,
     "architecture": "amd64",
     "user": "10001:10001",
-    "application_commit": "66db29f0b072fd9821869f4ffef008883ce0509b",
+    "application_commit": "3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d",
     "credentials_in_image_environment": false
   },
   {
-    "image": "doclens-portable-frontend:66db29f",
-    "id": "sha256:e8acd1de6312d613296ed15c71a1c45d1f33508b7a137c68a6cf5d9a2ba24b3b",
-    "size_bytes": 685979258,
+    "image": "doclens-portable-frontend:3a07c4d",
+    "id": "sha256:d8c1f654ee4839c33639629b29717343d0d30d0ce0210d9106c1aa0418b6eba7",
+    "size_bytes": 685986901,
     "architecture": "amd64",
     "user": "node",
-    "application_commit": "66db29f0b072fd9821869f4ffef008883ce0509b",
+    "application_commit": "3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d",
     "credentials_in_image_environment": false
   }
 ]

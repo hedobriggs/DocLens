@@ -9,7 +9,7 @@ services:
     networks: [data]
     restart: unless-stopped
   backend:
-    image: ${BACKEND_IMAGE:-doclens-portable-backend:66db29f}
+    image: ${BACKEND_IMAGE:-doclens-portable-backend:3a07c4d}
     platform: linux/amd64
     build:
       context: ../../backend
@@ -34,7 +34,7 @@ services:
       start_period: 90s
       retries: 6
   frontend:
-    image: ${FRONTEND_IMAGE:-doclens-portable-frontend:66db29f}
+    image: ${FRONTEND_IMAGE:-doclens-portable-frontend:3a07c4d}
     platform: linux/amd64
     build:
       context: ../../frontend

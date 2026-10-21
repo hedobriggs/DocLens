@@ -37,7 +37,7 @@ def main():
         for service in ['backend', 'frontend']:
             dockerfile = dockerfiles / ('Dockerfile.' + service)
             shutil.copyfile(HERE / dockerfile.name, dockerfile)
-            tag = os.environ.get(service.upper() + '_IMAGE', 'doclens-portable-' + service + ':66db29f')
+            tag = os.environ.get(service.upper() + '_IMAGE', 'doclens-portable-' + service + ':3a07c4d')
             command = ['docker', 'build', '--platform', 'linux/amd64', '-f', str(dockerfile), '-t', tag]
             if trust:
                 command += ['--secret', 'id=build_ca,src=' + str(Path(trust).resolve())]

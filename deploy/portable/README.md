@@ -1,10 +1,10 @@
 # Portable DocLens deployment
 
-This is a new deployment package for approved application commit
-`66db29f0b072fd9821869f4ffef008883ce0509b`, matching the source installed on the
-RunPod trial. It is built from source, not a capture of that Pod. No credentials,
+This package pins application commit
+`3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d`: the reviewed RunPod backend lineage
+plus the branch's newer UI. It is built from source, not a capture of that Pod. No credentials,
 CVs, uploaded documents, database contents or original Mac files are included.
-Application source, requirements and lockfile are unchanged.
+The launcher does not change application code, requirements or the lockfile.
 
 ## What is packaged
 
@@ -60,11 +60,10 @@ requirements, PyTorch CPU version and model revisions are pinned. A fully
 bit-for-bit reproducible image is not promised: package indexes, build tools and
 TLS trust can evolve; record resulting image IDs and inventories.
 
-Alternatively, load the supplied custom-image archive (verify its SHA256 first):
-
-```sh
-gzip -dc DocLens-portable-linux-amd64-images.tar.gz | docker image load
-```
+Earlier release archives contain the `66db29f` images and do not include the
+newer UI. Build this checkout to produce the current `3a07c4d` images; this task
+has not published a replacement archive or registry release. Existing configured
+deployments keep their saved image references rather than being silently upgraded.
 
 Pull official Qdrant and initialize private runtime files:
 
