@@ -11,7 +11,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct
 from document_publication import replace, visible_filter, ensure_collection, CATALOG
 from qdrant_client.models import Distance
-from mac_upload_recovery_smoke import docker, ready
+from docker_helpers import docker, ready
 
 COLLECTION='document_chunks'
 VECTOR=[1.0]+[0.0]*383

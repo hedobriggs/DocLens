@@ -1,4 +1,0 @@
-PASS native-synthetic.pdf: startup, authentication, invalid-PDF rejection, two-page PDF extraction/indexing, 2 real 384-dimensional vectors and page metadata; PDF SHA256=0c7cffc9d5facecb968a2bd8d9179dfbf0bb602c757707d41553031f221f478c
-PASS container-synthetic.pdf: startup, authentication, invalid-PDF rejection, two-page PDF extraction/indexing, 2 real 384-dimensional vectors and page metadata; PDF SHA256=22a59f501275458eb316f43e30672d397a8409137d8b7fe3e89f04a794652095
-PASS built Next gateway: anonymous upload denied, genuine admin login/session, multipart PDF forwarding to rebuilt backend and real indexing
-PASS dependency consistency; hosted generation was not invoked. Evidence: /workspace/mac-upload-recovery/verified-smoke

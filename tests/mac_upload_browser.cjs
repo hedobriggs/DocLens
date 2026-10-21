@@ -41,7 +41,7 @@ async function waitReady(origin){for(let i=0;i<200;i++){if(child.exitCode!==null
  const origin=`http://127.0.0.1:${port}`;await waitReady(origin);
  const login=await fetch(origin+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'review@synthetic.invalid',password})});
  if(login.status!==200)throw new Error('Login failed');const cookie=login.headers.get('set-cookie').split(';')[0];
- behavior='slow';const form=new FormData();form.append('file',new Blob([fs.readFileSync(path.join(process.env.DOCLENS_FREEZE_FIXTURES||'/workspace/mac-upload-freeze','padded-28mib.pdf'))],{type:'application/pdf'}),'existing.pdf');
+ behavior='slow';const form=new FormData();form.append('file',new Blob([fs.readFileSync(path.join(process.env.DOCLENS_FREEZE_FIXTURES||path.join(require('node:os').tmpdir(),'doclens-freeze-fixtures'),'padded-28mib.pdf'))],{type:'application/pdf'}),'existing.pdf');
  const before=rss();let peak=before;const sampler=setInterval(()=>peak=Math.max(peak,rss()),20);const start=performance.now();
  const response=await fetch(origin+'/api/documents/process',{method:'POST',headers:{Cookie:cookie},body:form});
  const data=await response.json();clearInterval(sampler);if(response.status!==200||!data.indexed||data.received_bytes<28*1024*1024)throw new Error('28 MiB gateway transfer failed: '+JSON.stringify(data));

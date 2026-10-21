@@ -1,9 +1,7 @@
 {
   "application_commit": "3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d",
+  "note": "Release candidate includes legal-workspace UI. layout.tsx metadata is normalized to DocLens in this cleanup; exact build inputs are verified below.",
   "sha256": {
-    "backend/.dockerignore": "c733842f22946f21294408b7bbdc89e1287b0dd3eeab9f815e019861cd547bfb",
-    "backend/.gitignore": "372851a37b30216c915fff37d64aeccad565aff62a1c8a21105031d38ae32f6e",
-    "backend/Dockerfile": "d32446f87e9c95ad3a616c6d3a637efff35afff77dfbd7fd65b417b4556eb334",
     "backend/chunking.py": "874c16cbeecc7cb063a1ce1c8675b76c1ddc25e5d38d0cba1ab14b41c6058cb1",
     "backend/document_coverage.py": "bae666f5515a196254ae5cc018e01aafc32a1d394a536ce4d006003eea91835f",
     "backend/document_publication.py": "c0a0834b1db613c42129bd8049fdf8da3f9b821718d846a37bc394fd9531dab1",
@@ -11,15 +9,9 @@
     "backend/generation.py": "c8ed64f1d647e60cbafbd81dd5494c491972a05d07e6b4f857bcfaa88ba41bae",
     "backend/main.py": "71fc58342511995c8ae5dab3df9dbfee974bb7ca34b91e48fc9db17657684735",
     "backend/requirements.txt": "21974023fddbfac272315d9871830e9661ce57c2b906913d1fae4529e762bebe",
-    "backend/test_retrieval.py": "3b210a3d373ec75942568af7036a72bb192e15b54d0648730e52284af0a86f29",
     "backend/upload_processing.py": "99958a118c2aeac9d3eec127a2bf06fadc2eb89c6a28c2f9574dc5c20334bd5b",
     "backend/vector_store.py": "16cdc6d59e06ab15ebbff880ba69b6daf66770fe7f3d3058a071a5b78b16e6a0",
     "frontend/.dockerignore": "eee1adc6c9bec1301032e1ba098d3f2d97b743be50467f7723023c5262c1c4dc",
-    "frontend/.gitignore": "207e265ff4901f9ad9f96d8ce08530e04f9fc600815472a66d0a446096d654cd",
-    "frontend/AGENTS.md": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb",
-    "frontend/CLAUDE.md": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
-    "frontend/Dockerfile": "d996849d1cbd987372fc3bf5a55d5180db8cc2c01dcce61d41b971131b7f430a",
-    "frontend/README.md": "60b55ff7df79af72590f9524208e46642bc32bdc175cdad41349681c0e2f958f",
     "frontend/app/api/ask/route.ts": "dcca85cfa61ea3339bdfc305d69c0fd730ea1bf94d3a492e54929e55da062024",
     "frontend/app/api/auth/login/route.ts": "12d9bdbe9b2796b2fd564b1ae8dd8ce5108912a5f4db811751237914c0b1696b",
     "frontend/app/api/auth/logout/route.ts": "3881f5aeb4b5e55bfe39aa432795b747ca53180b94bc3457ac37450172793f8e",
@@ -28,7 +20,7 @@
     "frontend/app/dashboard/page.tsx": "85e3ddcf8127875db37e657e34b0d2052058f68d624ca4602c5e40a08f19032d",
     "frontend/app/favicon.ico": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932",
     "frontend/app/globals.css": "7b937b4c5061fc203582d8c51a83cae26f21e2e0d5bbd211c9e4a15778154da6",
-    "frontend/app/layout.tsx": "ac0a51f726d23d255be241c5f37e47119736c2c3cdf5feac57f85de677686ee5",
+    "frontend/app/layout.tsx": "4f03606546e9dfa93763a5d8b7fbb5342026f12036cd086d4108d9f586a8d141",
     "frontend/app/page.tsx": "c73da11c47a0bedda36407ab350dab98bdfa05128f6fce12706b9975db2cf460",
     "frontend/eslint.config.mjs": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493",
     "frontend/lib/auth.ts": "c99fd2e3409277b3c5227c5dbf59fcf9cb8e9d3b9d6a4dc5758599a65abad512",
@@ -36,11 +28,6 @@
     "frontend/package-lock.json": "a7db797e7e18a40ff5661d2391cd6cca5b5e1680d525cc7a5f2e3befbd56f672",
     "frontend/package.json": "72ef6486209ad52e07aac49c648010c589b48458e6f685918d83237a4fec67cf",
     "frontend/postcss.config.mjs": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde",
-    "frontend/public/file.svg": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4",
-    "frontend/public/globe.svg": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf",
-    "frontend/public/next.svg": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc",
-    "frontend/public/vercel.svg": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4",
-    "frontend/public/window.svg": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1",
     "frontend/tsconfig.json": "be18523b23b78b6e1a876ddd107d330f0168bddf09d751b57e0b5edce69c66f3"
   }
 }

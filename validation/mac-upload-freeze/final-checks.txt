@@ -1,5 +1,0 @@
-PASS: 12 backend regressions and 2 real-server publication tests.
-PASS: 12 browser recovery cases, 3 gateway protocol failures, upstream cancellation and real 120-second deadline.
-PASS: native/container real PDFs, measured processing stages/resources, and controlled original-timeout continuation proof.
-PASS: frontend build/lint, Python compilation, Node syntax, Compose configuration, dependency-lock validation.
-PASS: complete staged base-to-fix whitespace check against 497394bf03f00f73256e3e70cb7283e7ce33c342.

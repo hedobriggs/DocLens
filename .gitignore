@@ -14,3 +14,18 @@ frontend/.next/
 
 # macOS
 .DS_Store
+
+# Generated review artifacts and local recovery copies (not application source)
+/validation/
+/artifacts/
+*.log
+*.backup
+*.bak
+*.bundle
+*.zip
+*.tar.gz
+**/__pycache__/
+
+# Additional private environment variants
+.env.*
+!.env.example

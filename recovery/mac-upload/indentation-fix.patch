@@ -1,5 +1,0 @@
---- a/backend/main.py
-+++ b/backend/main.py
-@@ -371 +371 @@
--       retrieval_start = time.perf_counter()
-+    retrieval_start = time.perf_counter()

@@ -1,1 +1,0 @@
-PASS: fresh-project restore preserved all points, payloads and publication records.

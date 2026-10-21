@@ -39,6 +39,23 @@ class Packaging(unittest.TestCase):
                 with self.assertRaises(SystemExit): configure.main()
             self.assertFalse((root / '.runtime').exists())
 
+    def test_release_manifest_matches_real_build_inputs(self):
+        # This caught the legal UI integration retaining stale dashboard hashes.
+        # Run the actual builder's checks/contexts without requiring Docker.
+        build = module('build')
+        checked = []
+        def inspect_context(command, **kwargs):
+            context = Path(command[-1])
+            files = [p for p in context.rglob('*') if p.is_file()]
+            self.assertTrue(files)
+            self.assertFalse(any(p.name.startswith('.env') or p.suffix in {'.backup','.log'} for p in files))
+            if context.name == 'frontend':
+                self.assertIn('legal-workspace', (context/'app/dashboard/page.tsx').read_text())
+            checked.append(context.name)
+        with patch.object(build.subprocess, 'run', side_effect=inspect_context), patch.dict('os.environ', {'BUILD_CA_BUNDLE':''}), contextlib.redirect_stdout(io.StringIO()):
+            build.main()
+        self.assertEqual(checked, ['backend','frontend'])
+
     def test_changed_source_stops_before_any_build(self):
         build = module('build')
         with tempfile.TemporaryDirectory() as temporary:

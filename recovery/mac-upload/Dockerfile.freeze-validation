@@ -1,3 +1,0 @@
-FROM doclens-mac-upload-review:fixed
-WORKDIR /app
-COPY . .

@@ -1,0 +1,37 @@
+# DocLens architecture
+
+The frontend authenticates one configured administrator and forwards authenticated
+requests to the private Python backend. Qdrant stores document chunks, embeddings
+and publication pointers. Docker Compose exposes only the frontend on loopback;
+an optional Caddy proxy supplies HTTPS. Backend and database ports stay private.
+
+PDF parsing and embedding run through the existing bounded processing worker,
+not on the API event loop. Limits remain 32 MiB, 300 pages, one million extracted
+characters total, 100,000 per page and 1,500 passages. Backend processing is bounded
+to 90 seconds; gateway/browser deadlines are 120/135 seconds. Cancellation is
+cooperative. This is not a durable background job system.
+
+Replacement stages a complete new revision and then changes a publication pointer.
+Existing points are retained, including after failed or uncertain publication.
+Retrieval captures one visibility snapshot, so concurrent replacements do not mix
+revisions. Retired revisions accumulate; cleanup remains inventory-only. No
+original PDFs, customer ownership or provenance may be inferred from filenames.
+
+Ordinary questions use hybrid retrieval and reranking of three passages.
+Comprehensive questions gather one selected document's visible passages, bounded
+by 120,000 context characters and 1,500 chunks. Oversized requests fail explicitly;
+they do not generate a truncated “complete” list. Detection is an English heuristic
+and the API also accepts `comprehensive: true`.
+
+Gemini receives the question and retrieved context and returns source numbers.
+The API maps them back to document/page/chunk citations. Original-page viewing is
+not implemented. Model output may still be incomplete or inaccurate.
+
+Runtime memory controls remain backend 1,536 MiB/two CPUs and frontend 512 MiB.
+Qdrant, Docker, models and host need additional capacity. These caps are not proof
+that a whole installation fits an 8 GB Mac. Pinned models are built into the
+backend image and operate offline at runtime; Gemini still needs network access.
+
+The separate platform implementation on main adds workspaces, durable admission,
+PostgreSQL migrations and storage reservations. It is not silently retired by
+cleaning this candidate. Integration/retirement needs an explicit reviewed diff.

@@ -1,120 +1,46 @@
-# Portable DocLens deployment
+# Install and operate DocLens
 
-This package pins application commit
-`3a07c4d4fb1d4a395e4b483ae25ea09bf3e53c2d`: the reviewed RunPod backend lineage
-plus the branch's newer UI. It is built from source, not a capture of that Pod. No credentials,
-CVs, uploaded documents, database contents or original Mac files are included.
-The launcher does not change application code, requirements or the lockfile.
+This is the single supported installation path for this release candidate. It
+includes reviewed complete-answer logic and the candidate legal-workspace UI. It is not
+permission to replace an existing Mac installation, migrate data or deploy.
 
-## What is packaged
+## Prerequisites
 
-- Frontend image: Node 22.23.3, locked Next.js/React dependencies, compiled app.
-- Backend image: Python 3.11, CPU-only PyTorch 2.2.2, pinned dependencies, both
-  pinned embedding/reranking models. Models operate offline at runtime.
-- Official Qdrant 1.15.5, pinned by digest, with project-specific persistent
-  `index` and `snapshots` named volumes.
-- Standalone Compose configuration: no original fixed container names, no
-  published database/backend ports, health checks, restart policies, non-root
-  application containers and the reviewed per-service memory/CPU controls.
-- Optional Caddy HTTPS proxy with persistent certificates.
+Docker-capable **Linux amd64** host (or Intel Docker Desktop), Docker Compose
+**2.30+**, Python 3 and Git. Python here uses its standard library; backend
+Python 3.11 is inside the image, not required on the host. Native Mac/Safari
+acceptance remains unverified. ARM/emulation and ordinary RunPod containers
+without a Docker daemon are not validated deployment targets.
 
-This is a three-service application, not one monolithic container. Target:
-Linux **amd64**, Docker Engine/Desktop and Compose **2.30+**. Intel Macs can use
-Docker Desktop Linux containers; native Mac acceptance remains untested. ARM
-servers/Apple Silicon would require emulation (untested) or a separately validated
-ARM build because the CPU wheel/model stack is pinned. A Docker-capable VPS/VM is
-supported; an ordinary RunPod Pod does **not** automatically support nested
-Docker/Compose. Keep the working native RunPod trial separate.
+Plan initially for 4 vCPU, 16 GB RAM and 30 GB free disk. These are estimates,
+not measured limits. Check whole-stack memory, swap and disk pressure before
+building. Stop if headroom is insufficient or uncertain. Do not stop original
+services, prune volumes or raise controls to make a test fit.
 
-Start with 4 vCPU, 16 GB RAM and at least 30 GB free disk for builds/images/data.
-These are planning estimates, not measured whole-stack peak requirements. The
-backend retains 2 CPUs / 1536 MiB, frontend 512 MiB. Qdrant, Docker and the host
-need additional capacity. Test representative data before increasing limits.
+## Build from this checkout
 
-## Quick start on a NEW deployment
-
-For the simple local flow, follow the [root README](../../README.md): configure
-a private Gemini key once, then run `./start` / `./stop` from the repository root.
-The launcher builds missing images with the verified builder below, prompts only
-for email/password/confirmation on first setup, and preserves existing `.runtime`
-on later starts. A key in a root `.env` file must be a literal
-`GEMINI_API_KEY=...` line in a mode-0600 file; shell expressions are never executed.
-Use `./start --port 3001` on first setup if another app occupies port 3000.
-The advanced manual instructions below remain useful for HTTPS and synthetic tests.
-
-Use a separate directory and a fresh project. Do not run the repository's old
-`docker-compose.yml`, copy existing Mac volumes, or combine it with this file.
-Do not deploy on top of your RunPod installation or existing Mac checkout.
-
-From the unpacked repository root, build (requires Internet):
+Use a new directory/project. Never extract over an existing installation or
+attach its volumes. Run each command only after the preceding command succeeds.
+From the repository root:
 
 ```sh
 python3 deploy/portable/build.py
 ```
 
-The builder checks every backend/frontend file against
-`application-manifest.json`, rejects changed/symlink files, and copies only those
-approved files into temporary contexts. Local secrets, untracked backups and
-indexes cannot enter those contexts. Base image digests, npm lockfile, Python
-requirements, PyTorch CPU version and model revisions are pinned. A fully
-bit-for-bit reproducible image is not promised: package indexes, build tools and
-TLS trust can evolve; record resulting image IDs and inventories.
+The builder verifies `application-manifest.json` and copies only its listed files
+into fresh build contexts; credentials, untracked files, backups and indexes are
+excluded. Requirements, npm lockfile, base digests and model revisions are pinned.
+The application baseline and exact file hashes are recorded in the manifest.
+Images are built locally, not published to Docker Hub. Record image IDs for the
+release; do not substitute an old image archive after changing source.
 
-Earlier release archives contain the `66db29f` images and do not include the
-newer UI. Build this checkout to produce the current `3a07c4d` images; this task
-has not published a replacement archive or registry release. Existing configured
-deployments keep their saved image references rather than being silently upgraded.
+For authorized build proxies only, set `BUILD_CA_BUNDLE` to an existing public PEM
+trust bundle. It is mounted during build steps; TLS verification stays enabled.
+Do not put credentials in build arguments or disable certificate verification.
 
-Pull official Qdrant and initialize private runtime files:
+## First run: synthetic acceptance only
 
-```sh
-docker pull qdrant/qdrant:v1.15.5@sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863
-cd deploy/portable
-python3 configure.py --domain doclens.YOUR-DOMAIN.example
-```
-
-Replace the hostname with your real DNS name. The initializer asks privately for
-an admin email, 12+ character password (max 72 UTF-8 bytes), and Gemini key. It
-generates a shared session secret and bcrypt hash. Files under `.runtime` have
-mode 0600 and their directory 0700; it refuses overwriting an existing deployment.
-The Gemini key goes only to the backend; the frontend receives the session secret,
-admin email and password hash. Nothing secret is a build argument or image layer.
-Compose's `raw` env-file mode preserves bcrypt dollar signs. Docker administrators
-can inspect container environment values; use a managed secret integration for
-your organization's requirements. Never share `docker compose config` output,
-runtime env files, full inspect data, cookies or credentials.
-
-Start with HTTPS (DNS A record to this server; allow inbound TCP 80 and 443):
-
-```sh
-./doclens --https up -d --no-build --wait --wait-timeout 180
-./doclens --https ps
-```
-
-Caddy obtains a public certificate automatically; open `https://YOUR-DOMAIN` and
-log in. Use `--https` consistently for status/stop/down when Caddy is enabled.
-Certificates and Qdrant data survive container replacement through named volumes.
-External DNS/ACME/firewall configuration is site-specific and is not certified by
-the local package test. Do not publish 6333, 6334 or 8000. Frontend 3000 binds
-loopback by default; Caddy accesses it over the project network. Keep SSH and
-Docker access restricted. No global firewall configuration is modified here.
-
-For a local trial without a domain, omit `--domain` and `--https`:
-
-```sh
-python3 configure.py
-./doclens up -d --no-build --wait --wait-timeout 180
-```
-
-Access via a local HTTPS reverse proxy. The app uses Secure session cookies in
-production. Do not assume remote plain HTTP or an HTTP SSH tunnel will support a
-browser session; prefer HTTPS. The local synthetic smoke explicitly supplies its
-test cookie to exercise the gateway and is not a public HTTP deployment pattern.
-
-### Credential-free synthetic test
-
-For a fresh synthetic project only, substitute this initializer (dummy Gemini
-key; no live answers):
+In `deploy/portable`, use a fresh project and synthetic credentials:
 
 ```sh
 python3 configure.py --synthetic-test --port 0
@@ -122,86 +48,76 @@ python3 configure.py --synthetic-test --port 0
 python3 smoke.py --restart
 ```
 
-The smoke tests anonymous denial, signed login, a real five-page PDF with five
-employers, actual embedding/indexing, invalid/page-limit replacement preservation,
-and restart persistence of points/payloads/publication metadata. It writes only
-`portable-synthetic.pdf`; repeat runs retain old revisions as the app normally
-does. It does not send a request to Gemini. For a separately configured real-key
-project, `python3 smoke.py --live-answers --restart` sends only synthetic context
-to Gemini and checks all five names and page citations. Provider latency,
-availability and completeness vary. Never use customer data for acceptance tests.
+The initializer refuses an existing `.runtime` directory or project/volume name
+collision. The smoke exercises login, real embeddings/indexing of a five-employer
+PDF, failed-replacement preservation, page-limit rejection and restart identities.
+It does not contact Gemini with a dummy key. Preserve failed and successful test
+output outside the checkout. See [testing](../../docs/TESTING.md).
 
-## Stop, restart, logs and persistence
+## Approved cloud installation
 
-```sh
-./doclens ps
-./doclens logs --tail 50 backend frontend qdrant
-./doclens stop
-./doclens start
-```
-
-For TLS deployments use `./doclens --https` instead. Stopping/recreating
-containers is safe for the named data volumes. **Do not use `down -v`, volume
-prune, or delete the Docker host disk** if you want the index retained. Volumes
-survive containers, not host destruction; host-attached persistent disks and
-off-host backups are required for durable cloud operation. Model files are in
-the backend image, so no first-boot downloads are necessary. Never commit
-`.runtime`; session-secret rotation invalidates active sessions.
-
-The app preserves 32 MiB / 300-page uploads and text/chunk/time budgets. More
-server RAM does not remove these enforcement limits. Comprehensive answers are
-bounded to 120,000 context characters / 1,500 chunks. Originals are not a managed
-document archive; keep source PDFs outside the index. Retired vector revisions
-remain stored; no garbage collection or data migration is introduced.
-
-## Offline backup and fresh-project restore
-
-Keep configuration/secrets separately and privately; database backup alone cannot
-restore login credentials. Never include credentials in a shared evidence ZIP.
-Example while in this package directory; each command must succeed:
+After acceptance and separate deployment approval, configure a **different fresh
+project**, not the synthetic runtime. Point a DNS name at the server and allow
+only the required host ports (80/443 and restricted administration). Then:
 
 ```sh
-set -eu
-backup=$(mktemp -d "$HOME/doclens-backup.XXXXXX")
-./doclens stop
-cid=$(./doclens ps -aq qdrant)
-test -n "$cid"
-docker cp "$cid:/qdrant/storage" "$backup/storage"
-docker cp "$cid:/qdrant/snapshots" "$backup/snapshots"
-tar -czf "$backup/index.tar.gz" -C "$backup" storage snapshots
-tar -tzf "$backup/index.tar.gz" >/dev/null
-./doclens start
+python3 configure.py --domain YOUR-REAL-DNS-HOSTNAME
+./doclens --https up -d --no-build --wait --wait-timeout 180
+./doclens --https ps
 ```
 
-For TLS use the `--https` wrapper; also preserve that project's certificate data
-or let Caddy obtain fresh certificates subject to ACME limits. A readable archive
-is not proof of restore: test on a **new empty project** before relying on it.
-In a separately unpacked copy, configure a new project, `./doclens create --no-build qdrant`, then
-copy the trusted backup's `storage/.` and `snapshots/.` to the stopped Qdrant
-container at `/qdrant/storage` and `/qdrant/snapshots`, and start with
-`./doclens up -d --no-build --wait --wait-timeout 180`. Do not merge files into
-an existing index, mount original Mac volumes, or extract an untrusted archive.
+The initializer privately prompts for administrator email, a 12+ character
+password (maximum 72 UTF-8 bytes), and Gemini API key. It creates a session secret
+and mode-0600 files inside mode-0700 `.runtime`. No secret is committed or built
+into images. Docker administrators can inspect runtime environment values.
+Caddy obtains HTTPS certificates; DNS, firewall and public ACME must be validated
+on the target host. Do not expose backend 8000 or Qdrant 6333/6334.
 
-## Enterprise proxy trust
+Production uses Secure session cookies. Use HTTPS; plain remote HTTP and ordinary
+HTTP SSH tunnels are not a supported login procedure. A synthetic smoke that
+supplies its own cookie is not proof of public HTTPS browser operation.
 
-Normal builds use system public CAs. If an authorized HTTPS proxy requires a
-custom trust bundle, pass its absolute PEM path via `BUILD_CA_BUNDLE` to
-`build.py`. BuildKit mounts it only for networked build steps; verification stays
-enabled and the bundle is not copied into the runtime image. Runtime proxy CA
-configuration, when required, must be mounted read-only separately with
-`SSL_CERT_FILE`/`REQUESTS_CA_BUNDLE` on the backend. Never disable TLS checks.
+## Simple local launcher
 
-## Distribution and rollout
+The root `./start` / `./stop` wrappers use this same deployment package, not a
+second application. For a separately approved fresh local setup, copy
+`.env.example` to `.env`, set its permissions to 0600, and replace the placeholder
+privately; alternatively provide `GEMINI_API_KEY` through a secret environment.
+Run `./start` interactively for login setup. Later starts reuse saved credentials;
+`./stop` preserves data. An occupied default port may be changed on first setup
+with `./start --port 3001`. Never copy original credential files into a trial.
 
-Custom images are built locally, not published to a registry by this task. Save
-or push them to your own authorized registry, pin deployment image references to
-the resulting digests, and use `configure.py --backend-image ... --frontend-image
-...` on each new server. Pull the official Qdrant/Caddy digests separately.
-Keep Python 3, Docker/Compose, DNS/HTTPS and persistent disk configuration with
-the release. For Kubernetes/ECS/etc., preserve the private DNS names `backend`
-and `qdrant`, volume semantics and secret separation; those platforms are not
-automatically configured by this Compose bundle.
+The launcher does not provide public HTTPS by itself. For public cloud servers,
+use the approved DNS/HTTPS configuration above and a real browser acceptance
+check. Local HTTP smoke cookies do not establish production login support.
 
-Read `VALIDATION.md` for actual checks and limitations. A package smoke pass does
-not authorize replacing the user's original Mac installation or migrating its
-data. The running native RunPod environment was not accessed or modified.
+## Operation and recovery
+
+Use `./doclens --https` consistently for a TLS installation; omit `--https` only
+for a project created without Caddy:
+
+```sh
+./doclens --https ps
+./doclens --https logs --tail 50 backend frontend qdrant
+./doclens --https stop
+./doclens --https start
+```
+
+Qdrant data and snapshots use project-specific named volumes; TLS certificates
+also persist. **Never run `down -v`, volume prune or delete the host disk** for a
+live installation. Host destruction still loses attached volumes: use persistent
+cloud disks and private off-host backups. Keep original PDFs separately; the
+vector index is not an originals archive. Old revisions remain retained.
+
+Before relying on a backup, stop that project's services, copy both Qdrant
+`/qdrant/storage` and `/qdrant/snapshots` from its stopped container, archive and
+validate them, then restart the same project. Preserve `.runtime` privately and
+separately. Restore only into a fresh empty project using the same Qdrant version;
+copy the trusted storage/snapshot directories to its stopped Qdrant container,
+start it, and verify point/payload/publication identities. Never merge backup
+files into an existing index or assume a readable archive proves restoration.
+Retain/reissue TLS certificates subject to public ACME constraints.
+
+Do not share `.runtime`, cookies, full container metadata or `docker compose
+config` output. Redact logs before sharing. Session-secret rotation invalidates
+existing sessions. No source-PDF migration or destructive cleanup is included.

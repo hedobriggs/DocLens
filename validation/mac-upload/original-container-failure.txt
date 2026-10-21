@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "backend/main.py", line 371
-    retrieval_start = time.perf_counter()
-IndentationError: unexpected indent

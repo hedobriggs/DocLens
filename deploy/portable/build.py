@@ -37,12 +37,12 @@ def main():
         for service in ['backend', 'frontend']:
             dockerfile = dockerfiles / ('Dockerfile.' + service)
             shutil.copyfile(HERE / dockerfile.name, dockerfile)
-            tag = os.environ.get(service.upper() + '_IMAGE', 'doclens-portable-' + service + ':3a07c4d')
+            tag = os.environ.get(service.upper() + '_IMAGE', 'doclens-portable-' + service + ':doclens-release')
             command = ['docker', 'build', '--platform', 'linux/amd64', '-f', str(dockerfile), '-t', tag]
             if trust:
                 command += ['--secret', 'id=build_ca,src=' + str(Path(trust).resolve())]
             subprocess.run(command + [str(context / service)], check=True)
-    print('Both images built from verified application ' + manifest['application_commit'])
+    print('Both images built from manifest-verified sources; application base ' + manifest['application_commit'])
 
 
 if __name__ == '__main__':

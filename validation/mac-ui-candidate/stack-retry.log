@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/workspace/DocLens/tests/mac_candidate_stack.py", line 79, in <module>
-    response=HTTP.post(f+'/api/documents/process',headers=headers,files={'file':(name,data,'application/pdf')},timeout=110);assert response.status_code==200 and response.json()['total_chunks']==2, f'Initial upload HTTP{response.status_code}'
-                                                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: Initial upload HTTP503

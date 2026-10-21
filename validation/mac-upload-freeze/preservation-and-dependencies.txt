@@ -1,4 +1,0 @@
-PASS: previous locked package versions, integrity data and platform selectors retained.
-PASS: exact Playwright 1.64.1 test dependency declared; frozen npm-ci dry run succeeded.
-PASS: supplied generation/prompt module and login route remain byte-identical to the preserved baseline.
-All original supplied files remain available in the preservation snapshot.

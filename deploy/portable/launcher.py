@@ -95,7 +95,7 @@ def main():
                         probe.bind(('127.0.0.1', port))
                     except OSError:
                         raise SystemExit('Port is unavailable. Choose another port, for example ./start --port 3001. Existing services were not changed.')
-            defaults = ['doclens-portable-backend:3a07c4d', 'doclens-portable-frontend:3a07c4d']
+            defaults = ['doclens-portable-backend:doclens-release', 'doclens-portable-frontend:doclens-release']
             images = [config.get(k, default) if config else default for k, default in
                       zip(('BACKEND_IMAGE', 'FRONTEND_IMAGE'), defaults)]
             missing = any(subprocess.run(['docker', 'image', 'inspect', image], stdout=subprocess.DEVNULL,
@@ -118,11 +118,11 @@ def main():
             command.append('--https')
         if args.action == 'stop':
             run(command + ['stop'])
-            print('DockLens stopped. Settings and document volumes were preserved.')
+            print('DocLens stopped. Settings and document volumes were preserved.')
         else:
             run(command + ['up', '-d', '--no-build', '--wait', '--wait-timeout', '180'])
             address = 'https://' + config['DOMAIN'] if config.get('DOMAIN') else 'http://127.0.0.1:' + config.get('HTTP_PORT', '3000')
-            print('DockLens is ready: ' + address)
+            print('DocLens is ready: ' + address)
 
 
 if __name__ == '__main__':
