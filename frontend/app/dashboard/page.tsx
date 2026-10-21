@@ -257,11 +257,11 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="doclens-dashboard min-h-screen bg-slate-950 text-white">
+    <main className="doclens-dashboard legal-workspace min-h-screen bg-slate-950 text-white">
 
       {/* TOP NAVIGATION */}
       <header className="flex h-16 items-center justify-between border-b border-white/10 px-6">
-        <div className="flex items-baseline gap-2">
+        <div className="legal-brand flex items-baseline gap-2">
           <span className="text-xl font-semibold tracking-tight">
             DocLens
           </span>
@@ -300,10 +300,10 @@ export default function Dashboard() {
         </button>
       </header>
 
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="legal-shell flex h-[calc(100vh-4rem)]">
 
         {/* DOCUMENT SIDEBAR */}
-        <aside className="hidden w-72 flex-col overflow-y-auto border-r border-white/10 bg-slate-950 p-4 md:flex">
+        <aside aria-label="Document workspace" className="legal-sidebar hidden w-72 flex-col overflow-y-auto border-r border-white/10 bg-slate-950 p-4 md:flex">
 
           <input
             ref={fileInputRef}
@@ -313,7 +313,7 @@ export default function Dashboard() {
             className="hidden"
           />
 
-          <div className="mb-4">
+          <div className="legal-upload mb-4">
             <p id="upload-limits" className="mb-2 text-xs leading-5 text-slate-300">
               Text-based PDFs · up to 32 MiB · 300 pages
             </p>
@@ -394,7 +394,7 @@ export default function Dashboard() {
                       : "w-full rounded-xl border border-transparent p-3 text-left transition hover:bg-white/5"
                   }
                 >
-                  <p className="truncate text-sm font-medium text-slate-300">
+                  <p className="doclens-filename text-sm font-medium text-slate-300">
                     {document.name}
                   </p>
 
@@ -410,13 +410,13 @@ export default function Dashboard() {
         </aside>
 
         {/* CHAT WORKSPACE */}
-        <section className="flex min-w-0 flex-1 flex-col">
+        <section aria-label="Document questions" className="legal-chat flex min-w-0 flex-1 flex-col">
 
           {/* CHAT TOOLBAR */}
-          <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
+          <div className="legal-toolbar flex items-center justify-between border-b border-white/10 px-5 py-3">
             <div className="min-w-0 flex-1">
               <h1 className="font-semibold">
-                Document Chat
+                Document workspace
               </h1>
 
               <p className="doclens-filename mt-1 text-xs text-slate-400">
@@ -432,16 +432,17 @@ export default function Dashboard() {
           </div>
 
           {/* CONVERSATION */}
-          <div className="flex-1 overflow-y-auto px-5 py-4">
+          <div className="legal-conversation flex-1 overflow-y-auto px-5 py-4">
             {messages.length === 0 ? (
               <div className="flex h-full items-center justify-center">
-                <div className="max-w-xl text-center">
+                <div className="legal-welcome max-w-xl text-center">
                   <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-xl text-blue-400">
                     D
                   </div>
 
+                  <p className="legal-eyebrow">DOCUMENT INTELLIGENCE</p>
                   <h2 className="text-2xl font-semibold tracking-tight">
-                    Ask your documents
+                    Clarity in every document.
                   </h2>
 
                   <p className="mt-2 leading-6 text-slate-400">
@@ -453,7 +454,7 @@ export default function Dashboard() {
                 </div>
               </div>
             ) : (
-              <div className="mx-auto max-w-4xl space-y-4">
+              <div className="legal-messages mx-auto max-w-4xl space-y-4">
                 {messages.map((message, index) => {
                   const uniqueCitations =
                     getUniqueCitations(
@@ -472,10 +473,11 @@ export default function Dashboard() {
                       <div
                         className={
                           message.role === "user"
-                            ? "min-w-0 max-w-2xl rounded-2xl bg-blue-700 px-4 py-3 text-sm text-white"
-                            : "min-w-0 max-w-2xl rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-200"
+                            ? "legal-question min-w-0 max-w-2xl rounded-2xl bg-blue-700 px-4 py-3 text-sm text-white"
+                            : "legal-answer min-w-0 max-w-2xl rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-200"
                         }
                       >
+                        <p className="legal-message-label">{message.role === "user" ? "Your question" : "DocLens · Document analysis"}</p>
                         {/* MESSAGE CONTENT */}
                         {message.role === "assistant" ? (
                           <div className="space-y-3">
@@ -549,7 +551,7 @@ export default function Dashboard() {
                                 (citation, citationIndex) => (
                                   <details
                                     key={`${citation.document_name}-${citation.page_number}-${citationIndex}`}
-                                    className="doclens-filename min-w-0 max-w-full rounded-lg border border-slate-500 bg-slate-900 px-3 py-2 text-xs text-slate-300"
+                                    className="legal-citation doclens-filename min-w-0 max-w-full rounded-lg border border-slate-500 bg-slate-900 px-3 py-2 text-xs text-slate-300"
                                   >
                                     <summary className="cursor-pointer rounded break-words leading-5">
                                       Show source reference: {" "}
@@ -594,7 +596,7 @@ export default function Dashboard() {
           </div>
 
           {/* QUESTION INPUT */}
-          <div className="border-t border-white/10 p-4">
+          <div className="legal-composer border-t border-white/10 p-4">
             <form
               onSubmit={handleAsk}
               className="mx-auto flex max-w-4xl items-end gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
