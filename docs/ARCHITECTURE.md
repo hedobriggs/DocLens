@@ -32,6 +32,8 @@ Qdrant, Docker, models and host need additional capacity. These caps are not pro
 that a whole installation fits an 8 GB Mac. Pinned models are built into the
 backend image and operate offline at runtime; Gemini still needs network access.
 
-The separate platform implementation on main adds workspaces, durable admission,
-PostgreSQL migrations and storage reservations. It is not silently retired by
-cleaning this candidate. Integration/retirement needs an explicit reviewed diff.
+The earlier workspace/durable-admission platform, including PostgreSQL migrations
+and storage reservations, is retained on `archive/platform-milestone-2` at
+`31eb3455cd5dc02c47f343d62328d41c8a2c3458`. It is not part of the default PDF
+application after the authorized consolidation. Existing platform databases and
+volumes remain untouched; restoring its code is not a data migration.

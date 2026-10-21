@@ -32,9 +32,12 @@ see the installation guide. These launchers do not migrate another installation.
 This is a **release candidate**, not approval to deploy or replace an existing
 installation. Linux amd64 Docker is the packaging target. Physical Intel Mac,
 Safari, VoiceOver and whole-stack resource limits on an 8 GB Mac remain unverified.
-See [cleanup scope and review](docs/CLEANUP.md) before consolidating into `main`.
-Main's separate workspace/job/migration implementation must not be overwritten by
-this candidate without a reviewed product-scope decision.
+The default product is this PDF upload-and-question application. The earlier
+workspace/job/migration implementation is preserved on
+[`archive/platform-milestone-2`](https://github.com/hedobriggs/DocLens/tree/archive/platform-milestone-2).
+Its retirement from the default tree was explicitly authorized; no databases,
+original documents or running installations were migrated or deleted.
+See [cleanup scope and verification](docs/CLEANUP.md).
 
 Use a fresh Docker project for synthetic validation. Never copy original volumes
 or credentials into test fixtures. Runtime secrets, indexes, screenshots, logs and

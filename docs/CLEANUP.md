@@ -1,8 +1,9 @@
 # DocLens cleanup review
 
 Base: `22270341adc1768a16c38038a89a59a0c0e1fc65` on
-`package/portable-docker`. This is one reviewable cleanup candidate; no merge,
-remote-branch deletion, deployment or original-installation change is included.
+`package/portable-docker`. The cleanup was prepared as one candidate. The user subsequently authorized
+making the PDF application the sole version on main and archiving the platform.
+No deployment or original-installation change is included.
 
 ## What was removed
 
@@ -103,16 +104,28 @@ capacity and private/customer data migration are separate validation boundaries.
 Previously reviewed live Gemini results do not certify a new server's provider
 credentials or arbitrary answer completeness.
 
-## Main is not overwritten
+## Authorized main consolidation
 
-Main at `31eb3455cd5dc02c47f343d62328d41c8a2c3458` contains a different product
-line: workspace APIs, durable jobs, PostgreSQL migrations and related UI/tests.
-Those are functional work, not clutter. This candidate does not silently remove
-or merge them. Before main consolidation, independently review the full product
-diff and explicitly decide which platform features remain or are archived.
-Preserve a rollback reference; file cleanup is not a database migration or
-permission to delete documents, credentials, indexes or volumes.
+After the cleanup, the user explicitly chose the PDF upload-and-question
+application as the sole version on main, preserving the workspace/jobs platform
+in an archive reference. The old main commit
+`31eb3455cd5dc02c47f343d62328d41c8a2c3458` was pushed and verified on
+`archive/platform-milestone-2` **before** resolving the integration conflicts.
+It retains platform APIs, durable jobs, SQL migrations and their tests.
 
-After independent review, request approval for the exact merge. Branch retirement
-comes afterward, only after accounting for unique work. Until then the original
-Mac installation and all existing running services remain outside this task.
+The conflict resolution selects the exact tested application tree from
+`3197344045708d145dc8e5f258bffaa17005b2ab`, with only README/architecture/this
+scope record updated for the authorized retirement. Manifest-verified application
+inputs, Docker files, runtime controls, launchers and test suites remain identical
+to that tested candidate. Both histories are retained as merge parents. No
+force-push or history rewrite is used.
+
+The default tree intentionally excludes the archived platform implementation;
+this is a product-scope decision, not an assertion that its code was useless.
+Existing databases, storage, customer documents, Mac files and running services
+are not changed. No other branches are deleted as part of this integration.
+
+Local regression results and the candidate's full Docker acceptance evidence
+remain applicable only within their stated limits. GitHub API access was blocked
+in the working environment; a normal Git push remains subject to GitHub's
+server-side branch protections. A rejection must be resolved rather than bypassed.
