@@ -1,0 +1,7 @@
+# Standard repository-root entry point; services remain defined in one place.
+# New installs use a separate project, never the old Mac 'doclens' volumes.
+name: ${COMPOSE_PROJECT_NAME:-doclens-app}
+include:
+  - path: deploy/portable/compose.yaml
+    project_directory: deploy/portable
+    env_file: deploy/portable/.runtime/compose.env

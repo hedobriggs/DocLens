@@ -20,12 +20,22 @@ chunk and processing-time bounds. Scanned PDFs require OCR, which is not provide
 Questions and retrieved text are sent to Google Gemini. Verify generated answers
 against your original documents; keep source PDFs outside the vector index.
 
-## Start and stop
+## Start and stop with Docker Compose
 
-After a separately approved installation, `./start` starts this checkout's saved
-project and `./stop` stops it while preserving credentials and document volumes.
-First setup requires a private Gemini key and interactive login configuration;
-see the installation guide. These launchers do not migrate another installation.
+After the one-time setup in the installation guide, run from the DocLens root:
+
+```sh
+docker compose up -d --wait
+docker compose down
+```
+
+`down` removes containers/networks but preserves indexed documents in named
+volumes. **Never add `-v` or prune volumes.** Root `compose.yaml` includes the
+existing deployment definition; it is not a second application. Fresh installs
+use project `doclens-app`, separate from the old Mac `doclens` project. Existing
+custom projects must keep their saved project name; do not switch projects or
+attach old Mac volumes as an update. The older `./start` / `./stop` commands remain
+compatible with their saved configurations but are not required for this workflow.
 
 ## Release status
 

@@ -38,6 +38,38 @@ For authorized build proxies only, set `BUILD_CA_BUNDLE` to an existing public P
 trust bundle. It is mounted during build steps; TLS verification stays enabled.
 Do not put credentials in build arguments or disable certificate verification.
 
+## Standard Docker Compose workflow
+
+For a **fresh installation only**, after building images from the repository root:
+
+```sh
+python3 deploy/portable/configure.py --project doclens-app
+```
+
+This one-time initializer privately asks for login credentials and Gemini key.
+Host Python 3 uses only its standard library; Python 3.11 is inside Docker. No
+host Node installation is needed. It refuses an existing configuration/project.
+Then the normal repository-root commands are:
+
+```sh
+docker compose up -d --wait
+docker compose ps
+docker compose down
+```
+
+The root file includes the same service configuration below. Keep the default
+project name `doclens-app` consistent with first setup. An existing deployment
+with another saved project name must use that exact name in
+`COMPOSE_PROJECT_NAME`; do not silently point a new project at its old volumes.
+A fresh installation starts with a fresh index. Migration of original Mac data
+is a separate operation, not part of `up`.
+
+`down` preserves named index/snapshot volumes. **Do not use `down -v` or volume
+prune.** Repeating `up` reuses the same volumes. Keep `.runtime` private and intact.
+For a public cloud server use the DNS/HTTPS setup below; the root local entry
+point does not automatically publish a TLS endpoint. Do not use this procedure
+to overwrite an existing checkout with uncommitted local changes.
+
 ## First run: synthetic acceptance only
 
 In `deploy/portable`, use a fresh project and synthetic credentials:

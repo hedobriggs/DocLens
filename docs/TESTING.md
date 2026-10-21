@@ -64,3 +64,30 @@ indexes. A live-provider pass does not certify every future answer or latency.
 Screenshots, raw logs, image inventories and approval bundles are external review
 artifacts. Current test summaries belong in the review; previous committed
 artifacts remain in Git history. Do not add generated evidence back to this tree.
+
+## Standard repository-root Compose entry point
+
+After building the two application images, run:
+
+```sh
+python3 tests/test_compose_root.py
+```
+
+Uses Python's standard library and an isolated synthetic Docker project. It
+validates the included service definitions, resource limits, private ports and
+credential separation, then exercises actual PDF ingestion. It executes normal
+`docker compose down` and `up`, checking that all stored points, payloads and
+publication/citation identities survive. Fixture teardown removes only the
+fixture's own generated volumes and verifies unrelated Docker inventories match.
+Never use `down -v` on an installation whose documents you want to retain.
+
+The first execution exposed a test assertion expecting numeric JSON values where
+Compose returns memory strings; that failure was retained externally and the
+assertion now converts the value explicitly. This did not require changing
+application resource controls. The root workflow still needs one-time private
+configuration and built images; daily start/stop requires no launcher script.
+
+The corrected full run passed on Linux amd64 / Compose 2.40.3: actual login,
+five-page PDF embedding/indexing, failed-replacement preservation, normal down/up
+persistence, and unchanged unrelated container/volume inventories. Physical Mac
+and browser HTTPS acceptance remain outside this result.
