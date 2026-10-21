@@ -1,0 +1,67 @@
+# Standalone deployment; never combine with the original docker-compose.yml.
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.15.5@sha256:0fb8897412abc81d1c0430a899b9a81eb8328aa634e7242d1bc804c1fe8fe863
+    platform: linux/amd64
+    volumes:
+      - index:/qdrant/storage
+      - snapshots:/qdrant/snapshots
+    networks: [data]
+    restart: unless-stopped
+  backend:
+    image: ${BACKEND_IMAGE:-doclens-portable-backend:66db29f}
+    platform: linux/amd64
+    build:
+      context: ../../backend
+      dockerfile: ../deploy/portable/Dockerfile.backend
+    env_file:
+      - path: .runtime/backend.env
+        format: raw
+    environment:
+      NO_PROXY: qdrant,backend,localhost,127.0.0.1
+      no_proxy: qdrant,backend,localhost,127.0.0.1
+    cpus: 2.0
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    depends_on: [qdrant]
+    networks: [data, edge]
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; o=urllib.request.build_opener(urllib.request.ProxyHandler({})); assert o.open('http://localhost:8000/', timeout=3).status==200; assert o.open('http://qdrant:6333/readyz', timeout=3).status==200"]
+      interval: 10s
+      timeout: 8s
+      start_period: 90s
+      retries: 6
+  frontend:
+    image: ${FRONTEND_IMAGE:-doclens-portable-frontend:66db29f}
+    platform: linux/amd64
+    build:
+      context: ../../frontend
+      dockerfile: ../deploy/portable/Dockerfile.frontend
+    env_file:
+      - path: .runtime/frontend.env
+        format: raw
+    environment:
+      NO_PROXY: backend,localhost,127.0.0.1
+      no_proxy: backend,localhost,127.0.0.1
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:${HTTP_PORT:-3000}:3000"]
+    mem_limit: 512m
+    memswap_limit: 512m
+    depends_on:
+      backend: {condition: service_healthy}
+    networks: [edge]
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 6
+volumes:
+  index: {}
+  snapshots: {}
+networks:
+  data: {internal: true}
+  edge: {}

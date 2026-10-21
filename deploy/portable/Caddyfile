@@ -1,0 +1,3 @@
+{$DOCLENS_DOMAIN} {
+    reverse_proxy frontend:3000
+}

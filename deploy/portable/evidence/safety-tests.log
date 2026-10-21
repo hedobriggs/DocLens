@@ -1,0 +1,9 @@
+test_build_context_excludes_untracked_credentials (__main__.Packaging.test_build_context_excludes_untracked_credentials) ... ok
+test_changed_source_stops_before_any_build (__main__.Packaging.test_changed_source_stops_before_any_build) ... ok
+test_existing_runtime_is_never_overwritten (__main__.Packaging.test_existing_runtime_is_never_overwritten) ... ok
+test_unlabelled_existing_volume_is_not_adopted (__main__.Packaging.test_unlabelled_existing_volume_is_not_adopted) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.009s
+
+OK

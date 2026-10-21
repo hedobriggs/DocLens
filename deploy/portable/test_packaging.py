@@ -1,0 +1,70 @@
+"""Failure-path and context-isolation checks; no Docker daemon is started."""
+import contextlib
+import hashlib
+import importlib.util
+import io
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+HERE = Path(__file__).resolve().parent
+
+
+def module(name):
+    spec = importlib.util.spec_from_file_location('portable_' + name, HERE / (name + '.py'))
+    result = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(result)
+    return result
+
+
+class Packaging(unittest.TestCase):
+    def test_existing_runtime_is_never_overwritten(self):
+        configure = module('configure')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); (root / '.runtime').mkdir(); original = root / '.runtime/private.env'; original.write_text('preserve')
+            with patch.object(configure, 'ROOT', root), patch.object(sys, 'argv', ['configure.py', '--synthetic-test']), patch.object(configure.subprocess, 'check_output') as docker:
+                with self.assertRaises(SystemExit): configure.main()
+                docker.assert_not_called()
+            self.assertEqual(original.read_text(), 'preserve')
+
+    def test_unlabelled_existing_volume_is_not_adopted(self):
+        configure = module('configure')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(configure, 'ROOT', root), patch.object(sys, 'argv', ['configure.py', '--synthetic-test', '--project', 'existing']), patch.object(configure.subprocess, 'check_output', side_effect=['', '', 'existing_index\n']):
+                with self.assertRaises(SystemExit): configure.main()
+            self.assertFalse((root / '.runtime').exists())
+
+    def test_changed_source_stops_before_any_build(self):
+        build = module('build')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); here = root / 'deploy/portable'; here.mkdir(parents=True); (root / 'backend').mkdir(); (root / 'backend/main.py').write_text('modified')
+            (here / 'application-manifest.json').write_text(json.dumps({'sha256': {'backend/main.py': hashlib.sha256(b'approved').hexdigest()}}))
+            with patch.object(build, 'HERE', here), patch.object(build, 'ROOT', root), patch.object(build.subprocess, 'run') as docker, patch.dict('os.environ', {'BUILD_CA_BUNDLE': ''}):
+                with self.assertRaises(SystemExit): build.main()
+                docker.assert_not_called()
+
+    def test_build_context_excludes_untracked_credentials(self):
+        build = module('build')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); here = root / 'deploy/portable'; here.mkdir(parents=True)
+            checks = {}
+            for service in ['backend', 'frontend']:
+                (root / service).mkdir(); (root / service / 'approved.txt').write_text('approved'); (root / service / '.env').write_text('PRIVATE_SENTINEL')
+                checks[service + '/approved.txt'] = hashlib.sha256(b'approved').hexdigest()
+                (here / ('Dockerfile.' + service)).write_text('FROM scratch\n')
+            (here / 'application-manifest.json').write_text(json.dumps({'application_commit': 'test', 'sha256': checks}))
+            commands = []
+            def docker(command, **kwargs):
+                context = Path(command[-1]); self.assertEqual(sorted(p.name for p in context.iterdir()), ['approved.txt']); commands.append(command)
+            with patch.object(build, 'HERE', here), patch.object(build, 'ROOT', root), patch.object(build.subprocess, 'run', side_effect=docker), patch.dict('os.environ', {'BUILD_CA_BUNDLE': ''}), contextlib.redirect_stdout(io.StringIO()):
+                build.main()
+            self.assertEqual(len(commands), 2)
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

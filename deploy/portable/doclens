@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+directory=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+test -f "$directory/.runtime/compose.env" || { echo 'Run python3 configure.py first.' >&2; exit 1; }
+# Ambient Compose variables must not redirect this deployment to an old project.
+unset COMPOSE_PROJECT_NAME COMPOSE_FILE COMPOSE_PROFILES BACKEND_IMAGE FRONTEND_IMAGE HTTP_PORT BIND_ADDRESS DOMAIN
+project=$(sed -n 's/^COMPOSE_PROJECT_NAME=//p' "$directory/.runtime/compose.env")
+[[ "$project" =~ ^[a-z0-9][a-z0-9_-]{0,62}$ ]] || { echo 'Invalid project configuration.' >&2; exit 1; }
+files=(-f "$directory/compose.yaml")
+if [[ "${1:-}" == --https ]]; then
+    shift
+    files+=(-f "$directory/compose.https.yaml")
+fi
+exec docker compose --project-name "$project" --project-directory "$directory" --env-file "$directory/.runtime/compose.env" "${files[@]}" "$@"

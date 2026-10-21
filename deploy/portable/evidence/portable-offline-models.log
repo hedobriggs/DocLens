@@ -1,0 +1,1 @@
+PASS: embedding and reranking inference with no network, under 2 CPU / 1536 MiB limits
