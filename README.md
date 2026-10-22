@@ -60,3 +60,7 @@ Use a fresh Docker project for synthetic validation. Never copy original volumes
 or credentials into test fixtures. Runtime secrets, indexes, screenshots, logs and
 personal backups do not belong in Git. Historical review artifacts remain
 recoverable from Git history rather than duplicated in the current tree.
+
+RunPod Pods use a separate [single-container template](deploy/runpod/README.md)
+(no nested Docker). The template candidate requires image publication and actual
+RunPod validation before use. Macs and ordinary cloud VMs continue using Compose.

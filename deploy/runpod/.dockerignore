@@ -1,0 +1,4 @@
+# Dedicated build context must never include private secrets or documents.
+**
+!Dockerfile
+!supervisor.py
