@@ -159,3 +159,47 @@ publication, an actual RunPod template/Pod, HTTPS browser login/proxy upload
 behavior, provider volume durability/locking/forced crash recovery, backup restore,
 and larger/dense-document resource measurements. No RunPod/registry access is
 attached to this session. Do not treat this candidate as a deployed release.
+
+## Interrupted-startup correction — 23 October 2026
+
+Review base: `d8641f78292f8e5648f1662d32d6f30b0e35d725`.
+A stale `/run/doclens-initial.env` reproduced a `FileExistsError` after forced
+restart. The correction, under the existing installation lock, replaces only a
+private, singly linked regular input file owned by the startup user. Symlinks,
+hard links, foreign owners and group/world-accessible leftovers are refused
+without removing them. New input is created exclusively with mode 0600; cleanup
+checks file identity. Leftover contents are never used as credentials. Existing
+bootstrap still verifies the current secrets against saved settings and refuses
+partial configuration, identity adoption or changed credentials; no reset is added.
+
+The updated synthetic integration test first stores a five-page PDF, injects a
+stale input and kills the container, then checks successful startup with identical
+saved-settings hashes, complete Qdrant point/payload/publication/citation records
+and the existing session. It additionally verifies graceful restart and live
+Gemini answers. This is a local Docker kill/start test, **not RunPod validation**.
+
+Final outcomes: RunPod contract 9/9, bootstrap 9/9, portable packaging 6/6,
+launcher 11/11; full synthetic integration passed, including startup, valid and
+invalid login, anonymous denial, upload, invalid/over-limit replacement
+preservation, both restart paths, private listeners/config separation, single
+writer lock, all five employers/citations from live Gemini, and component-failure
+shutdown. The baseline integration failed at the new stale-input regression as
+expected; its complete command output and the passing rerun are retained in the
+transferable evidence ZIP, outside the application repository.
+
+Tested local image ID (not registry digest):
+`sha256:85fddfa575038b5ac51d8d5fc10f3f757bdef4ad9bc81d616bf9f8cc419dfd6a`.
+Running supervisor matched source SHA-256
+`20a2b4b3064aee8e5c52fd463dda8c3b90f247d9cc771a71c929c7c468cf753f`.
+Whole-container 2 CPU/4 GiB synthetic trial: memory peak 492,716,032 bytes,
+later 406.8 MiB; persisted storage 344,172,227 bytes. These are small-fixture
+observations, not new supported resource/document limits.
+
+No Compose, application authentication, upload/resource limit or Mac changes.
+Registry publication must wait for independent review of this correction. No
+authorized registry destination/push credential or RunPod access has been supplied
+in this session, so no image was published and no `image@sha256:...` release exists.
+Actual RunPod HTTPS browser login/upload, provider stop/start and forced-restart
+storage persistence remain **untested**. No paid Pod was launched; no merge,
+migration or customer-data admission occurred. The previous provider/backup and
+resource-validation limitations still apply; this candidate is not declared ready.

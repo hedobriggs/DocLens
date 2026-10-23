@@ -1,9 +1,11 @@
 """Single-container RunPod entrypoint; no Docker daemon or runtime installation."""
+from contextlib import contextmanager
 import fcntl
 import json
 import os
 from pathlib import Path
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -39,6 +41,35 @@ def attached_volume(mountinfo):
                for line in mountinfo.splitlines())
 
 
+@contextmanager
+def private_initial(values, initial):
+    # Called only while holding the installation lock. Never follow a link or
+    # treat leftover input as authority: current secrets must match saved config.
+    try:
+        stale = initial.lstat()
+    except FileNotFoundError:
+        stale = None
+    if stale is not None:
+        if (not stat.S_ISREG(stale.st_mode) or stale.st_uid != os.geteuid()
+                or stale.st_nlink != 1 or stat.S_IMODE(stale.st_mode) & 0o077):
+            raise ValueError('Refuse unsafe leftover private input')
+        initial.unlink()
+    fd = os.open(initial, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    identity = os.fstat(fd)
+    try:
+        with os.fdopen(fd, 'w') as stream:
+            stream.write('\n'.join(key + "='" + value + "'" for key, value in values.items()))
+        yield initial
+    finally:
+        try:
+            current = initial.lstat()
+        except FileNotFoundError:
+            current = None
+        # Never remove a different file/link if the path was replaced.
+        if current is not None and (current.st_dev, current.st_ino) == (identity.st_dev, identity.st_ino):
+            initial.unlink()
+
+
 def main():
     global PHASE
     # A container root filesystem is not durable. Refuse to silently use it.
@@ -65,13 +96,10 @@ def main():
     if any(not value or any(c in value for c in '\r\n\0') for value in values.values()):
         raise ValueError('Bind all three required private RunPod secrets')
     try:
-        fd = os.open(initial, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(fd, 'w') as stream:
-            stream.write('\n'.join(key + "='" + value + "'" for key, value in values.items()))
-        subprocess.run(['node', '-e', "require('./bootstrap.cjs').initialize('/config','/workspace/doclens/index','/run/doclens-initial.env')"],
-                       cwd='/opt/frontend', check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        with private_initial(values, initial):
+            subprocess.run(['node', '-e', "require('./bootstrap.cjs').initialize('/config','/workspace/doclens/index','/run/doclens-initial.env')"],
+                           cwd='/opt/frontend', check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     finally:
-        initial.unlink(missing_ok=True)
         values.clear()
     os.chmod(DATA / 'config', 0o755)
     # Only these internal aliases are added; no DNS changes outside this Pod.

@@ -57,6 +57,56 @@ class Contract(unittest.TestCase):
         self.assertEqual(calls[1]['user'], 10001)
         self.assertEqual(calls[0]['extra_groups'], [])
 
+    def test_stale_private_input_replaced_and_cleaned(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'initial.env'
+            path.write_text('wrong stale credentials')
+            path.chmod(0o600)
+            with pod.private_initial({'KEY': 'current-value'}, path):
+                self.assertEqual(path.read_text(), "KEY='current-value'")
+                self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            self.assertFalse(path.exists())
+
+    def test_unsafe_stale_paths_preserved(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            original = root / 'valid-settings'
+            original.write_text('preserve configuration')
+            link = root / 'initial.env'
+            link.symlink_to(original)
+            with self.assertRaises(ValueError), pod.private_initial({'KEY': 'current'}, link):
+                pass
+            self.assertTrue(link.is_symlink())
+            self.assertEqual(original.read_text(), 'preserve configuration')
+            link.unlink()
+            os.link(original, link)
+            with self.assertRaises(ValueError), pod.private_initial({'KEY': 'current'}, link):
+                pass
+            self.assertEqual(original.read_text(), 'preserve configuration')
+            link.unlink()
+            link.write_text('not private')
+            link.chmod(0o644)
+            with self.assertRaises(ValueError), pod.private_initial({'KEY': 'current'}, link):
+                pass
+            self.assertEqual(link.read_text(), 'not private')
+            link.chmod(0o600)
+            with patch.object(pod.os, 'geteuid', return_value=link.stat().st_uid + 1):
+                with self.assertRaises(ValueError), pod.private_initial({'KEY': 'current'}, link):
+                    pass
+            self.assertEqual(link.read_text(), 'not private')
+
+    def test_failed_setup_cleans_only_its_input(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'initial.env'
+            with self.assertRaises(RuntimeError):
+                with pod.private_initial({'KEY': 'current'}, path):
+                    raise RuntimeError('synthetic setup failure')
+            self.assertFalse(path.exists())
+            with pod.private_initial({'KEY': 'current'}, path):
+                path.unlink()
+                path.symlink_to(Path(temp) / 'other')
+            self.assertTrue(path.is_symlink())
+
     def test_bind_mount_detection(self):
         self.assertTrue(pod.attached_volume('48 24 0:41 /volumes/data /workspace rw - overlay overlay rw'))
         self.assertFalse(pod.attached_volume('48 24 0:41 / / rw - overlay overlay rw'))

@@ -39,7 +39,7 @@ def wait():
     while time.monotonic() < end:
         state = json.loads(docker('inspect', '--format', '{{json .State}}', name))
         if not state['Running']:
-            raise AssertionError('Container exited: ' + docker('logs', name)[-1200:])
+            raise AssertionError('Container exited: ' + docker('logs', name))
         if state.get('Health', {}).get('Status') == 'healthy':
             return
         time.sleep(0.5)
@@ -107,7 +107,7 @@ try:
         assert status == 200 and all(e in body.get('answer', '') for e in EMPLOYERS), (status, body)
         assert {c['page_number'] for c in body.get('citations', [])} == {1, 2, 3, 4, 5}
         print('PASS live Gemini all five employers and page citations', flush=True)
-    # Confirm listeners, UID separation and no provider/password inherited by frontend.
+    # Confirm listeners and filesystem separation; child launch policy is unit tested.
     docker('exec', '-u', '1000', name, 'node', '-e', "const fs=require('fs');try{fs.readFileSync('/config/backend/settings.json');process.exit(1)}catch(e){if(e.code!=='EACCES')throw e}")
     listeners = docker('exec', name, 'python', '-c', "from pathlib import Path; print(Path('/proc/net/tcp').read_text())")
     for port in [8000, 6333, 6334]:
@@ -118,6 +118,19 @@ try:
     print('PERSISTED_BYTES ' + docker('exec', name, 'python', '-c', "from pathlib import Path;print(sum(p.stat().st_size for p in Path('/workspace/doclens').rglob('*') if p.is_file()))"), flush=True)
     print('MEMORY_PEAK_BYTES ' + docker('exec', name, 'python', '-c', "from pathlib import Path;print(Path('/sys/fs/cgroup/memory.peak').read_text().strip())"), flush=True)
     print('RESOURCE ' + docker('stats', '--no-stream', '--format', '{{.MemUsage}} CPU={{.CPUPerc}}', name), flush=True)
+    settings_code = "from pathlib import Path;import hashlib,json;print(json.dumps({str(p.relative_to('/config')):hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('/config').rglob('*') if p.is_file()},sort_keys=True))"
+    saved_settings = docker('exec', name, 'python', '-c', settings_code)
+    # Reproduce interruption after a private input was created but before finally
+    # removed it. The old fixed pathname survives killing/restarting this container.
+    docker('exec', name, 'python', '-c', "import os;from pathlib import Path;p=Path('/run/doclens-initial.env');p.write_text('stale-synthetic-input');p.chmod(0o600)")
+    docker('kill', '--signal', 'KILL', name)
+    docker('start', name)
+    wait()
+    assert records() == before, 'Interrupted-startup recovery changed documents'
+    assert docker('exec', name, 'python', '-c', settings_code) == saved_settings, 'Interrupted-startup recovery changed saved configuration'
+    assert upload(b'bad replacement', cookie)[0] == 400
+    docker('exec', name, 'python', '-c', "from pathlib import Path;assert not Path('/run/doclens-initial.env').exists()")
+    print('PASS stale private input plus forced restart: startup, exact saved settings, documents, citations and session preserved', flush=True)
     docker('restart', '-t', '30', name)
     wait()
     assert records() == before
