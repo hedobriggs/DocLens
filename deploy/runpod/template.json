@@ -9,7 +9,8 @@
   "env": {
     "DOCLENS_ADMIN_EMAIL": "{{ RUNPOD_SECRET_doclens_admin_email }}",
     "DOCLENS_ADMIN_PASSWORD": "{{ RUNPOD_SECRET_doclens_admin_password }}",
-    "GEMINI_API_KEY": "{{ RUNPOD_SECRET_doclens_gemini_key }}"
+    "GEMINI_API_KEY": "{{ RUNPOD_SECRET_doclens_gemini_key }}",
+    "DOCLENS_MONITORING": "1"
   },
   "isPublic": false
 }

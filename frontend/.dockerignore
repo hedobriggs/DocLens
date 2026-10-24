@@ -28,3 +28,6 @@
 !package.json
 !postcss.config.mjs
 !tsconfig.json
+!app/monitoring/
+!app/monitoring/\[\[...path\]\]/
+!app/monitoring/\[\[...path\]\]/route.ts

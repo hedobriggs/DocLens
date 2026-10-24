@@ -64,3 +64,8 @@ recoverable from Git history rather than duplicated in the current tree.
 RunPod Pods use a separate [single-container template](deploy/runpod/README.md)
 (no nested Docker). The template candidate requires image publication and actual
 RunPod validation before use. Macs and ordinary cloud VMs continue using Compose.
+
+Optional [Prometheus and Grafana monitoring](deploy/monitoring/README.md) is
+available through the DocLens login. Compose uses the monitoring overlay; the
+RunPod candidate includes it in the single container. This candidate requires
+independent review and the documented remaining deployment checks.

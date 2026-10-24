@@ -47,7 +47,7 @@ class Packaging(unittest.TestCase):
                      if line and not line.startswith('#')]
             self.assertEqual(lines[0], '**')
             self.assertTrue(all(line.startswith('!') for line in lines[1:]))
-            files = {line[1:] for line in lines[1:] if not line.endswith('/')}
+            files = {line[1:].replace('\\[','[').replace('\\]',']') for line in lines[1:] if not line.endswith('/')}
             expected = {str(Path(name).relative_to(service)) for name in manifest['sha256']
                         if name.startswith(service+'/') and not name.endswith('/.dockerignore')}
             self.assertEqual(files, expected)

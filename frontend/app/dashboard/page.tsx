@@ -271,6 +271,8 @@ export default function Dashboard() {
           </span>
         </div>
 
+        <div className="flex items-center gap-3">
+        <a href="/monitoring/d/doclens" className="doclens-monitoring-link rounded-lg px-3 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">Monitoring</a>
         <button
           type="button"
           onClick={async () => {
@@ -298,6 +300,7 @@ export default function Dashboard() {
         >
           Log out
         </button>
+        </div>
       </header>
 
       <div className="legal-shell flex h-[calc(100vh-4rem)]">

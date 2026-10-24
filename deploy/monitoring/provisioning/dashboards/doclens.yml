@@ -1,0 +1,9 @@
+apiVersion: 1
+providers:
+  - name: DocLens
+    folder: DocLens
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /opt/monitoring/dashboards

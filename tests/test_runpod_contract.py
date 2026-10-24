@@ -19,8 +19,8 @@ class Contract(unittest.TestCase):
         template = json.loads((ROOT / 'deploy/runpod/template.json').read_text())
         self.assertEqual(template['ports'], '3000/http')
         self.assertEqual(template['volumeMountPath'], '/workspace')
-        self.assertEqual(set(template['env']), set(pod.SECRETS))
-        self.assertTrue(all(value.startswith('{{ RUNPOD_SECRET_') for value in template['env'].values()))
+        self.assertEqual(set(template['env']) - {'DOCLENS_MONITORING'}, set(pod.SECRETS))
+        self.assertTrue(all(value.startswith('{{ RUNPOD_SECRET_') for key,value in template['env'].items() if key != 'DOCLENS_MONITORING'))
 
     def test_no_runtime_dependency_installation_or_docker(self):
         source = (ROOT / 'deploy/runpod/supervisor.py').read_text()
@@ -45,7 +45,7 @@ class Contract(unittest.TestCase):
             def Popen(*args, **kwargs):
                 calls.append(kwargs)
                 return object()
-        namespace = {'os': os, 'subprocess': Process, 'children': [], 'SECRETS': pod.SECRETS}
+        namespace = {'os': os, 'subprocess': Process, 'children': [], 'critical_children': [], 'SECRETS': pod.SECRETS}
         exec(compile(ast.Module(body=[launch], type_ignores=[]), '<production child launcher>', 'exec'), namespace)
         with patch.dict(os.environ, {k: 'synthetic-private' for k in (*pod.SECRETS, 'DOCLENS_SESSION_SECRET', 'DOCLENS_ADMIN_PASSWORD_HASH')}):
             namespace['start'](['node'], '/frontend', 1000)
@@ -56,6 +56,9 @@ class Contract(unittest.TestCase):
         self.assertEqual(calls[0]['user'], 1000)
         self.assertEqual(calls[1]['user'], 10001)
         self.assertEqual(calls[0]['extra_groups'], [])
+        namespace['start'](['grafana'], '/grafana', 10004, critical=False)
+        self.assertEqual(len(namespace['children']),3)
+        self.assertEqual(len(namespace['critical_children']),2)
 
     def test_stale_private_input_replaced_and_cleaned(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -113,9 +116,15 @@ class Contract(unittest.TestCase):
         self.assertFalse(pod.attached_volume('48 24 0:41 /volumes/data /workspace-other rw - overlay overlay rw'))
 
     def test_private_build_context(self):
-        rules = (ROOT / 'deploy/runpod/.dockerignore').read_text().splitlines()
-        self.assertEqual([line for line in rules if line and not line.startswith('#')],
-                         ['**', '!Dockerfile', '!supervisor.py'])
+        rules = (ROOT / 'deploy/runpod/Dockerfile.dockerignore').read_text().splitlines()
+        self.assertEqual(rules[0], '**')
+        files = {line[1:] for line in rules[1:] if not line.endswith('/')}
+        self.assertEqual(files, {
+            'deploy/runpod/supervisor.py', 'deploy/monitoring/prometheus.yml',
+            'deploy/monitoring/dashboards/doclens.json',
+            'deploy/monitoring/provisioning/datasources/prometheus.yml',
+            'deploy/monitoring/provisioning/dashboards/doclens.yml'})
+
 
 
 if __name__ == '__main__':

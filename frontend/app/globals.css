@@ -118,3 +118,6 @@ body {
   .legal-answer { padding: 16px; }
   .legal-question { max-width: 92%; }
 }
+
+.doclens-monitoring-link { display: none; }
+[data-monitoring="enabled"] .doclens-monitoring-link { display: inline-flex; color: #334155; }

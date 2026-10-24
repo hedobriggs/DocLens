@@ -1,0 +1,13 @@
+**
+!deploy/
+!deploy/runpod/
+!deploy/runpod/supervisor.py
+!deploy/monitoring/
+!deploy/monitoring/prometheus.yml
+!deploy/monitoring/dashboards/
+!deploy/monitoring/dashboards/doclens.json
+!deploy/monitoring/provisioning/
+!deploy/monitoring/provisioning/datasources/
+!deploy/monitoring/provisioning/datasources/prometheus.yml
+!deploy/monitoring/provisioning/dashboards/
+!deploy/monitoring/provisioning/dashboards/doclens.yml

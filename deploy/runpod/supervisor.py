@@ -2,8 +2,11 @@
 from contextlib import contextmanager
 import fcntl
 import json
+import hashlib
+import hmac
 import os
 from pathlib import Path
+import secrets
 import signal
 import stat
 import subprocess
@@ -104,8 +107,9 @@ def main():
     os.chmod(DATA / 'config', 0o755)
     # Only these internal aliases are added; no DNS changes outside this Pod.
     with open('/etc/hosts', 'a') as hosts:
-        hosts.write('\n127.0.0.1 backend qdrant\n')
+        hosts.write('\n127.0.0.1 backend qdrant prometheus grafana\n')
     children = []
+    critical_children = []
     stopping = False
 
     def stop(signum=None, frame=None):
@@ -118,23 +122,25 @@ def main():
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
 
-    def start(command, cwd, uid, extra=None):
+    def start(command, cwd, uid, extra=None, critical=True):
         env = os.environ.copy()
         # Provider credentials never enter Qdrant/frontend; password never enters
         # any long-lived child. Each app reads only its own UID-protected config.
         for key in (*SECRETS, 'DOCLENS_SESSION_SECRET', 'DOCLENS_ADMIN_PASSWORD_HASH'):
             env.pop(key, None)
-        env.update({'NO_PROXY': 'localhost,127.0.0.1,backend,qdrant',
-                    'no_proxy': 'localhost,127.0.0.1,backend,qdrant'})
+        env.update({'NO_PROXY': 'localhost,127.0.0.1,backend,qdrant,prometheus,grafana',
+                    'no_proxy': 'localhost,127.0.0.1,backend,qdrant,prometheus,grafana'})
         env.update(extra or {})
         child = subprocess.Popen(command, cwd=cwd, env=env, user=uid, group=uid,
                                  extra_groups=[], start_new_session=True)
         children.append(child)
+        if critical: critical_children.append(child)
+        return child
 
-    def wait_ready(url):
+    def wait_ready(url, observed=None):
         deadline = time.monotonic() + 180
         while not health(url):
-            if stopping or any(p.poll() is not None for p in children) or time.monotonic() > deadline:
+            if stopping or any(p.poll() is not None for p in critical_children) or (observed is not None and observed.poll() is not None) or time.monotonic() > deadline:
                 raise RuntimeError('Component failed readiness')
             time.sleep(0.25)
 
@@ -147,15 +153,60 @@ def main():
         PHASE = 'API readiness'
         backend = json.loads((DATA / 'config/backend/settings.json').read_text())
         start(['python', '-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', '8000', '--workers', '1'], '/app', 10001, backend)
+        grafana_key = hmac.new(backend['DOCLENS_SESSION_SECRET'].encode(), b'doclens-grafana-encryption-v1', hashlib.sha256).hexdigest()
         backend.clear()
         wait_ready('http://127.0.0.1:8000/')
         PHASE = 'frontend readiness'
         start(['node', 'bootstrap.cjs', 'frontend'], '/opt/frontend', 1000)
         wait_ready('http://127.0.0.1:3000/')
+        if os.environ.get('DOCLENS_MONITORING') == '1':
+            monitor_start = len(children)
+            try:
+                PHASE = 'monitoring readiness'
+                private_directory(DATA / 'prometheus', 10003)
+                private_directory(DATA / 'grafana', 10004)
+                prometheus = start(['/opt/prometheus/prometheus', '--config.file=/opt/monitoring/prometheus.yml',
+                       '--storage.tsdb.path=' + str(DATA / 'prometheus'),
+                       '--storage.tsdb.retention.time=2d', '--storage.tsdb.retention.size=256MB',
+                       '--storage.tsdb.wal-compression', '--query.max-concurrency=4',
+                       '--query.max-samples=500000', '--query.timeout=10s',
+                       '--web.listen-address=127.0.0.1:9090'], '/opt/monitoring', 10003,
+                      {'GOMEMLIMIT': '192MiB'}, critical=False)
+                wait_ready('http://127.0.0.1:9090/-/ready', prometheus)
+                grafana = start(['/opt/grafana/bin/grafana', 'server', '--homepath=/opt/grafana',
+                       '--config=/opt/grafana/conf/defaults.ini'], '/opt/grafana', 10004, {
+                    'GF_SERVER_HTTP_ADDR': '127.0.0.1', 'GF_SERVER_HTTP_PORT': '3001',
+                    'GF_SERVER_ROOT_URL': '/monitoring/', 'GF_SERVER_SERVE_FROM_SUB_PATH': 'true',
+                    'GF_PATHS_DATA': str(DATA / 'grafana'),
+                    'GF_PATHS_LOGS': str(DATA / 'grafana/logs'), 'GF_LOG_MODE': 'console',
+                    'GF_PATHS_PLUGINS': str(DATA / 'grafana/plugins'),
+                    'GF_PATHS_BUNDLED_PLUGINS': '/opt/grafana/data/plugins-bundled',
+                    'GF_AUTH_DISABLE_SIGNOUT_MENU': 'true', 'GF_LIVE_MAX_CONNECTIONS': '0',
+                    'GF_PATHS_PROVISIONING': '/opt/monitoring/provisioning',
+                    'GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH': '/opt/monitoring/dashboards/doclens.json',
+                    'GF_SECURITY_ADMIN_PASSWORD': secrets.token_urlsafe(48),
+                    'GF_SECURITY_SECRET_KEY': grafana_key,
+                    'GF_AUTH_PROXY_ENABLED': 'true', 'GF_AUTH_PROXY_HEADER_NAME': 'X-DocLens-Grafana-User',
+                    'GF_AUTH_PROXY_WHITELIST': '127.0.0.1', 'GF_AUTH_PROXY_ENABLE_LOGIN_TOKEN': 'false',
+                    'GF_AUTH_BASIC_ENABLED': 'false', 'GF_AUTH_DISABLE_LOGIN_FORM': 'true',
+                    'GF_AUTH_ANONYMOUS_ENABLED': 'false', 'GF_USERS_ALLOW_SIGN_UP': 'false',
+                    'GF_ANALYTICS_REPORTING_ENABLED': 'false', 'GF_ANALYTICS_CHECK_FOR_UPDATES': 'false',
+                    'GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES': 'false', 'GF_PLUGINS_PREINSTALL_DISABLED': 'true',
+                    'GOMEMLIMIT': '256MiB'}, critical=False)
+                wait_ready('http://127.0.0.1:3001/monitoring/api/health', grafana)
+            except Exception as error:
+                for child in children[monitor_start:]:
+                    if child.poll() is None: os.killpg(child.pid, signal.SIGTERM)
+                print('DocLens monitoring unavailable (' + type(error).__name__ + '); application remains available', flush=True)
         PHASE = 'component supervision'
         print('DocLens ready: frontend 3000; API and Qdrant loopback only', flush=True)
+        reported_monitors = set()
         while not stopping:
-            if any(child.poll() is not None for child in children):
+            for child in children:
+                if child not in critical_children and child.poll() is not None and child.pid not in reported_monitors:
+                    reported_monitors.add(child.pid)
+                    print('DocLens monitoring component exited; application remains available', flush=True)
+            if any(child.poll() is not None for child in critical_children):
                 raise RuntimeError('Component exited; stopping entire Pod container')
             time.sleep(0.5)
     finally:
@@ -171,8 +222,10 @@ def main():
 
 if __name__ == '__main__':
     if sys.argv[1:] == ['health']:
-        sys.exit(0 if all(health('http://127.0.0.1:' + suffix) for suffix in
-                         ['3000/', '8000/', '6333/readyz']) else 1)
+        targets = ['3000/', '8000/', '6333/readyz']
+        if os.environ.get('DOCLENS_MONITORING') == '1':
+            targets += ['9090/-/ready', '3001/monitoring/api/health']
+        sys.exit(0 if all(health('http://127.0.0.1:' + suffix) for suffix in targets) else 1)
     try:
         main()
     except Exception as error:

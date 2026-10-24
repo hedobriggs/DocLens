@@ -69,6 +69,37 @@ def records():
     return docker('exec', name, 'python', '-c', "import json,urllib.request; o=urllib.request.build_opener(urllib.request.ProxyHandler({})); out={};\nfor c in ['document_chunks','doclens_document_publications']:\n r=o.open(urllib.request.Request('http://127.0.0.1:6333/collections/'+c+'/points/scroll',data=b'{\"limit\":1000,\"with_payload\":true}',headers={'Content-Type':'application/json'}));out[c]=sorted(json.load(r)['result']['points'],key=lambda p:str(p['id']))\nprint(json.dumps(out,sort_keys=True))")
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+def monitor(path, cookie=None, data=None, spoof=False, method=None):
+    port = docker('port', name, '3000/tcp').rsplit(':', 1)[1]
+    origin = 'http://127.0.0.1:' + port
+    headers = {'Content-Type':'application/json', 'Origin':origin}
+    if cookie: headers['Cookie'] = cookie
+    if spoof: headers['X-DocLens-Grafana-User'] = str(spoof) if isinstance(spoof,str) else 'admin'
+    req = urllib.request.Request(origin + '/monitoring/' + path, data=data, headers=headers, method=method)
+    try:
+        response = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect()).open(req, timeout=30)
+    except urllib.error.HTTPError as error:
+        response = error
+    body = response.read()
+    try: body = json.loads(body)
+    except ValueError: pass
+    return response.status, body
+
+
+def metric(query, cookie, timestamp=None):
+    import urllib.parse
+    params = {'query':query}
+    if timestamp is not None: params['time'] = str(timestamp)
+    status, body = monitor('api/datasources/proxy/uid/doclens-prometheus/api/v1/query?' + urllib.parse.urlencode(params), cookie)
+    assert status == 200 and body['status'] == 'success', (status, body)
+    return body['data']['result']
+
+
 try:
     with tempfile.TemporaryDirectory(prefix='doclens-runpod-secret-') as tmp:
         env = Path(tmp) / 'secrets.env'
@@ -87,6 +118,13 @@ try:
         trust = []
         if os.environ.get('DOCLENS_TEST_CA'):
             trust = ['-v', os.environ['DOCLENS_TEST_CA'] + ':/run/test-ca.pem:ro', '-e', 'SSL_CERT_FILE=/run/test-ca.pem', '-e', 'REQUESTS_CA_BUNDLE=/run/test-ca.pem']
+        fixture = os.environ.get('DOCLENS_MONITORING_RUNTIME')
+        if fixture:
+            for source,target in [(Path(fixture)/'grafana','/opt/grafana'), (Path(fixture)/'prometheus','/opt/prometheus'),
+                                  (ROOT/'deploy/monitoring','/opt/monitoring'), (ROOT/'frontend/.next','/opt/frontend/.next'),
+                                  (ROOT/'deploy/runpod/supervisor.py','/opt/runpod/supervisor.py')]:
+                trust += ['-v', str(source) + ':' + target + ':ro']
+            trust += ['-e','DOCLENS_MONITORING=1']
         docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g', '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace', '-p', '127.0.0.1::3000', 'doclens-runpod:candidate')
         wait()
     assert upload(pdf(['Anonymous']))[0] == 401
@@ -118,6 +156,37 @@ try:
     print('PERSISTED_BYTES ' + docker('exec', name, 'python', '-c', "from pathlib import Path;print(sum(p.stat().st_size for p in Path('/workspace/doclens').rglob('*') if p.is_file()))"), flush=True)
     print('MEMORY_PEAK_BYTES ' + docker('exec', name, 'python', '-c', "from pathlib import Path;print(Path('/sys/fs/cgroup/memory.peak').read_text().strip())"), flush=True)
     print('RESOURCE ' + docker('stats', '--no-stream', '--format', '{{.MemUsage}} CPU={{.CPUPerc}}', name), flush=True)
+    monitoring = docker('exec', name, 'python', '-c', "import os;print(os.environ.get('DOCLENS_MONITORING','0'))") == '1'
+    if monitoring:
+        assert monitor('api/dashboards/uid/doclens', spoof=True)[0] == 401
+        assert monitor('api/dashboards/uid/doclens', cookie)[1]['dashboard']['title'] == 'DocLens Operations'
+        deadline = time.monotonic() + 60
+        while True:
+            results = metric('doclens_auth_login_success_total{job="doclens"}', cookie)
+            if results and float(results[0]['value'][1]) >= 1: break
+            assert time.monotonic() < deadline, 'Live authentication metrics not scraped'
+            time.sleep(1)
+        assert float(metric('doclens_auth_login_failure_total{job="doclens"}', cookie)[0]['value'][1]) >= 1
+        assert float(metric('up{job="qdrant"}', cookie)[0]['value'][1]) == 1
+        for panel in json.loads((ROOT/'deploy/monitoring/dashboards/doclens.json').read_text())['panels']:
+            metric(panel['targets'][0]['expr'].replace('$__rate_interval','1m'), cookie)
+        assert monitor('api/ds/query', cookie, b'x'*(2*1024*1024+1))[0] == 413
+        assert monitor('api/user', cookie, spoof='untrusted-client')[1]['login'] == 'admin'
+        deadline = time.monotonic()+75
+        while not metric('sum(rate(http_requests_total{job="doclens"}[1m]))',cookie):
+            assert time.monotonic()<deadline, 'HTTP rate metrics missing after scrape warmup'
+            time.sleep(1)
+        if '--browser' in sys.argv:
+            port = docker('port', name, '3000/tcp').rsplit(':',1)[1]
+            browser_env = dict(os.environ, DOCLENS_TEST_URL='http://127.0.0.1:'+port, DOCLENS_TEST_COOKIE=cookie)
+            subprocess.run(['node',str(ROOT/'tests/monitoring_browser.cjs')],env=browser_env,check=True)
+        history_time = time.time()
+        history_value = metric('doclens_auth_login_success_total{job="doclens"}', cookie, history_time)
+        status, body = monitor('api/user/preferences', cookie, json.dumps({'timezone':'utc','homeDashboardUID':'doclens'}).encode(), method='PUT')
+        assert status == 200, (status, body)
+        # Spoofed proxy identity cannot bypass the DocLens session check.
+        assert monitor('api/dashboards/uid/doclens', spoof=True)[0] == 401
+        print('PASS private Grafana gateway, provisioned dashboard, live app/Qdrant metrics, CSRF-aware preferences write', flush=True)
     settings_code = "from pathlib import Path;import hashlib,json;print(json.dumps({str(p.relative_to('/config')):hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('/config').rglob('*') if p.is_file()},sort_keys=True))"
     saved_settings = docker('exec', name, 'python', '-c', settings_code)
     # Reproduce interruption after a private input was created but before finally
@@ -141,7 +210,24 @@ try:
         status, _, body = request('/api/ask', json.dumps({'question': 'List all employers in this CV', 'document_name': 'synthetic.pdf'}).encode(), cookie)
         assert status == 200 and all(e in body.get('answer', '') for e in EMPLOYERS), (status, body)
         assert {c['page_number'] for c in body.get('citations', [])} == {1, 2, 3, 4, 5}
+    if monitoring:
+        assert metric('doclens_auth_login_success_total{job="doclens"}', cookie, history_time) == history_value
+        assert monitor('api/user/preferences', cookie)[1]['timezone'] == 'utc'
+        assert monitor('api/dashboards/uid/doclens', spoof=True)[0] == 401
+        print('PASS Grafana settings and Prometheus historical samples survive forced and graceful restart', flush=True)
     print('PASS restart persistence: exact point/payload/publication/citation identities, existing session and live answer', flush=True)
+    if monitoring:
+        docker('exec', name, 'python', '-c', "import os,signal;from pathlib import Path;p=next(p for p in Path('/proc').iterdir() if p.name.isdigit() and p.stat().st_uid==10004 and b'/opt/grafana/bin/grafana' in (p/'cmdline').read_bytes());os.kill(int(p.name),signal.SIGTERM)")
+        deadline = time.monotonic()+20
+        while monitor('api/dashboards/uid/doclens',cookie)[0] != 502:
+            assert time.monotonic()<deadline
+            time.sleep(.25)
+        assert upload(b'bad replacement',cookie)[0] == 400
+        assert records() == before
+        docker('restart','-t','30',name)
+        wait()
+        assert monitor('api/user/preferences',cookie)[1]['timezone']=='utc'
+        print('PASS monitoring failure leaves uploads/API available; restart recovers Grafana without changing documents',flush=True)
     docker('exec', name, 'python', '-c', "import os,signal; from pathlib import Path; p=next(p for p in Path('/proc').iterdir() if p.name.isdigit() and b'/opt/qdrant/qdrant' in (p/'cmdline').read_bytes() and p.stat().st_uid==10002);os.kill(int(p.name),signal.SIGTERM)")
     deadline = time.monotonic() + 40
     while json.loads(docker('inspect', '--format', '{{json .State.Running}}', name)) and time.monotonic() < deadline:

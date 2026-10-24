@@ -1,5 +1,9 @@
 # DocLens on RunPod
 
+This branch also includes private Prometheus/Grafana monitoring. Read
+[monitoring setup and validation](../monitoring/README.md). This changes the
+previously approved image and requires fresh independent review.
+
 Dedicated **single container**, CPU inference, no Docker-in-Docker, Compose,
 terminal dependency installation, SSH or Jupyter. Macs and ordinary VMs continue
 using the root Docker Compose installation unchanged.
@@ -19,7 +23,7 @@ Maintainer build (from a clean exact reviewed Git checkout; not on the Pod):
 set -eu
 docker build --platform linux/amd64 -f deploy/portable/Dockerfile.backend -t doclens-portable-backend:compose-auto backend
 docker build --platform linux/amd64 -f deploy/portable/Dockerfile.frontend -t doclens-portable-frontend:compose-auto frontend
-docker build --platform linux/amd64 -f deploy/runpod/Dockerfile -t doclens-runpod:candidate deploy/runpod
+docker build --platform linux/amd64 -f deploy/runpod/Dockerfile -t doclens-runpod:candidate .
 ```
 
 Existing pinned dependencies and both pinned embedding/reranker models are
