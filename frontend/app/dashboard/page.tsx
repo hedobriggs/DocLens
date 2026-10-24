@@ -272,7 +272,7 @@ export default function Dashboard() {
         </div>
 
         <div className="flex items-center gap-3">
-        <a href="/monitoring/d/doclens" className="doclens-monitoring-link rounded-lg px-3 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">Monitoring</a>
+        <a href="/monitoring/d/doclens" target="_blank" rel="noopener noreferrer" title="Opens monitoring in a new tab" className="doclens-monitoring-link rounded-lg px-3 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">Monitoring</a>
         <button
           type="button"
           onClick={async () => {

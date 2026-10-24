@@ -1,7 +1,8 @@
 # DocLens monitoring
 
 Prometheus collects application statistics; Grafana shows the charts. Sign into
-DocLens and choose **Monitoring** in the header. No separate Grafana password or
+DocLens and choose **Monitoring** in the header. It opens in a new tab so the
+current upload, selected documents and conversation stay in the original tab. No separate Grafana password or
 public monitoring port is needed. **Back to DocLens** returns to the application;
 use DocLens's Log out button to end access.
 

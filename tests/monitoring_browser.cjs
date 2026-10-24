@@ -27,19 +27,21 @@ const {chromium} = createRequire(path.resolve(__dirname,'../frontend/package.jso
       if (overflow) throw Error('Dashboard toolbar clips at width '+width);
       await page.screenshot({path:path.join(output,'doclens-'+width+'.png')});
       if (width===1280) {
-        const query = page.waitForResponse(r => r.url().includes('/monitoring/api/ds/query') && r.request().method()==='POST', {timeout:60000});
-        await link.click();
-        await page.getByText('DocLens Operations',{exact:true}).first().waitFor({state:'visible',timeout:60000});
-        await page.getByText('Service scrape status',{exact:true}).first().waitFor({state:'visible',timeout:60000});
-        const response = await query;
-        if (response.status() !== 200) throw Error('Grafana browser datasource query failed: '+response.status());
-        await page.getByText('qdrant',{exact:true}).first().waitFor({state:'visible',timeout:60000});
-        await page.screenshot({path:path.join(output,'grafana-1280.png'),fullPage:true});
-        const text=await page.locator('body').innerText();
+        const marker=await page.evaluate(()=>{window.__doclensWorkspaceMarker=crypto.randomUUID();return window.__doclensWorkspaceMarker});
+        const [charts]=await Promise.all([context.waitForEvent('page'),link.click()]);
+        const query=charts.waitForResponse(r=>r.url().includes('/monitoring/api/ds/query') && r.request().method()==='POST',{timeout:60000});
+        await charts.getByText('DocLens Operations',{exact:true}).first().waitFor({state:'visible',timeout:60000});
+        await charts.getByText('Service scrape status',{exact:true}).first().waitFor({state:'visible',timeout:60000});
+        const response=await query;
+        if(response.status()!==200)throw Error('Grafana browser datasource query failed: '+response.status());
+        await charts.getByText('qdrant',{exact:true}).first().waitFor({state:'visible',timeout:60000});
+        if(new URL(page.url()).pathname!=='/dashboard' || await page.evaluate(()=>window.__doclensWorkspaceMarker)!==marker)throw Error('Monitoring unloaded the document workspace');
+        await charts.screenshot({path:path.join(output,'grafana-1280.png'),fullPage:true});
+        const text=await charts.locator('body').innerText();
         if (/Unable to find datasource plugin|DatasourceError|Origin not allowed/.test(text)) throw Error('Grafana displays a datasource/proxy error');
       }
       await context.close();
     }
-    console.log('PASS browser: anonymous redirect, authenticated Grafana dashboard, desktop/mobile monitoring link without horizontal overflow');
+    console.log('PASS browser: anonymous redirect, authenticated Grafana dashboard, desktop/mobile monitoring link without horizontal overflow; new tab preserves workspace');
   } finally { await browser.close(); }
 })().catch(error=>{console.error(error.stack);process.exit(1)});

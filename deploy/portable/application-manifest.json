@@ -18,7 +18,7 @@
     "frontend/app/api/auth/logout/route.ts": "3881f5aeb4b5e55bfe39aa432795b747ca53180b94bc3457ac37450172793f8e",
     "frontend/app/api/documents/process/route.ts": "7f9a33153d5c5af18395ad82089225a0a8d250905946e361d1ba6ee120c946a0",
     "frontend/app/dashboard/layout.tsx": "335a3c0a095ad0698d0e8697638efcf334cd65eb838a874e3ed9ac60913f4f18",
-    "frontend/app/dashboard/page.tsx": "a246bb8bc8d9ec0e3e5ed4d0676916284938f43041d720524c012b3dafa0e287",
+    "frontend/app/dashboard/page.tsx": "7d3a327c2e455ab8195fe58e7114f2ccda395c98bf5735040ec1f35a7d7dcd2b",
     "frontend/app/favicon.ico": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932",
     "frontend/app/globals.css": "9128ed4452e0d80d41c3420450940422575a4cc0cc176334dd55548403bde398",
     "frontend/app/layout.tsx": "4f03606546e9dfa93763a5d8b7fbb5342026f12036cd086d4108d9f586a8d141",
