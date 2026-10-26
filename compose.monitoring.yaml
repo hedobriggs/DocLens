@@ -18,6 +18,8 @@ services:
       - --query.max-concurrency=4
       - --query.max-samples=500000
       - --query.timeout=10s
+      - --web.external-url=/prometheus/
+      - --web.route-prefix=/
     environment:
       GOMEMLIMIT: 192MiB
       NO_PROXY: backend,qdrant,prometheus,grafana,localhost,127.0.0.1

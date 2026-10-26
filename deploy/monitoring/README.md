@@ -1,29 +1,39 @@
 # DocLens monitoring
 
-Prometheus collects application statistics; Grafana shows the charts. Sign into
-DocLens and choose **Monitoring** in the header. It opens in a new tab so the
-current upload, selected documents and conversation stay in the original tab. No separate Grafana password or
-public monitoring port is needed. **Back to DocLens** returns to the application;
-use DocLens's Log out button to end access.
+Prometheus collects application statistics; Grafana shows the charts. Monitoring
+opens independently of the document dashboard. Sign into DocLens first, then
+open the monitoring URLs in separate browser tabs. There is no dashboard control
+or embedded monitoring view. No separate Grafana password is needed.
 
 ## Mac / ordinary Docker server
 
-Use the existing private `.env` and root Compose setup, then:
+For a separately configured installation, enable the optional local URL overlay:
 
 ```sh
-docker compose -f compose.yaml -f compose.monitoring.yaml up -d --build --wait
+docker compose -f compose.yaml -f compose.monitoring.yaml -f compose.monitoring.local.yaml up -d --build --wait
 ```
 
-Stop this installation, keeping its documents and monitoring history:
+- DocLens: `http://localhost:3000` (or the configured application port).
+- Grafana: `http://localhost:8080/monitoring/d/doclens`.
+- Prometheus: `http://localhost:9090/prometheus/query`.
 
-```sh
-docker compose -f compose.yaml -f compose.monitoring.yaml down
-```
+Use `localhost` consistently so the signed-in session is shared across these
+ports. `GRAFANA_PORT` and `PROMETHEUS_PORT` can change conflicting local ports.
+These are loopback-only ports of the authenticated frontend gateway, not direct
+access to raw Grafana or Prometheus. Anonymous API requests are rejected. Each
+service remains on its private internal network. Without the local overlay,
+use `/monitoring/d/doclens` and `/prometheus/query` at the normal app address.
 
-Do not add `-v`. Original Mac installations/volumes are not migrated. The root
-Compose file still runs the application without monitoring if the overlay is
-omitted. Metrics and Grafana use separate named volumes; neither mounts the
-Docker socket. Keep the existing HTTPS setup for real browser sign-in.
+A fresh single-container synthetic Mac trial can publish additional frontend
+mappings `-p 127.0.0.1:8080:3000 -p 127.0.0.1:9090:3000` when it is created.
+Do not replace or recreate an existing Mac installation to add these mappings;
+use a separately reviewed trial procedure and new synthetic volume.
+
+Stop an installation using the same Compose files with `down`, never `down -v`.
+Application, Grafana and Prometheus data retain their separate named volumes.
+Existing Mac installations and volumes are not migrated. No monitoring service
+mounts the Docker socket. Keep HTTPS for real deployments; browser login on a
+local HTTP address has browser-specific limitations.
 
 ## RunPod
 
@@ -34,14 +44,16 @@ Pod startup. The RunPod Docker build context is now the **repository root**.
 The template enables `DOCLENS_MONITORING=1`; the same three existing private
 DocLens/Gemini secret bindings are used. There is no new customer-facing password.
 
-Only frontend port 3000 is public. API, Qdrant, Grafana (3001) and Prometheus
+On RunPod only frontend port 3000 is public; use the existing HTTPS address
+with `/monitoring/d/doclens` or `/prometheus/query`, not new public ports. API, Qdrant, Grafana (3001) and Prometheus
 (9090) bind to loopback. Monitoring uses the same `/workspace` attached volume,
 under `/workspace/doclens/grafana` and `/workspace/doclens/prometheus`, with distinct
 UIDs. Application index/configuration/citation identities are preserved. Use a
 fresh synthetic volume until an installation/update is separately authorized.
 
 Grafana authenticates only through the DocLens gateway: a valid existing admin
-session is required for every request. The gateway strips the DocLens cookie and
+session is required for every request. Both monitoring routes use the same session checks. Prometheus is available at
+`/prometheus/query` and uses a fixed internal destination as well. The gateway strips the DocLens cookie and
 internal API key, overrides incoming identity headers, limits request bodies to
 2 MiB, and bounds transfer/upstream time. Anonymous API requests return 401;
 anonymous browser navigation returns to DocLens login. Basic/anonymous Grafana
@@ -79,30 +91,21 @@ uses Go memory targets under the whole-Pod allocation. Upload/page/text/chunk
 limits and application authentication remain unchanged. Cleanup never deletes
 originals, document revisions or citations.
 
-## Candidate validation and remaining gates
+## Validation and review
 
-39 contract/bootstrap/packaging/launcher checks pass. The frontend builds and
-lints. An isolated Linux amd64, 2 CPU / 4 GiB, synthetic single-container runtime
-passed login/denial, five-page real-model PDF ingestion, failed/over-limit
-replacement preservation, live Gemini answers/citations, authenticated Grafana
-and twelve valid PromQL queries, API body-size protection, identity spoof denial,
-CSRF-aware preference writes, forced/graceful restart history/config/data/session
-preservation, monitoring-failure isolation/recovery and core-failure shutdown.
-Chromium checked the desktop/mobile navigation (1280x800 and 375x812), an anonymous
-redirect, actual browser datasource response and visible service data. HTTP-only
-fixture cookie injection was used: this is **not** real HTTPS browser-login evidence.
+The earlier monitoring baseline was directly tested as a final single-container
+image and as a complete Compose stack using synthetic data. The managed test
+host required a monitoring-only proxy override and backend CA trust; the initial
+failure and passing rerun were retained. This does not prove compatibility with
+arbitrary ambient proxy configurations.
 
-Failures retained in external evidence: fixture/config permissions; missing bundled
-Prometheus plugin; a preferences test using POST instead of PUT; and a contract
-test needing numeric conversion of Compose memory values. Corrected reruns passed.
-New-image build inputs include exact upstream runtime files and the compiled
-frontend used by these tests; the image builds successfully. Runtime checks use
-read-only packaged files in the approved core container because this VFS workspace
-lacks disk headroom for a direct full-image container boot. That direct boot and
-the complete Compose overlay startup are **not verified here**.
+The count/scroll/separate-URL correction is a new review candidate. Its exact
+commit, image IDs, commands, failures and passing results are supplied in the
+independent-review evidence, not inferred from the earlier baseline. Test-only
+CA trust is not a source/binary substitution. No customer CV belongs in test
+fixtures, logs, image contexts or review archives.
 
-No physical Mac/Safari/VoiceOver, dense-document capacity, whole-8-GB-Mac resource,
-actual RunPod HTTPS/upload/provider stop-start/forced-storage persistence or backup
-restore claims. No limits increased, image published, paid Pod launched, main
-merged, customer data admitted or Mac modified. Independent review and the missing
-full-image/provider checks are required before declaring this ready.
+Actual RunPod HTTPS login/uploads, provider stop/start and forced-restart
+attached-storage persistence remain separate gates. Native Mac, Safari and
+VoiceOver coverage must be reported explicitly. No deployment or merge is
+implied by successful local tests.

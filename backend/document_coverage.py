@@ -11,7 +11,9 @@ class CoverageUnavailable(ValueError):
 
 def needs_document_coverage(question):
     return bool(re.search(
-        r'\b(?:all|every|each|complete|comprehensive|entire|exhaustive)\b',
+        r'\b(?:all|every|each|complete|comprehensive|entire|exhaustive|'
+        r'list|enumerate|count|overall|altogether)\b|'
+        r'\bhow\s+many\b|\b(?:total|number)\s+of\b',
         question, re.IGNORECASE,
     ))
 

@@ -52,6 +52,17 @@ class Monitoring(unittest.TestCase):
         self.assertIn('not whole-Pod',memory['description'])
         self.assertTrue(all('document_name' not in p['targets'][0]['expr'] for p in dashboard['panels']))
 
+    def test_separate_local_urls_publish_only_authenticated_frontend(self):
+        config = json.loads(subprocess.check_output([
+            'docker','compose','--env-file','/dev/null','-f',str(ROOT/'compose.yaml'),
+            '-f',str(ROOT/'compose.monitoring.yaml'),
+            '-f',str(ROOT/'compose.monitoring.local.yaml'),'config','--format','json'],text=True))
+        ports = config['services']['frontend']['ports']
+        self.assertEqual({str(p['published']) for p in ports}, {'3000','8080','9090'})
+        self.assertTrue(all(p['host_ip']=='127.0.0.1' and p['target']==3000 for p in ports))
+        for service in ['backend','qdrant','grafana','prometheus']:
+            self.assertFalse(config['services'][service].get('ports'))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -1,0 +1,7 @@
+# Optional separate local URLs; these are authenticated frontend gateways,
+# never direct access to the unauthenticated internal monitoring listeners.
+services:
+  frontend:
+    ports:
+      - "127.0.0.1:${GRAFANA_PORT:-8080}:3000"
+      - "127.0.0.1:${PROMETHEUS_PORT:-9090}:3000"

@@ -100,7 +100,12 @@ Page: {payload['page_number']}
         "This is a comprehensive question. Read EVERY supplied source, gather every "
         "matching item across the document, deduplicate repeats, and return the complete "
         "list. Cite every source needed to support the list. Do not stop at the first "
-        "few matches. If ambiguity prevents a complete answer, state that limitation."
+        "few matches. For a count, identify and deduplicate all matching items first, "
+        "then report the total alongside their names so the count can be checked. "
+        "Distinguish employers from clients, vendors, training providers and products; "
+        "a company mentioned in a role is not necessarily an employer. "
+        "If ambiguity prevents a complete answer, state that limitation instead of "
+        "presenting a partial count as the document total."
         if comprehensive else "Answer the specific question using relevant sources."
     )
     prompt = f"""

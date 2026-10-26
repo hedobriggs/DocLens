@@ -170,6 +170,7 @@ def main():
                        '--storage.tsdb.retention.time=2d', '--storage.tsdb.retention.size=256MB',
                        '--storage.tsdb.wal-compression', '--query.max-concurrency=4',
                        '--query.max-samples=500000', '--query.timeout=10s',
+                       '--web.external-url=/prometheus/', '--web.route-prefix=/',
                        '--web.listen-address=127.0.0.1:9090'], '/opt/monitoring', 10003,
                       {'GOMEMLIMIT': '192MiB'}, critical=False)
                 wait_ready('http://127.0.0.1:9090/-/ready', prometheus)

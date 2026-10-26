@@ -20,6 +20,6 @@ export default async function DashboardLayout({
     redirect("/");
   }
 
-  return <div data-monitoring={process.env.DOCLENS_MONITORING === "1" ? "enabled" : "disabled"}>{children}</div>;
+  return <div>{children}</div>;
 }
 

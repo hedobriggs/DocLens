@@ -31,3 +31,7 @@
 !app/monitoring/
 !app/monitoring/\[\[...path\]\]/
 !app/monitoring/\[\[...path\]\]/route.ts
+!lib/monitoring-proxy.ts
+!app/prometheus/
+!app/prometheus/\[\[...path\]\]/
+!app/prometheus/\[\[...path\]\]/route.ts

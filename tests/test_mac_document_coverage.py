@@ -77,6 +77,35 @@ class Coverage(UploadLimits):
                     'question':'List all employers', 'document_name':'synthetic-cv.pdf'})
                 self.assertEqual(r.status_code, 422)
 
+    def test_coverage_counting_and_listing_questions_receive_every_employer(self):
+        points = self.seed_cv()
+        questions = [
+            'how many organizations has Taylor worked in?',
+            'List the number of organizations Taylor has worked in according to the attached CV',
+            'What is the total number of employers?',
+            'Count the companies in this employment history',
+            'List employers in this CV',
+        ]
+        expected = [i for i,p in enumerate(points, 1) if 'Employer:' in p.payload['text']]
+        def provider(**kwargs):
+            prompt = kwargs['contents']
+            for employer in EMPLOYERS:
+                self.assertIn(employer, prompt)
+            self.assertIn('report the total alongside their names', prompt)
+            return SimpleNamespace(text=json.dumps({
+                'answer': '5 employers: ' + '; '.join(EMPLOYERS), 'source_ids': expected}))
+        with patch.object(self.generation.client.models, 'generate_content', side_effect=provider), \
+             patch.object(self.main, 'generate_answer', self.generation.generate_answer), \
+             patch.object(self.main, 'hybrid_search', side_effect=AssertionError('Must not count a ranked subset')):
+            for question in questions:
+                with self.subTest(question=question):
+                    response = self.api.post('/ask', headers=self.headers, json={
+                        'question': question, 'document_name': 'synthetic-cv.pdf'})
+                    self.assertEqual(response.status_code, 200, response.text)
+                    self.assertTrue(response.json()['answer'].startswith('5 employers:'))
+                    self.assertEqual(response.json()['citations'], [
+                        {key: points[i-1].payload[key] for key in ('document_name','page_number','chunk_id')}
+                        for i in expected])
     def test_coverage_pagination_and_publication_race_preserve_snapshot(self):
         self.seed_cv()
         original = self.storage.client.scroll
