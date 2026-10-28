@@ -82,3 +82,49 @@ absence and real document-API regressions are the evidence, not a claim to have
 executed every upstream exploit. Complete CPU graph, Python3.11 image/native
 regressions and actual runtime HTTP resource measurements remain release gates.
 The parser handler does not resolve the still-open Starlette advisories.
+
+## Patch 3 — local configuration and file locking
+
+Base: `6398f53fb8d5a7fd2d7c4c2f08de6cff1d88657e` (parser patch).
+filelock **3.19.1 → 3.20.3**, python-dotenv **1.2.1 → 1.2.2**. No application
+configuration rewrite, actual credential read or change to saved settings.
+
+Audit: **92 → 89 distinct pairs**, 117 raw records in six packages. Three original
+IDs are absent at the candidate pins; per-ID status in `backend-config/`.
+Baseline tests reproduce filelock truncating a symlink target and dotenv set/unset
+cross-device fallback overwriting a symlink victim. All files are synthetic and
+temporary. EXDEV is simulated at os.rename; no host filesystem mounts changed.
+The upgraded tests require target preservation, ordinary reads/rewrites, literal
+configuration values and mutual exclusion/reacquisition. No wall-clock sleeps.
+
+**9 network/configuration + 51 application + 9 bootstrap + 6 packaging = 75 checks
+pass** at the final pins. Isolated pip check passes. Baseline failure logs and
+passing results retained. These are behavioral regressions, not a claim to cover
+every possible lock race. Current generation code reads dotenv, not set/unset;
+the dependency fix does not depend on claiming that narrower exposure is a waiver.
+
+## Remaining review and security boundary
+
+Latest snapshot still reports **fsspec, Pillow, sentence-transformers, Starlette,
+torch and transformers**: 89 distinct pairs. All six no-reported-fix IDs remain
+**OPEN_NO_REPORTED_FIX**, regardless of eventual version changes. They are not
+waived by successful functional tests or absence of another finding.
+The raw requirements audits skip additional unpinned transitives and do not scan
+OS images, Node/runtime, Qdrant, Grafana, Prometheus or bundled models. Complete
+CPU dependency resolution, pip check, immutable-image SBOM/security scans and
+real model/resource/acceptance runs remain required on a sufficiently resourced
+host. No image ID is assigned to these source-only candidates.
+
+Next candidates require independent review of the three small patches first:
+coordinate FastAPI/Starlette compatibility, then separately resolve and measure
+ML/native upgrades (including fsspec/Pillow). Do not automatically substitute the
+highest advisory-listed version, change the CPU wheel blindly, suppress no-fix
+records or infer low exposure from filename/type alone. Verify vendor advisories
+and affected operations and seek fix/removal or defensible independently reviewed
+mitigation plus explicit risk approval; otherwise retain the block.
+
+Previously accepted functional Mac evidence remains historical evidence for its
+exact earlier image. These changed pins need rebuilt-image acceptance. Actual
+RunPod HTTPS/attached-storage acceptance, merge, publication and deployment remain
+separate approvals. No migrations, cleanup deletion, limit increases, Web-mode
+enablement or modification of existing data are part of these patches.
