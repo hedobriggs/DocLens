@@ -6,9 +6,11 @@ COPY requirements.txt /app/requirements.txt
 # Optional public CA bundle for an enterprise build proxy; never disable TLS.
 RUN --mount=type=secret,id=build_ca \
     if [ -f /run/secrets/build_ca ]; then export PIP_CERT=/run/secrets/build_ca SSL_CERT_FILE=/run/secrets/build_ca REQUESTS_CA_BUNDLE=/run/secrets/build_ca; fi; \
-    python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 'torch==2.2.2+cpu' && \
+    python -m pip install --no-cache-dir 'pip==26.2.2' && \
+    python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 'torch==2.13.0+cpu' && \
     python -m pip install --no-cache-dir -r requirements.txt && python -m pip check && \
-    python -c "from huggingface_hub import snapshot_download; from pathlib import Path; models=[('sentence-transformers/all-MiniLM-L6-v2','1110a243fdf4706b3f48f1d95db1a4f5529b4d41'),('cross-encoder/ms-marco-MiniLM-L-6-v2','233902d25c440f23af6f7d6e94d2946bac0bee0a')]; [(snapshot_download(repo,revision=rev,allow_patterns=['*.json','*.safetensors','vocab.txt']), (Path('/opt/models/hub')/('models--'+repo.replace('/','--'))/'refs').mkdir(exist_ok=True), (Path('/opt/models/hub')/('models--'+repo.replace('/','--'))/'refs/main').write_text(rev)) for repo,rev in models]"
+    python -c "from huggingface_hub import snapshot_download; from pathlib import Path; models=[('sentence-transformers/all-MiniLM-L6-v2','1110a243fdf4706b3f48f1d95db1a4f5529b4d41'),('cross-encoder/ms-marco-MiniLM-L-6-v2','233902d25c440f23af6f7d6e94d2946bac0bee0a')]; [(snapshot_download(repo,revision=rev,allow_patterns=['*.json','*.safetensors','vocab.txt']), (Path('/opt/models/hub')/('models--'+repo.replace('/','--'))/'refs').mkdir(exist_ok=True), (Path('/opt/models/hub')/('models--'+repo.replace('/','--'))/'refs/main').write_text(rev)) for repo,rev in models]" && \
+    python -m pip uninstall --yes pip
 COPY --chmod=0444 *.py /app/
 RUN useradd --uid 10001 --create-home doclens
 ENV HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 DOCLENS_INFERENCE_THREADS=2 OMP_NUM_THREADS=2 TOKENIZERS_PARALLELISM=false
