@@ -157,12 +157,15 @@ def main():
         backend.clear()
         wait_ready('http://127.0.0.1:8000/')
         PHASE = 'frontend readiness'
-        start(['node', 'bootstrap.cjs', 'frontend'], '/opt/frontend', 1000)
+        start(['node', 'bootstrap.cjs', 'frontend'], '/opt/frontend', 1000, {'DOCLENS_RUNPOD_GATEWAYS': '1'})
         wait_ready('http://127.0.0.1:3000/')
         if os.environ.get('DOCLENS_MONITORING') == '1':
             monitor_start = len(children)
             try:
                 PHASE = 'monitoring readiness'
+                gateway = start(['python', '/opt/runpod/monitoring_gateway.py'], '/opt/runpod', 1000, critical=False)
+                wait_ready('http://127.0.0.1:3001/login', gateway)
+                wait_ready('http://127.0.0.1:9090/login', gateway)
                 private_directory(DATA / 'prometheus', 10003)
                 private_directory(DATA / 'grafana', 10004)
                 prometheus = start(['/opt/prometheus/prometheus', '--config.file=/opt/monitoring/prometheus.yml',
@@ -171,12 +174,12 @@ def main():
                        '--storage.tsdb.wal-compression', '--query.max-concurrency=4',
                        '--query.max-samples=500000', '--query.timeout=10s',
                        '--web.external-url=/prometheus/', '--web.route-prefix=/',
-                       '--web.listen-address=127.0.0.1:9090'], '/opt/monitoring', 10003,
+                       '--web.listen-address=127.0.0.1:19090'], '/opt/monitoring', 10003,
                       {'GOMEMLIMIT': '192MiB'}, critical=False)
-                wait_ready('http://127.0.0.1:9090/-/ready', prometheus)
+                wait_ready('http://127.0.0.1:19090/-/ready', prometheus)
                 grafana = start(['/opt/grafana/bin/grafana', 'server', '--homepath=/opt/grafana',
                        '--config=/opt/grafana/conf/defaults.ini'], '/opt/grafana', 10004, {
-                    'GF_SERVER_HTTP_ADDR': '127.0.0.1', 'GF_SERVER_HTTP_PORT': '3001',
+                    'GF_SERVER_HTTP_ADDR': '127.0.0.1', 'GF_SERVER_HTTP_PORT': '13001',
                     'GF_SERVER_ROOT_URL': '/monitoring/', 'GF_SERVER_SERVE_FROM_SUB_PATH': 'true',
                     'GF_PATHS_DATA': str(DATA / 'grafana'),
                     'GF_PATHS_LOGS': str(DATA / 'grafana/logs'), 'GF_LOG_MODE': 'console',
@@ -194,7 +197,7 @@ def main():
                     'GF_ANALYTICS_REPORTING_ENABLED': 'false', 'GF_ANALYTICS_CHECK_FOR_UPDATES': 'false',
                     'GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES': 'false', 'GF_PLUGINS_PREINSTALL_DISABLED': 'true',
                     'GOMEMLIMIT': '256MiB'}, critical=False)
-                wait_ready('http://127.0.0.1:3001/monitoring/api/health', grafana)
+                wait_ready('http://127.0.0.1:13001/monitoring/api/health', grafana)
             except Exception as error:
                 for child in children[monitor_start:]:
                     if child.poll() is None: os.killpg(child.pid, signal.SIGTERM)
@@ -225,7 +228,7 @@ if __name__ == '__main__':
     if sys.argv[1:] == ['health']:
         targets = ['3000/', '8000/', '6333/readyz']
         if os.environ.get('DOCLENS_MONITORING') == '1':
-            targets += ['9090/-/ready', '3001/monitoring/api/health']
+            targets += ['19090/-/ready', '13001/monitoring/api/health', '3001/login', '9090/login']
         sys.exit(0 if all(health('http://127.0.0.1:' + suffix) for suffix in targets) else 1)
     try:
         main()

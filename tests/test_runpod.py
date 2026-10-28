@@ -24,6 +24,7 @@ EMPLOYERS = ['Aster Research', 'Birch Analytics', 'Cobalt Systems', 'Delta Robot
 name = 'doclens-runpod-test-' + uuid.uuid4().hex[:10]
 volume = name + '-data'
 live = '--live-answers' in sys.argv
+image = os.environ.get('DOCLENS_TEST_IMAGE', 'doclens-runpod:candidate')
 opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
 
@@ -100,6 +101,48 @@ def metric(query, cookie, timestamp=None):
     return body['data']['result']
 
 
+def public_monitoring():
+    """Exercise actual published gateways, never raw internal service ports."""
+    for service_port, prefix, api in [(3001, '/monitoring', '/api/dashboards/uid/doclens'),
+                                      (9090, '/prometheus', '/api/v1/query?query=up')]:
+        port = docker('port', name, str(service_port) + '/tcp').rsplit(':', 1)[1]
+        base = 'http://127.0.0.1:' + port
+        no_redirect = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        def get(path, headers=None):
+            try:
+                response = no_redirect.open(urllib.request.Request(base + path, headers=headers or {}), timeout=30)
+            except urllib.error.HTTPError as error:
+                response = error
+            return response.status, response.headers, response.read()
+        status, headers, _ = get('/')
+        assert status == 303 and headers['Location'].startswith(prefix + '/')
+        status, headers, _ = get(headers['Location'])
+        assert status == 303 and headers['Location'] == '/login'
+        assert b'DocLens monitoring' in get('/login')[2]
+        assert get(prefix + api, {'X-DocLens-Grafana-User': 'admin'})[0] == 401
+        status, _, raw = get(prefix + api, {'Cookie': cookie})
+        assert status == 200, (service_port, status, raw[:200])
+        body = json.loads(raw)
+        if service_port == 3001:
+            assert body['dashboard']['uid'] == 'doclens'
+        else:
+            assert body['status'] == 'success' and body['data']['result']
+        assert get('/metrics', {'Cookie': cookie})[0] == 404
+        if service_port == 3001:
+            # Simulate TLS termination headers; this is not provider HTTPS proof.
+            req = urllib.request.Request(base + '/monitoring/api/user/preferences',
+                data=b'{"timezone":"utc"}', method='PUT', headers={
+                    'Content-Type':'application/json', 'Cookie':cookie,
+                    'Host':'synthetic-monitor.invalid',
+                    'Origin':'https://synthetic-monitor.invalid', 'X-Forwarded-Proto':'https'})
+            try:
+                response = no_redirect.open(req, timeout=30)
+            except urllib.error.HTTPError as error:
+                response = error
+            assert response.status == 200, ('HTTPS-offload Origin check', response.status, response.read())
+    print('PASS published 3001/9090 roots, anonymous/spoof rejection, authenticated dashboard/query and raw-route denial', flush=True)
+
+
 try:
     with tempfile.TemporaryDirectory(prefix='doclens-runpod-secret-') as tmp:
         env = Path(tmp) / 'secrets.env'
@@ -107,13 +150,14 @@ try:
         assert key, 'Live Gemini key binding required'
         env.write_text('DOCLENS_ADMIN_EMAIL=trial@synthetic.invalid\nDOCLENS_ADMIN_PASSWORD=Synthetic-$literal-Password-2026\nGEMINI_API_KEY=' + key + '\n')
         env.chmod(0o600)
+        trial_environment = env.read_text()
         docker('volume', 'create', volume)
         # Missing mount must fail before storage writes.
-        result = subprocess.run(['docker', 'run', '--rm', '--env-file', str(env), 'doclens-runpod:candidate'], capture_output=True)
-        assert result.returncode != 0 and b'ValueError' in result.stderr
+        result = subprocess.run(['docker', 'run', '--rm', '--env-file', str(env), image], capture_output=True)
+        assert result.returncode != 0 and b'ValueError' in result.stderr, (result.returncode, result.stderr.decode(errors='replace'))
         print('PASS missing persistent mount refusal', flush=True)
-        result = subprocess.run(['docker', 'run', '--rm', '-v', volume + ':/workspace', 'doclens-runpod:candidate'], capture_output=True)
-        assert result.returncode != 0 and b'ValueError' in result.stderr
+        result = subprocess.run(['docker', 'run', '--rm', '-v', volume + ':/workspace', image], capture_output=True)
+        assert result.returncode != 0 and b'ValueError' in result.stderr, (result.returncode, result.stderr.decode(errors='replace'))
         print('PASS missing private secrets refusal', flush=True)
         trust = []
         if os.environ.get('DOCLENS_TEST_CA'):
@@ -125,7 +169,7 @@ try:
                                   (ROOT/'deploy/runpod/supervisor.py','/opt/runpod/supervisor.py')]:
                 trust += ['-v', str(source) + ':' + target + ':ro']
             trust += ['-e','DOCLENS_MONITORING=1']
-        docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g', '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace', '-p', '127.0.0.1::3000', 'doclens-runpod:candidate')
+        docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g', '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace', '-p', '127.0.0.1::3000', '-p', '127.0.0.1::3001', '-p', '127.0.0.1::9090', image)
         wait()
     assert upload(pdf(['Anonymous']))[0] == 401
     assert request('/api/auth/login', json.dumps({'email': 'trial@synthetic.invalid', 'password': 'wrong'}).encode())[0] == 401
@@ -148,7 +192,7 @@ try:
     # Confirm listeners and filesystem separation; child launch policy is unit tested.
     docker('exec', '-u', '1000', name, 'node', '-e', "const fs=require('fs');try{fs.readFileSync('/config/backend/settings.json');process.exit(1)}catch(e){if(e.code!=='EACCES')throw e}")
     listeners = docker('exec', name, 'python', '-c', "from pathlib import Path; print(Path('/proc/net/tcp').read_text())")
-    for port in [8000, 6333, 6334]:
+    for port in [8000, 6333, 6334, 13001, 19090]:
         lines = [line for line in listeners.splitlines() if ':' + format(port, '04X') in line.split()[1] and line.split()[3] == '0A']
         assert lines and all('0100007F:' in line for line in lines), (port, lines)
     docker('exec', name, 'python', '-c', "import fcntl;f=open('/workspace/doclens/run.lock','a');\ntry: fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB)\nexcept BlockingIOError: pass\nelse: raise AssertionError('Second writer acquired lock')")
@@ -179,7 +223,11 @@ try:
         if '--browser' in sys.argv:
             port = docker('port', name, '3000/tcp').rsplit(':',1)[1]
             browser_env = dict(os.environ, DOCLENS_TEST_URL='http://127.0.0.1:'+port, DOCLENS_TEST_COOKIE=cookie)
-            subprocess.run(['node',str(ROOT/'tests/monitoring_browser.cjs')],env=browser_env,check=True)
+            browser_env.update({
+                'DOCLENS_GRAFANA_URL': 'http://127.0.0.1:' + docker('port', name, '3001/tcp').rsplit(':',1)[1],
+                'DOCLENS_PROMETHEUS_URL': 'http://127.0.0.1:' + docker('port', name, '9090/tcp').rsplit(':',1)[1],
+            })
+            subprocess.run(['node',str(ROOT/'tests/runpod_links_browser.cjs')],env=browser_env,check=True)
         history_time = time.time()
         history_value = metric('doclens_auth_login_success_total{job="doclens"}', cookie, history_time)
         status, body = monitor('api/user/preferences', cookie, json.dumps({'timezone':'utc','homeDashboardUID':'doclens'}).encode(), method='PUT')
@@ -187,6 +235,8 @@ try:
         # Spoofed proxy identity cannot bypass the DocLens session check.
         assert monitor('api/dashboards/uid/doclens', spoof=True)[0] == 401
         print('PASS private Grafana gateway, provisioned dashboard, live app/Qdrant metrics, CSRF-aware preferences write', flush=True)
+    if monitoring:
+        public_monitoring()
     settings_code = "from pathlib import Path;import hashlib,json;print(json.dumps({str(p.relative_to('/config')):hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('/config').rglob('*') if p.is_file()},sort_keys=True))"
     saved_settings = docker('exec', name, 'python', '-c', settings_code)
     # Reproduce interruption after a private input was created but before finally
@@ -214,8 +264,31 @@ try:
         assert metric('doclens_auth_login_success_total{job="doclens"}', cookie, history_time) == history_value
         assert monitor('api/user/preferences', cookie)[1]['timezone'] == 'utc'
         assert monitor('api/dashboards/uid/doclens', spoof=True)[0] == 401
+        public_monitoring()
         print('PASS Grafana settings and Prometheus historical samples survive forced and graceful restart', flush=True)
     print('PASS restart persistence: exact point/payload/publication/citation identities, existing session and live answer', flush=True)
+    # Recreate only this synthetic container, retaining its unique volume and
+    # exact image. No runtime source mounts, copying or manual listeners.
+    if os.environ.get('DOCLENS_RUNPOD_EVIDENCE'):
+        (Path(os.environ['DOCLENS_RUNPOD_EVIDENCE']) / 'before-recreation-container.log').write_text(docker('logs', name))
+    docker('stop', '-t', '30', name)
+    docker('rm', name)
+    with tempfile.TemporaryDirectory(prefix='doclens-recreate-secret-') as tmp:
+        env = Path(tmp) / 'secrets.env'
+        env.write_text(trial_environment)
+        env.chmod(0o600)
+        docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g',
+               '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace',
+               '-p', '127.0.0.1::3000', '-p', '127.0.0.1::3001', '-p', '127.0.0.1::9090', image)
+        wait()
+    assert records() == before
+    assert docker('exec', name, 'python', '-c', settings_code) == saved_settings
+    assert upload(b'bad replacement', cookie)[0] == 400
+    if monitoring:
+        public_monitoring()
+        assert metric('doclens_auth_login_success_total{job="doclens"}', cookie, history_time) == history_value
+    print('PASS container recreation: baked-in listeners, existing sessions, exact documents/configuration and metrics history', flush=True)
+
     if monitoring:
         docker('exec', name, 'python', '-c', "import os,signal;from pathlib import Path;p=next(p for p in Path('/proc').iterdir() if p.name.isdigit() and p.stat().st_uid==10004 and b'/opt/grafana/bin/grafana' in (p/'cmdline').read_bytes());os.kill(int(p.name),signal.SIGTERM)")
         deadline = time.monotonic()+20
@@ -235,5 +308,13 @@ try:
     assert docker('inspect', '--format', '{{.State.Running}}', name) == 'false'
     print('PASS child failure terminates whole container', flush=True)
 finally:
-    docker('rm', '-f', name, check=False)
-    docker('volume', 'rm', volume, check=False)
+    try:
+        evidence = os.environ.get('DOCLENS_RUNPOD_EVIDENCE')
+        if evidence:
+            Path(evidence).mkdir(parents=True, exist_ok=True)
+            (Path(evidence) / 'container.log').write_text(docker('logs', name, check=False))
+    except OSError as error:
+        print('Evidence capture failed (' + type(error).__name__ + '); retaining original test outcome', file=sys.stderr)
+    finally:
+        docker('rm', '-f', name, check=False)
+        docker('volume', 'rm', volume, check=False)

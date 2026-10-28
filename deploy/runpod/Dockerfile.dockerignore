@@ -2,6 +2,7 @@
 !deploy/
 !deploy/runpod/
 !deploy/runpod/supervisor.py
+!deploy/runpod/monitoring_gateway.py
 !deploy/monitoring/
 !deploy/monitoring/prometheus.yml
 !deploy/monitoring/dashboards/

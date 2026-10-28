@@ -15,9 +15,9 @@ spec.loader.exec_module(pod)
 
 
 class Contract(unittest.TestCase):
-    def test_template_only_frontend_and_secret_bindings(self):
+    def test_template_only_authenticated_services_and_secret_bindings(self):
         template = json.loads((ROOT / 'deploy/runpod/template.json').read_text())
-        self.assertEqual(template['ports'], '3000/http')
+        self.assertEqual(template['ports'], '3000/http,3001/http,9090/http')
         self.assertEqual(template['volumeMountPath'], '/workspace')
         self.assertEqual(set(template['env']) - {'DOCLENS_MONITORING'}, set(pod.SECRETS))
         self.assertTrue(all(value.startswith('{{ RUNPOD_SECRET_') for key,value in template['env'].items() if key != 'DOCLENS_MONITORING'))
@@ -120,7 +120,7 @@ class Contract(unittest.TestCase):
         self.assertEqual(rules[0], '**')
         files = {line[1:] for line in rules[1:] if not line.endswith('/')}
         self.assertEqual(files, {
-            'deploy/runpod/supervisor.py', 'deploy/monitoring/prometheus.yml',
+            'deploy/runpod/supervisor.py', 'deploy/runpod/monitoring_gateway.py', 'deploy/monitoring/prometheus.yml',
             'deploy/monitoring/dashboards/doclens.json',
             'deploy/monitoring/provisioning/datasources/prometheus.yml',
             'deploy/monitoring/provisioning/dashboards/doclens.yml'})

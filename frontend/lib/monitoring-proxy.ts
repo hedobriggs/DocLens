@@ -19,7 +19,12 @@ export async function monitoringProxy(request: NextRequest, context: { params: P
     return NextResponse.json({ detail: "Invalid monitoring path." }, { status: 400 });
   }
   // This fixed internal destination cannot be selected by request input.
-  const destination = service === "grafana" ? "http://grafana:3001/monitoring/" : "http://prometheus:9090/";
+  // RunPod exposes authenticated gateways on the usual monitoring ports; raw
+  // services stay on separate loopback ports. Compose keeps its existing ports.
+  const pod = process.env.DOCLENS_RUNPOD_GATEWAYS === "1";
+  const destination = service === "grafana"
+    ? `http://grafana:${pod ? 13001 : 3001}/monitoring/`
+    : `http://prometheus:${pod ? 19090 : 9090}/`;
   const target = destination + path.map(encodeURIComponent).join("/") + request.nextUrl.search;
   const headers = new Headers(request.headers);
   HOP_HEADERS.forEach(name => headers.delete(name));

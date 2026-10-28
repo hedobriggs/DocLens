@@ -17,6 +17,7 @@ RUN --mount=type=bind,from=frontend,source=/app,target=/tmp/frontend \
     --mount=type=bind,from=prometheus,source=/,target=/tmp/prometheus-source \
     --mount=type=bind,from=grafana,source=/usr/share/grafana,target=/tmp/grafana \
     --mount=type=bind,source=deploy/runpod/supervisor.py,target=/tmp/supervisor.py \
+    --mount=type=bind,source=deploy/runpod/monitoring_gateway.py,target=/tmp/monitoring_gateway.py \
     --mount=type=bind,source=deploy/monitoring,target=/tmp/monitoring \
     mkdir -p /opt/frontend /opt/qdrant/lib /opt/runpod /opt/prometheus /opt/monitoring/dashboards /opt/grafana/bin && \
     cp -a /tmp/frontend/. /opt/frontend/ && cp /tmp/node /usr/local/bin/node && \
@@ -27,11 +28,12 @@ RUN --mount=type=bind,from=frontend,source=/app,target=/tmp/frontend \
     cp -a /tmp/monitoring/provisioning /opt/monitoring/ && \
     cp /tmp/monitoring/prometheus.yml /opt/monitoring/prometheus.yml && \
     cp /tmp/monitoring/dashboards/doclens.json /opt/monitoring/dashboards/doclens.json && \
-    cp /tmp/supervisor.py /opt/runpod/supervisor.py && chmod 0444 /opt/runpod/supervisor.py && \
+    cp /tmp/supervisor.py /opt/runpod/supervisor.py && cp /tmp/monitoring_gateway.py /opt/runpod/monitoring_gateway.py && chmod 0444 /opt/runpod/*.py && \
+    sed -i "s|http://prometheus:9090|http://prometheus:19090|" /opt/monitoring/provisioning/datasources/prometheus.yml && \
     find /opt/monitoring -type d -exec chmod 0755 {} + && \
     find /opt/monitoring -type f -exec chmod 0444 {} + && \
     chmod -R a+rX /opt/grafana && chmod 0755 /opt/prometheus/prometheus
 ENV DOCLENS_MONITORING=1 QDRANT__SERVICE__HOST=127.0.0.1 QDRANT__SERVICE__HTTP_PORT=6333 QDRANT__SERVICE__GRPC_PORT=6334 QDRANT__TELEMETRY_DISABLED=true
-EXPOSE 3000
+EXPOSE 3000 3001 9090
 HEALTHCHECK --interval=15s --timeout=5s --start-period=120s --retries=4 CMD ["python", "/opt/runpod/supervisor.py", "health"]
 ENTRYPOINT ["python", "/opt/runpod/supervisor.py"]

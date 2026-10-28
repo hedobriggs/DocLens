@@ -5,7 +5,7 @@
   "containerDiskInGb": 15,
   "volumeInGb": 20,
   "volumeMountPath": "/workspace",
-  "ports": "3000/http",
+  "ports": "3000/http,3001/http,9090/http",
   "env": {
     "DOCLENS_ADMIN_EMAIL": "{{ RUNPOD_SECRET_doclens_admin_email }}",
     "DOCLENS_ADMIN_PASSWORD": "{{ RUNPOD_SECRET_doclens_admin_password }}",

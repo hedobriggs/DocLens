@@ -45,11 +45,34 @@ Each child has separate UID; frontend cannot read backend configuration.
 Use an amd64 Pod with **at least 2 CPU / 4 GB RAM initially**, 15 GB container
 disk and a **20 GB attached persistent volume mounted at `/workspace`**. This
 is a trial starting allocation, not a measured capacity guarantee. No GPU is
-required. Expose **only `3000/http`** through RunPod's HTTPS proxy. Do not expose
-8000, 6333, 6334, SSH or Jupyter. Do not override the image entrypoint/start
+required. Expose **`3000/http,3001/http,9090/http`** through RunPod's HTTPS proxy.
+Port 3000 opens DocLens, 3001 opens Grafana, and 9090 opens Prometheus directly
+from the default HTTP-service links. Do not expose 8000, 6333, 6334, 13001,
+19090, SSH or Jupyter. Do not override the image entrypoint/start
 command. The API and Qdrant bind to loopback. TLS terminates at the RunPod proxy;
 Secure session cookies require its HTTPS URL. RunPod proxy behavior and browser
 login must be tested on the actual provider before production use.
+
+## One-click monitoring links
+
+Set `DOCLENS_MONITORING=1`. Public monitoring listeners forward only to the
+existing session-checking frontend proxy. Raw Grafana (13001) and Prometheus
+(19090) bind to loopback; Grafana keeps its trusted-proxy authentication and
+anonymous/basic access remain disabled. Compose retains its existing ports.
+
+Open each RunPod HTTP-service link at its root URL. Grafana and Prometheus
+redirect to their dashboard/query pages automatically. If not authenticated,
+the link shows a DocLens monitoring login form. Use the same administrator
+credentials. Each RunPod port hostname has its own host-only Secure/HttpOnly
+session; logging into port 3000 does not log into the other hostnames. No shared
+parent-domain cookies or cross-host session tokens are used. A reload keeps the
+login; expiry returns to sign-in. Static assets and API requests pass through
+the same authenticated frontend boundary.
+
+These listeners and their configuration are baked into the image and started
+by the supervisor; no manual terminal commands are required. Recreating a Pod
+requires selecting this candidate image, the three HTTP ports and the same
+attached volume/secrets. Do not recreate against a volume still in use.
 
 ## Persistence and safety
 
