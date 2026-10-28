@@ -15,6 +15,30 @@ spec.loader.exec_module(pod)
 
 
 class Contract(unittest.TestCase):
+    def test_integration_ca_options_preserve_public_origin(self):
+        # Execute the actual harness option-building statements without running
+        # its container lifecycle or requiring a Docker daemon.
+        tree = ast.parse((ROOT / 'tests/test_runpod.py').read_text())
+        initial = next(n for n in ast.walk(tree)
+                       if isinstance(n, ast.Assign) and any(
+                           isinstance(t, ast.Name) and t.id == 'trust' for t in n.targets))
+        ca_branch = next(n for n in ast.walk(tree)
+                         if isinstance(n, ast.If) and 'DOCLENS_TEST_CA' in ast.unparse(n.test))
+        code = compile(ast.Module(body=[initial, ca_branch], type_ignores=[]),
+                       '<integration container options>', 'exec')
+        for ca in (None, '/synthetic/test-ca.pem'):
+            with self.subTest(ca=ca), patch.dict(os.environ, {}, clear=True):
+                if ca:
+                    os.environ['DOCLENS_TEST_CA'] = ca
+                namespace = {'os': os, 'frontend_port': '54321'}
+                exec(code, namespace)
+                expected = ['-e', 'DOCLENS_PUBLIC_ORIGIN=http://doclens.localhost:54321']
+                if ca:
+                    expected += ['-v', ca + ':/run/test-ca.pem:ro',
+                                 '-e', 'SSL_CERT_FILE=/run/test-ca.pem',
+                                 '-e', 'REQUESTS_CA_BUNDLE=/run/test-ca.pem']
+                self.assertEqual(namespace['trust'], expected)
+
     def test_template_only_authenticated_services_and_secret_bindings(self):
         template = json.loads((ROOT / 'deploy/runpod/template.json').read_text())
         self.assertEqual(template['ports'], '3000/http,3001/http,9090/http')

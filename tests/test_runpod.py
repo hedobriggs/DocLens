@@ -166,7 +166,7 @@ try:
             frontend_port = str(reservation.getsockname()[1])
         trust = ['-e', 'DOCLENS_PUBLIC_ORIGIN=http://doclens.localhost:' + frontend_port]
         if os.environ.get('DOCLENS_TEST_CA'):
-            trust = ['-v', os.environ['DOCLENS_TEST_CA'] + ':/run/test-ca.pem:ro', '-e', 'SSL_CERT_FILE=/run/test-ca.pem', '-e', 'REQUESTS_CA_BUNDLE=/run/test-ca.pem']
+            trust += ['-v', os.environ['DOCLENS_TEST_CA'] + ':/run/test-ca.pem:ro', '-e', 'SSL_CERT_FILE=/run/test-ca.pem', '-e', 'REQUESTS_CA_BUNDLE=/run/test-ca.pem']
         fixture = os.environ.get('DOCLENS_MONITORING_RUNTIME')
         if fixture:
             for source,target in [(Path(fixture)/'grafana','/opt/grafana'), (Path(fixture)/'prometheus','/opt/prometheus'),

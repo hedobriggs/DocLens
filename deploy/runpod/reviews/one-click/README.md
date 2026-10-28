@@ -99,3 +99,22 @@ fixture accepts `DOCLENS_REPO=/path/to/checkout` for reproduction. No customer
 content, real credentials or session-token dumps are included.
 
 SHA-256: `3a6a0a84119322bca96140240ad52855b98dfa23f9a47153952791d212570d96`.
+
+## CA-option harness correction
+
+The integration harness now appends custom-CA options, preserving the configured
+DocLens public origin. An executable AST regression runs the actual option-building
+statements for CA off/on without starting containers. Before the correction the
+CA-on case failed; afterward all 10 contract checks, 8 gateway checks and 5
+monitoring checks passed. Complete correction logs are in `evidence.zip` under
+`ca-harness/`. No runtime/image source changed.
+
+User-reported Intel Mac final-image build ID:
+`sha256:6b46513130ae283ce1da9ac3de0068be3abfe0d8fd097966e2a912859c1c8b55`.
+The user reported successful completion of the direct-image harness with
+`--browser`, `DOCLENS_TEST_BACK_LINK_ONLY=1`, no live Gemini and a Mac Playwright
+launcher adapter. Complete Mac logs, browser JSON and screenshots have NOT yet
+been transferred to this workspace; they are required for the final review.
+Do not interpret the retained Linux fixture evidence as the Mac acceptance ZIP.
+CA-on container acceptance has not been rerun; CA-on/off option regression passed.
+Actual RunPod HTTPS/attached-storage acceptance remains separately pending.
