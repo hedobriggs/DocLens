@@ -128,3 +128,61 @@ exact earlier image. These changed pins need rebuilt-image acceptance. Actual
 RunPod HTTPS/attached-storage acceptance, merge, publication and deployment remain
 separate approvals. No migrations, cleanup deletion, limit increases, Web-mode
 enablement or modification of existing data are part of these patches.
+
+## Patch 4 — compatible FastAPI / Starlette / metrics integration
+
+Base: `cb5c7f7ef370938efa3e5eefa04ed54de8c73913` (three approved source/pin patches).
+Candidate pins: **FastAPI 0.128.8 → 0.135.0**, **Starlette 0.49.3 → 1.3.1**,
+**prometheus-fastapi-instrumentator 7.1.0 → 8.1.0**. Only those three pins and the
+requirements manifest hash change production inputs; no runtime app code changed.
+
+The old FastAPI requires Starlette <1 and instrumentator7 also requires <1.
+Retained dry-run resolution rejects the old metrics pin with Starlette1.3.1.
+FastAPI0.135.0 allows Starlette>=0.46, and instrumentator8.1.0 requires >=1,<2;
+metadata, successful install report and isolated pip check are retained. This
+chooses a compatible framework version rather than bypassing resolver bounds or
+upgrading every package to latest. Starlette1.3.1 meets the reported fix floors
+for all five original Starlette IDs. No claim that this is the minimum possible
+FastAPI/instrumentator version across every historical release.
+
+Audit: **89 → 84 distinct package/advisory pairs**, **107 raw records in five
+packages**. All five original Starlette IDs below are absent from the candidate
+requirements audit, with status **candidate pin not reported; image gate pending**:
+
+| ID | Reported fix floor | Regression / limitation |
+| --- | --- | --- |
+| PYSEC-2026-161 | 1.0.1 | Malformed Host cannot prepend a path to reconstructed URL |
+| PYSEC-2026-248 | 1.3.0 | Nonabsolute request path cannot replace URL authority |
+| PYSEC-2026-2280 | 1.1.0 | Nonstandard method cannot dispatch an internal HTTPEndpoint helper |
+| PYSEC-2026-249 | 1.3.1 | URLencoded max_fields/max_part_size enforced; valid retry succeeds |
+| PYSEC-2026-2281 | 1.1.0 | Windows StaticFiles UNC/SMB path: audit pin evidence only; no native Windows exploit test performed |
+
+The entire per-advisory ledger, aliases and raw findings are preserved under
+`backend-framework/` in evidence.zip. **All six no-reported-fix IDs remain open**,
+including if some future package audit stops listing them. No suppressions.
+Five packages remain: fsspec, Pillow, sentence-transformers, torch, transformers.
+
+Failure/recovery evidence: four new framework methods produce five baseline
+failures (two form-limit subtests), then pass on the candidate. Initial installer
+ResolutionImpossible is retained, followed by compatible install/pip-check success.
+No application-runtime failure occurred on upgrade: the existing 51 checks passed.
+Two new application methods expand the inherited suite to **57 passing checks**,
+covering wrong-key 401, schema 422, unchanged indexed IDs/valid upload retry, and
+actual `http_requests_total` GET/handler/status samples increasing after a request.
+The existing suite retains bounded parser rejection, timeout/cancellation, health/
+metrics responsiveness, publication failures, search races and citation identity.
+
+Final total: **13 dependency + 57 application + 6 packaging + 5 monitoring = 81
+checks pass**. Expanded rerun was justified by the new app auth/metrics coverage;
+no arbitrary delays, skipped checks or altered resource/document limits. Web modes
+are unchanged and disabled. Test syntax and source-integrity guard are retained.
+
+Scope: Linux Python3.12.14 isolated non-ML subset (exact package inventory in ZIP),
+real PDF and isolated Qdrant semantics, controlled inference/provider responses.
+Not the complete production graph, Python3.11 runtime, native Mac/Safari/VoiceOver,
+full Grafana/Prometheus stack, live Gemini or rebuilt final image. No new image ID.
+The Windows advisory is not waived for lack of a Windows test. Complete Python3.11
+CPU resolution, image SBOM/scanning and direct rebuilt-image/Compose acceptance
+remain mandatory, followed by separately approved actual RunPod HTTPS/storage
+acceptance. Security release block, data-preservation and no-deployment constraints
+remain intact. ML/native planning is separate; no such pins are changed here.

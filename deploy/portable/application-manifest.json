@@ -9,7 +9,7 @@
     "backend/embeddings.py": "03017b173708aa24f76249b4245613a1fa39724e8f3dcb7c82d6668f6aa57ee3",
     "backend/generation.py": "66399a6e19b126384f93576636e025dc9835163b60e8704cdc7c45c1a8b4cb83",
     "backend/main.py": "0c47d102e0bfd2bcd18b2f0aa7989b3f21552220e50de6131255253e535e0543",
-    "backend/requirements.txt": "ac41095e50222fb31ebfdca6ee861f232138537d3491db9c9bfb104e37aa47ad",
+    "backend/requirements.txt": "e079e3b5996ceeeb2cc52fa6b5e7fbf5cfb63a5bdb1417ea3c1fc48e509164e0",
     "backend/upload_processing.py": "99958a118c2aeac9d3eec127a2bf06fadc2eb89c6a28c2f9574dc5c20334bd5b",
     "backend/vector_store.py": "16cdc6d59e06ab15ebbff880ba69b6daf66770fe7f3d3058a071a5b78b16e6a0",
     "frontend/.dockerignore": "f9f63e2d85d1a732c7b731ede89d96ad5a4f96f3eb68a58d571d115996ba50ed",

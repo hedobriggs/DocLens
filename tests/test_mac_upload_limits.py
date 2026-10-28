@@ -142,6 +142,32 @@ class UploadLimits(unittest.TestCase):
             finally:release.set()
             self.assertEqual(future.result(timeout=5).status_code,200)
 
+    def test_framework_auth_and_validation_preserve_existing_revision(self):
+        old = self.old()
+        response = self.api.post('/ask', json={'question': 'synthetic question'},
+                                 headers={'X-DocLens-Internal-Key': 'wrong-synthetic-key'})
+        self.assertEqual(response.status_code, 401)
+        response = self.api.post('/ask', json={'question': 42}, headers=self.headers)
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual({str(p.id) for p in self.visible()}, old)
+        self.assertEqual(self.upload().status_code, 200)
+
+    def test_framework_instrumentation_records_real_request_samples(self):
+        from prometheus_client.parser import text_string_to_metric_families
+        def count():
+            response = self.api.get('/metrics')
+            self.assertEqual(response.status_code, 200)
+            return sum(sample.value
+                       for family in text_string_to_metric_families(response.text)
+                       for sample in family.samples
+                       if sample.name == 'http_requests_total'
+                       and sample.labels.get('handler') == '/'
+                       and sample.labels.get('method') == 'GET'
+                       and sample.labels.get('status') == '200')
+        before = count()
+        self.assertEqual(self.api.get('/').status_code, 200)
+        self.assertGreaterEqual(count(), before + 1)
+
     def test_malformed_multipart_headers_preserve_existing_revision(self):
         old = self.old()
         for extra in (b'X-Synthetic: ' + b'x' * 8192 + b'\r\n',
