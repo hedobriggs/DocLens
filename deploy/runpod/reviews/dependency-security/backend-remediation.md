@@ -52,3 +52,33 @@ digest; direct image/Compose synthetic upload, live answers/citations, all auth
 and monitoring URLs, restart/recreation and failure-preservation acceptance on a
 host with enough disk. Do not reuse the earlier accepted Mac image ID for these
 new pins. Provider HTTPS and RunPod attached-storage gates remain separate.
+
+## Patch 2 — PDF and multipart parsing
+
+Base: `8a3320ea30975da975f63849d0478988bcd9053d` (network patch).
+PyMuPDF **1.26.5 → 1.26.7** and python-multipart **0.0.20 → 0.0.31**.
+The multipart upgrade introduces parser header bounds; no existing document-size,
+page, processing or resource limit is raised. A narrow `MultipartParseError`
+handler returns generic 400 and logs component/exception class without header
+contents. This is required compatibility handling for Starlette 0.49.3, not a
+major framework upgrade or an advisory exception.
+
+Audit: **99 → 92 distinct pairs**, 123 raw records in eight packages. All seven
+original PyMuPDF/multipart IDs are absent at candidate pins; image gate pending.
+Raw/individual status ledger: `backend-parser/` in evidence.zip.
+
+Tests: baseline python-multipart accepts excessive header size/count (200), so
+both new failure scenarios fail as expected. First upgraded run rejects input but
+exposes six propagated-parser errors (same inherited test in three classes).
+After safe error handling, **51 application checks pass**, including rejection,
+unchanged existing point IDs and successful valid retry after rejection. Existing
+normal/dense synthetic PDF, malformed/scanned PDF, limits, timeout/cancellation,
+publication/search races and complete-document citation checks are included.
+**Six packaging checks pass**, manifest requirements/main.py hashes updated.
+Isolated pip check passes. Full failure logs and passing reruns retained.
+
+PyMuPDF's reported embedded-get CLI path is not invoked by DocLens; pin audit
+absence and real document-API regressions are the evidence, not a claim to have
+executed every upstream exploit. Complete CPU graph, Python3.11 image/native
+regressions and actual runtime HTTP resource measurements remain release gates.
+The parser handler does not resolve the still-open Starlette advisories.

@@ -142,6 +142,24 @@ class UploadLimits(unittest.TestCase):
             finally:release.set()
             self.assertEqual(future.result(timeout=5).status_code,200)
 
+    def test_malformed_multipart_headers_preserve_existing_revision(self):
+        old = self.old()
+        for extra in (b'X-Synthetic: ' + b'x' * 8192 + b'\r\n',
+                      b'X-Synthetic: value\r\n' * 20):
+            with self.subTest(header_bytes=len(extra)):
+                body = (b'--synthetic-boundary\r\n'
+                        b'Content-Disposition: form-data; name="file"; filename="existing.pdf"\r\n'
+                        b'Content-Type: application/pdf\r\n' + extra + b'\r\n' + self.data +
+                        b'\r\n--synthetic-boundary--\r\n')
+                response = self.api.post('/documents/process', content=body,
+                    headers={**self.headers,
+                             'Content-Type': 'multipart/form-data; boundary=synthetic-boundary'})
+                self.assertEqual(response.status_code, 400, response.text)
+                self.assertEqual(response.json(), {'detail': 'Malformed PDF upload.'})
+                self.assertEqual({str(p.id) for p in self.visible()}, old)
+        # Parser rejection must release the single upload admission slot.
+        self.assertEqual(self.upload().status_code, 200)
+
     def test_limits_and_scans_leave_old_revision_unchanged(self):
         old=self.old()
         cases=[('MAX_PAGES',1,pdf(2)),('MAX_TEXT',5,pdf()),('MAX_PAGE_TEXT',5,pdf()),('MAX_CHUNKS',1,pdf(2))]

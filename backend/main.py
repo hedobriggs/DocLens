@@ -9,6 +9,8 @@ from typing import Optional
 import fitz
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
+from python_multipart.exceptions import MultipartParseError
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import Counter, Histogram
 from pydantic import BaseModel
@@ -99,6 +101,12 @@ app = FastAPI(
     description="Backend API for DocLens",
     version="0.1.0",
 )
+
+
+@app.exception_handler(MultipartParseError)
+async def malformed_multipart_upload(request: Request, error: MultipartParseError):
+    logger.warning("PDF multipart rejected | exception=%s", type(error).__name__)
+    return JSONResponse(status_code=400, content={"detail": "Malformed PDF upload."})
 
 
 # --------------------------------------------------
