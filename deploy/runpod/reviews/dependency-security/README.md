@@ -65,6 +65,39 @@ them. Reaudit the selected final dependency graph before declaring remediation.
 | transformers 4.57.6 | 6 | 5.10.0 | Malicious model/config/import and trainer/conversion paths. Current inference is not training, but model-loading risk remains. Major upgrade with sentence-transformers/torch; verify offline safe artifacts, dense ingestion, complete retrieval, citations and live synthetic answers. |
 | urllib3 2.6.3 | 5 | 2.8.0 | Outbound networking/redirect/resource paths; prioritize update with requests and verified TLS tests. |
 
+### Advisories with no reported fixed release
+
+The scanner's empty `fix_versions` is **unknown remediation**, not “not affected”
+and not evidence that a package-wide target resolves the advisory. After grouping
+duplicate records by package and advisory ID, six IDs have no reported fix in
+any record:
+
+| Package | Advisory | CVE | Status |
+| --- | --- | --- | --- |
+| torch | PYSEC-2025-189 | CVE-2025-2148 | OPEN — no reported fixed version |
+| torch | PYSEC-2025-190 | CVE-2025-2149 | OPEN — no reported fixed version |
+| torch | PYSEC-2025-192 | CVE-2025-2998 | OPEN — no reported fixed version |
+| torch | PYSEC-2026-139 | CVE-2026-4538 | OPEN — no reported fixed version |
+| transformers | PYSEC-2025-217 | CVE-2025-14929 | OPEN — no reported fixed version |
+| transformers | PYSEC-2026-4174 | CVE-2026-80047 | OPEN — no reported fixed version |
+
+Do not mark these resolved by the torch 2.13.0 / transformers 5.10.0 candidates.
+Some other IDs have duplicate records with both empty and nonempty fix lists;
+retain both raw records and use the union for triage, never suppress the ID.
+Before release, verify upstream advisories and applicable operations against the
+exact resolved CPU build; seek a vendor fix/removal or a documented, independently
+reviewed reachability mitigation and explicit risk decision. Where no defensible
+resolution exists, keep the release blocked. No risk acceptance is granted here.
+
+### Packaging correction
+
+The three changed frontend manifest hashes (package.json, package-lock.json and
+eslint.config.mjs) now match their actual build inputs. All six original packaging
+checks pass, including the unchanged guard proving modified sources stop before
+Docker runs. The initial stale-manifest failure and corrective passing run are
+retained in evidence under `followup/`. The historical application_commit field
+remains a baseline label; file hashes determine exact source integrity.
+
 Recommended next reviewable patches: (1) resolve compatible HTTP/TLS/upload/PDF
 patches and regression-test parsing/admission/failure preservation; (2) upgrade
 FastAPI/Starlette together; (3) upgrade and measure the ML/native stack together.

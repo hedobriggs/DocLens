@@ -26,12 +26,12 @@
     "frontend/app/page.tsx": "c73da11c47a0bedda36407ab350dab98bdfa05128f6fce12706b9975db2cf460",
     "frontend/app/prometheus/[[...path]]/route.ts": "70e1ebb04139396af83af669c382b98fd48cd2b19d94a2ac2927d04cfa875e5f",
     "frontend/bootstrap.cjs": "b6b9865ec63d711309349d690344a0a66835181fbd0f86fccbb686c75aa80dbd",
-    "frontend/eslint.config.mjs": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493",
+    "frontend/eslint.config.mjs": "f656095a7002e27b5f38667fbad197dc0d4b14d313677fc7ac616b424a48b2e8",
     "frontend/lib/auth.ts": "c99fd2e3409277b3c5227c5dbf59fcf9cb8e9d3b9d6a4dc5758599a65abad512",
     "frontend/lib/monitoring-proxy.ts": "0dfa1560feef14dccd10bcc954d7674452a83acd4629a109e5c1dfd54a8a4ff9",
     "frontend/next.config.ts": "614bce25b089c3f19b1e17a6346c74b858034040154c6621e7d35303004767cc",
-    "frontend/package-lock.json": "a7db797e7e18a40ff5661d2391cd6cca5b5e1680d525cc7a5f2e3befbd56f672",
-    "frontend/package.json": "72ef6486209ad52e07aac49c648010c589b48458e6f685918d83237a4fec67cf",
+    "frontend/package-lock.json": "a7fd24d7f4fe7a8116ab166df0fa886f7dba86b59f0e73489f14c6d174c1ca49",
+    "frontend/package.json": "bdd6e525d2d9dc0078473fcc8bc6a3cd9c9a482321853d6cd83f3ee960d017bd",
     "frontend/postcss.config.mjs": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde",
     "frontend/tsconfig.json": "be18523b23b78b6e1a876ddd107d330f0168bddf09d751b57e0b5edce69c66f3"
   }
