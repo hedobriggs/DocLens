@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import socket
 import sys
 import tempfile
 import time
@@ -159,7 +160,11 @@ try:
         result = subprocess.run(['docker', 'run', '--rm', '-v', volume + ':/workspace', image], capture_output=True)
         assert result.returncode != 0 and b'ValueError' in result.stderr, (result.returncode, result.stderr.decode(errors='replace'))
         print('PASS missing private secrets refusal', flush=True)
-        trust = []
+        # Keep a stable public frontend origin across container recreation.
+        with socket.socket() as reservation:
+            reservation.bind(('127.0.0.1', 0))
+            frontend_port = str(reservation.getsockname()[1])
+        trust = ['-e', 'DOCLENS_PUBLIC_ORIGIN=http://doclens.localhost:' + frontend_port]
         if os.environ.get('DOCLENS_TEST_CA'):
             trust = ['-v', os.environ['DOCLENS_TEST_CA'] + ':/run/test-ca.pem:ro', '-e', 'SSL_CERT_FILE=/run/test-ca.pem', '-e', 'REQUESTS_CA_BUNDLE=/run/test-ca.pem']
         fixture = os.environ.get('DOCLENS_MONITORING_RUNTIME')
@@ -169,7 +174,7 @@ try:
                                   (ROOT/'deploy/runpod/supervisor.py','/opt/runpod/supervisor.py')]:
                 trust += ['-v', str(source) + ':' + target + ':ro']
             trust += ['-e','DOCLENS_MONITORING=1']
-        docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g', '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace', '-p', '127.0.0.1::3000', '-p', '127.0.0.1::3001', '-p', '127.0.0.1::9090', image)
+        docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g', '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace', '-p', '127.0.0.1:' + frontend_port + ':3000', '-p', '127.0.0.1::3001', '-p', '127.0.0.1::9090', image)
         wait()
     assert upload(pdf(['Anonymous']))[0] == 401
     assert request('/api/auth/login', json.dumps({'email': 'trial@synthetic.invalid', 'password': 'wrong'}).encode())[0] == 401
@@ -222,10 +227,10 @@ try:
             time.sleep(1)
         if '--browser' in sys.argv:
             port = docker('port', name, '3000/tcp').rsplit(':',1)[1]
-            browser_env = dict(os.environ, DOCLENS_TEST_URL='http://127.0.0.1:'+port, DOCLENS_TEST_COOKIE=cookie)
+            browser_env = dict(os.environ, DOCLENS_TEST_URL='http://doclens.localhost:'+port, DOCLENS_TEST_COOKIE=cookie)
             browser_env.update({
-                'DOCLENS_GRAFANA_URL': 'http://127.0.0.1:' + docker('port', name, '3001/tcp').rsplit(':',1)[1],
-                'DOCLENS_PROMETHEUS_URL': 'http://127.0.0.1:' + docker('port', name, '9090/tcp').rsplit(':',1)[1],
+                'DOCLENS_GRAFANA_URL': 'http://grafana.localhost:' + docker('port', name, '3001/tcp').rsplit(':',1)[1],
+                'DOCLENS_PROMETHEUS_URL': 'http://prometheus.localhost:' + docker('port', name, '9090/tcp').rsplit(':',1)[1],
             })
             subprocess.run(['node',str(ROOT/'tests/runpod_links_browser.cjs')],env=browser_env,check=True)
         history_time = time.time()
@@ -279,7 +284,7 @@ try:
         env.chmod(0o600)
         docker('run', '-d', *trust, '--name', name, '--cpus', '2', '--memory', '4g',
                '--memory-swap', '4g', '--env-file', str(env), '-v', volume + ':/workspace',
-               '-p', '127.0.0.1::3000', '-p', '127.0.0.1::3001', '-p', '127.0.0.1::9090', image)
+               '-p', '127.0.0.1:' + frontend_port + ':3000', '-p', '127.0.0.1::3001', '-p', '127.0.0.1::9090', image)
         wait()
     assert records() == before
     assert docker('exec', name, 'python', '-c', settings_code) == saved_settings

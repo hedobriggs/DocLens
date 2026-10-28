@@ -1,10 +1,13 @@
 """Exercise public gateway framing, fixed routing and credential boundaries."""
 import http.client
+import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import importlib.util
 from pathlib import Path
 import threading
+import tempfile
 import unittest
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('gateway', Path(__file__).resolve().parents[1] / 'deploy/runpod/monitoring_gateway.py')
 gateway = importlib.util.module_from_spec(spec)
@@ -77,6 +80,53 @@ class MonitoringGateway(unittest.TestCase):
         status, headers, _ = self.request(self.servers[2], '/api/auth/login', method='POST')
         self.assertEqual(status, 200)
         self.assertIn('Secure; HttpOnly; SameSite=Lax; Path=/', headers['Set-Cookie'])
+
+    def test_back_link_uses_absolute_doclens_destination_without_changing_panels(self):
+        template = (Path(__file__).resolve().parents[1] / 'deploy/monitoring/dashboards/doclens.json').read_text()
+        before = json.loads(template)
+        document = json.loads(gateway.dashboard_document(template, 'https://doclens.example.invalid'))
+        link = next(link for link in document['links'] if link['title'] == 'Back to DocLens')
+        self.assertEqual(link['url'], 'https://doclens.example.invalid/dashboard')
+        self.assertEqual(document['panels'], before['panels'])
+        self.assertEqual(document['uid'], before['uid'])
+        self.assertEqual(json.loads(template)['links'][0]['url'], '/dashboard')  # Compose unchanged.
+
+    def test_generated_config_is_readable_by_grafana_and_replaced_on_restart(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'runtime'
+            previous = gateway.os.umask(0o077)
+            try:
+                for origin in ('https://first.example.invalid', 'https://second.example.invalid'):
+                    gateway.prepare_dashboard('{"uid":"doclens","links":[{"title":"Back to DocLens"}]}', output, origin)
+                    self.assertEqual(output.stat().st_mode & 0o777, 0o755)
+                    self.assertEqual((output/'dashboards').stat().st_mode & 0o777, 0o755)
+                    final = output/'dashboards/doclens.json'
+                    self.assertEqual(final.stat().st_mode & 0o777, 0o444)
+                    self.assertEqual(json.loads(final.read_text())['links'][0]['url'], origin+'/dashboard')
+                    self.assertEqual(len(list(final.parent.iterdir())), 1)
+            finally:
+                gateway.os.umask(previous)
+
+    def test_public_origin_uses_provider_metadata_and_validated_override(self):
+        with patch.dict(gateway.os.environ, {'RUNPOD_POD_ID':'abc123', 'DOCLENS_PUBLIC_ORIGIN':''}):
+            self.assertEqual(gateway.doclens_origin(), 'https://abc123-3000.proxy.runpod.net')
+            for value in ('https://documents.example.invalid/', 'http://doclens.localhost:43210'):
+                with patch.dict(gateway.os.environ, {'DOCLENS_PUBLIC_ORIGIN':value}):
+                    self.assertEqual(gateway.doclens_origin(), value.rstrip('/'))
+            for value in ('http://external.invalid', 'https://user:password@example.invalid',
+                          'https://example.invalid/path', 'https://example.invalid?token=bad',
+                          'https://example.invalid/#fragment', '//evil.invalid',
+                          'https://example.invalid:invalid', 'https://example.invalid:0',
+                          'https://example.invalid/\n'):
+                with patch.dict(gateway.os.environ, {'DOCLENS_PUBLIC_ORIGIN':value}):
+                    with self.assertRaises(ValueError):
+                        gateway.doclens_origin()
+        with patch.dict(gateway.os.environ, {'RUNPOD_POD_ID':'invalid/pod', 'DOCLENS_PUBLIC_ORIGIN':''}):
+            self.assertIsNone(gateway.doclens_origin())
+
+    def test_missing_origin_does_not_advertise_a_broken_or_guessed_destination(self):
+        document = json.loads(gateway.dashboard_document('{"links":[{"title":"Back to DocLens","url":"/dashboard"}]}', None))
+        self.assertEqual(document['links'], [])
 
     def test_fixed_service_and_bounded_requests(self):
         for server in self.servers[1:]:

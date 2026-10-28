@@ -69,6 +69,17 @@ parent-domain cookies or cross-host session tokens are used. A reload keeps the
 login; expiry returns to sign-in. Static assets and API requests pass through
 the same authenticated frontend boundary.
 
+Grafana’s **Back to DocLens** link points directly to port 3000 using the provider’s
+`RUNPOD_POD_ID`. It does not copy the monitoring session or append credentials.
+DocLens checks its own host-only cookie and asks for login if needed. For custom
+domains or local Docker trials, optionally set `DOCLENS_PUBLIC_ORIGIN` to the
+DocLens origin (for example `https://documents.example.com` or
+`http://localhost:3000`). Paths, credentials, query strings and fragments are
+rejected; HTTP is restricted to loopback hostnames. Request Host/forwarded headers
+never select this destination. If neither setting is available, the link is omitted rather than advertising
+a guessed or broken destination. The RunPod-only dashboard copy is generated
+under `/run` at startup; the packaged Compose dashboard remains unchanged.
+
 These listeners and their configuration are baked into the image and started
 by the supervisor; no manual terminal commands are required. Recreating a Pod
 requires selecting this candidate image, the three HTTP ports and the same

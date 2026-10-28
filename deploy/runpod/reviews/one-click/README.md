@@ -1,120 +1,101 @@
-# RunPod one-click monitoring candidate — review pending
+# RunPod “Back to DocLens” correction — independent re-review requested
 
-Application baseline: `d9095402cf393aa75f790c8e13b15ee215575412`.
-Git parent: evidence-only `30db78736a292c525ab1cadf1daf9773e32075e2`.
-Branch: `fix/runpod-monitoring-links`. Application commit: `f8577fa6237852db48bb4b8450484b7e3b8688ec`.
-Subsequent report updates are evidence-only; application source is unchanged.
+Repository: `hedobriggs/DocLens`; branch: `fix/runpod-monitoring-links`.
+Application review baseline: `f8577fa6237852db48bb4b8450484b7e3b8688ec`.
+Git parent: evidence-only `218781e4508e5ca80b35cb07a0297dfe482b8c6d`.
+The exact follow-up SHA is the commit containing this report, supplied in the
+maintainer handoff. No merge, publication or deployment is authorized/performed.
 
-## Behavior and boundary
+## Problem and correction
 
-The template and image expose 3000 (DocLens), 3001 (Grafana gateway), and 9090
-(Prometheus gateway). Both monitoring root links redirect automatically to the
-correct service page. Anonymous pages redirect to a same-host login form; APIs
-reject missing/invalid DocLens sessions. Each RunPod port hostname needs its own
-login with the same admin credentials. No parent-domain cookies, token transfers
-or raw monitoring authentication bypass were added.
+The shared Grafana dashboard links to `/dashboard`. On its dedicated RunPod
+hostname, Grafana interprets that as `/monitoring/dashboard`; it cannot open the
+DocLens workspace. A server redirect alone is insufficient because Grafana's
+SPA can intercept a relative link before the gateway handles it.
 
-The gateways have a fixed loopback frontend upstream, 16 concurrent requests
-per listener, 2 MiB request bound and read/upstream timeouts. They do not load
-private settings. Existing frontend session validation remains the authority;
-spoofed Grafana identity/internal authorization headers are stripped. Grafana
-continues requiring the trusted frontend proxy. Its raw listener moves to
-127.0.0.1:13001 and raw Prometheus to 127.0.0.1:19090. Do not expose those ports.
-Compose keeps its previous internal destinations and published ports.
+At startup, RunPod now generates a dashboard copy under
+`/run/doclens-monitoring/dashboards`, pointing **Back to DocLens** directly to
+`https://<RUNPOD_POD_ID>-3000.proxy.runpod.net/dashboard`. An optional trusted
+`DOCLENS_PUBLIC_ORIGIN` supports custom domains or local trials. Its validation
+rejects credentials, paths, query strings, fragments, invalid ports and external
+plain HTTP. HTTP is allowed only for loopback hostnames. Request Host/forwarded
+headers do not choose the destination. With no provider ID or configured origin,
+the link is omitted rather than advertising a guessed/broken address.
 
-Startup, gateway script, template ports and RunPod-only datasource URL are baked
-into the image. Persistent paths, UIDs, matching configuration checks, installation
-lock, session secret, upload/resource limits, data/citation identities and core
-failure behavior were not changed. No migration or reset is added. Preserve the
-same volume and secret bindings when a separately approved recreation occurs.
+The generated file is atomically replaced and read-only, with explicit directory
+permissions so Grafana's separate UID can read it even with restrictive umask.
+The RunPod-only provider path/default-home path use that generated copy. The
+shared Compose dashboard, dashboard UID/panels and its relative link remain
+unchanged. Generation repeats at every startup/recreation; it does not write
+application volumes or migrate/reset any data.
 
-## Executed evidence
+The browser navigates to DocLens without forwarding tokens or changing cookie
+scope. DocLens enforces its own host-only session and asks for login when none
+exists. Monitoring proxy/authentication logic and private service ports are
+unchanged. No backend/frontend application source, upload limits, credentials,
+originals, Qdrant records or citation identities were changed.
 
-Final built local image (not published):
-`sha256:72ee8d9178cda195de99457618b3bf2c563dc4ca94fbd5074cc0e3e05a3bf99c`
-(linux/amd64, 3,944,530,492 reported bytes). The unchanged backend input is
-`sha256:6630a9b44c22c047906d1aaba571f39e4e72d075921297dbc480ea98d01140b5`.
-Frontend source hashes were checked against the updated packaging manifest.
-The frontend production build and final RunPod assembly both passed.
+## New maintainer-executed evidence
 
-Maintainer-executed checks: **63 passed**:
-
-| Check | Result |
+| Check | Outcome |
 | --- | --- |
-| Gateway network/framing/identity/cookie regressions | 4 passed |
-| RunPod packaging/startup contracts | 9 passed |
+| Gateway/configuration regressions | 8 passed |
+| RunPod contracts | 9 passed |
 | Compose monitoring/authentication/privacy contracts | 5 passed |
-| Bootstrap | 9 passed |
-| Portable packaging | 6 passed |
-| Portable launcher | 11 passed |
-| Controlled-inference document coverage | 6 passed |
-| Controlled-inference upload/preservation regressions | 13 passed |
+| JS/Python syntax and base-to-head whitespace | Passed |
+| Actual Dockerfile provider-path sed expression on temporary YAML | Passed; generated directory matches |
+| Real Grafana browser before case | Failed as expected: remained on monitoring hostname `/monitoring/dashboard` |
+| Real Grafana browser corrected case | Passed link click, separate DocLens login, workspace and assets |
 
-Changed frontend proxy ESLint, JS/Python syntax and whitespace checks passed.
-The last two Python suites ran in an isolated host-test environment, not the
-production dependency environment; they use synthetic PDFs and controlled
-inference. They do not establish performance or live Gemini correctness.
+The browser used different `grafana.localhost` / `doclens.localhost` hostnames,
+real form logins and no injected cookies or API stubs. It verified no DocLens
+cookie before navigation, no monitoring-cookie transfer, a host-only
+Secure/HttpOnly DocLens cookie after its own login, and 9 loaded Next assets.
+Grafana scripts/styles loaded without failures. The final focused rerun restarted
+Grafana against the SAME uniquely named synthetic database before loading the
+corrected configuration. All fixture containers/network/volume were removed.
+Screenshots and complete saved logs are under `back-link/` in the ZIP.
 
-## Failures and pending gates — do not approve deployment
+Failures retained: the original route regression returned 404; a redirect-only
+attempt passed units but failed browser navigation; an intermediate fixture
+permission error exposed the need for explicit directory permissions. Those logs
+and the subsequent passing reruns are retained. The final unit suite verifies
+repeat generation under umask 077 and unchanged dashboard UID/panels.
 
-* First build hit a read-only buildx config path; writable buildx config rerun
-  passed. Both initial failure and passing build logs are included.
-* First direct-image run failed before application startup because VFS Docker
-  exhausted disk. Its assertion and evidence-writer failure are retained. The
-  original captured Docker stderr was not preserved by that initial assertion;
-  the harness now includes it and attempts cleanup even if log writing fails.
-* Current-task orphan copies/cache were reclaimed and the image rebuilt.
-  A subsequent resource guard stopped testing: about 7 GB free is insufficient
-  for two 4.12 GB allocated VFS root copies plus headroom. The final image has
-  **not successfully been started/tested directly**. No successful browser,
-  dashboard-asset, restart or recreation result is claimed for it.
-* An extra default-host coverage run lacked qdrant_client; isolated dependency
-  setup and corrective rerun passed. An extra root Compose run lacked the
-  default compose-auto frontend tag; it cleaned its own project, and full
-  Compose runtime acceptance is **not claimed passed**.
-* Actual RunPod HTTPS hostnames, provider login/cookies, storage locking and
-  stop/start/forced-restart persistence remain pending. No RunPod was changed.
-* Native Mac, Safari, VoiceOver and live Gemini were not rerun in this change.
+## Scope and remaining gates
 
-`tests/runpod_links_browser.cjs` is a real-browser, no-cookie-injection/no-stub
-suite for the three root links and assets. `tests/test_runpod.py --browser`
-includes actual public monitoring queries, simulated TLS-offload Origin checks,
-forced/graceful restart, exact synthetic document/configuration identities,
-container recreation against the same volume, monitoring failure and core
-shutdown checks. These new acceptance paths are **pending execution**, not
-passing evidence. Reproduction commands are in the evidence ZIP.
+The reviewer reported independently passing all 63 baseline checks, image builds,
+browser logins/assets, authentication and local restart/recreation preservation
+on `f8577fa`. Those results are attributed to Reviewer Codex; they were not
+repeated or presented as newly executed maintainer results.
 
-Before merge/publication/deployment approval: independently inspect the diff,
-finish final-image acceptance with sufficient disk, inspect its failures/reruns,
-and review actual RunPod validation as a separate explicit gate. Main, published
-images, the Mac installation and existing application data are unchanged.
+This follow-up browser fixture uses real Grafana image
+`sha256:45900b2eda7da0cbda80b9025e446147d9085fee71675ba86a48a1cad34e4c8a`
+and existing production frontend image
+`sha256:60f8893a7727fa08a6457ad4b255b9d47a2da103270484651dd69e70611ac30e`
+with the unchanged Compose internal Grafana destination. It runs the current
+production gateway/configuration functions. Raw Grafana has no published port
+and trusts only that frontend. It mounts only synthetic dashboard/provisioning
+fixtures read-only; it does NOT substitute files into a final RunPod image.
 
-## Follow-up after approved image archiving
+This is a **focused navigation/configuration regression**, not a new final-image
+or whole-stack acceptance run. No backend, Qdrant, Gemini or documents were
+started/admitted for this test. The final follow-up image was not rebuilt here;
+its build/startup verification belongs in independent re-review on a host with
+sufficient disk. HTTP localhost Secure-cookie behavior is NOT provider HTTPS
+validation. Actual RunPod HTTPS/browser and attached-storage acceptance remain
+pending. Native Safari/VoiceOver were not tested.
 
-The user approved archiving exactly two unused local test images. Both archives
-were SHA-256/config-ID verified before their local tags were removed. This
-released negligible physical space because this host retains lower filesystem
-layers. **Both original tags and IDs have now been restored and verified.**
+## Reviewer handoff
 
-A candidate-only /tmp backing relocation preserved all file contents, ownership,
-modes and symlink targets, but Docker VFS refused to clone that symlink. The
-second direct-image attempt therefore also failed before application startup;
-`acceptance-rerun.log` retains its actual Docker error. A proposed privileged
-host bind-mount was rejected by automatic approval review before execution due
-to daemon disruption/recovery risk beyond the testing authorization. It was not
-bypassed. The original candidate backing directory was restored and verified,
-and the temporary copy removed. The candidate image ID remains unchanged.
+Review the follow-up diff against `f8577fa`, build the final image, rerun the
+focused back-link browser check, and inspect the retained failures/reruns.
+Keep publication/deployment approval pending until the required gates pass.
+Main, published images, the Mac and existing application data remain unchanged.
 
-There is **no new runtime acceptance pass**. All browser/asset/restart/recreation
-and actual RunPod gates above remain pending. No code changed in this follow-up,
-and no published image, application volume, main branch, Mac or Pod was changed.
-Finish on an existing clean Docker host with at least **10 GiB free after the
-candidate image is available**. This does not authorize paid provisioning.
+Download [evidence.zip](evidence.zip). Prior evidence is retained alongside the
+new `back-link/` commands, fixture source, logs, results and screenshots. The
+fixture accepts `DOCLENS_REPO=/path/to/checkout` for reproduction. No customer
+content, real credentials or session-token dumps are included.
 
-## Transferable evidence
-
-Download [evidence.zip](evidence.zip). It contains safe commands, complete saved
-logs/outcomes (including initial failures), image/source hashes and build details.
-No secret values or customer documents are included.
-
-SHA-256: `2051553ac724930eeb06a69d12a5c8b27a0b3f212658f51b9682ffb444e6d98c`.
+SHA-256: `3a6a0a84119322bca96140240ad52855b98dfa23f9a47153952791d212570d96`.

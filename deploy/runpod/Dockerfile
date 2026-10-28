@@ -30,6 +30,7 @@ RUN --mount=type=bind,from=frontend,source=/app,target=/tmp/frontend \
     cp /tmp/monitoring/dashboards/doclens.json /opt/monitoring/dashboards/doclens.json && \
     cp /tmp/supervisor.py /opt/runpod/supervisor.py && cp /tmp/monitoring_gateway.py /opt/runpod/monitoring_gateway.py && chmod 0444 /opt/runpod/*.py && \
     sed -i "s|http://prometheus:9090|http://prometheus:19090|" /opt/monitoring/provisioning/datasources/prometheus.yml && \
+    sed -i "s|/opt/monitoring/dashboards|/run/doclens-monitoring/dashboards|" /opt/monitoring/provisioning/dashboards/doclens.yml && \
     find /opt/monitoring -type d -exec chmod 0755 {} + && \
     find /opt/monitoring -type f -exec chmod 0444 {} + && \
     chmod -R a+rX /opt/grafana && chmod 0755 /opt/prometheus/prometheus

@@ -163,6 +163,9 @@ def main():
             monitor_start = len(children)
             try:
                 PHASE = 'monitoring readiness'
+                from monitoring_gateway import doclens_origin, prepare_dashboard
+                prepare_dashboard(Path('/opt/monitoring/dashboards/doclens.json').read_text(),
+                                  '/run/doclens-monitoring', doclens_origin())
                 gateway = start(['python', '/opt/runpod/monitoring_gateway.py'], '/opt/runpod', 1000, critical=False)
                 wait_ready('http://127.0.0.1:3001/login', gateway)
                 wait_ready('http://127.0.0.1:9090/login', gateway)
@@ -187,7 +190,7 @@ def main():
                     'GF_PATHS_BUNDLED_PLUGINS': '/opt/grafana/data/plugins-bundled',
                     'GF_AUTH_DISABLE_SIGNOUT_MENU': 'true', 'GF_LIVE_MAX_CONNECTIONS': '0',
                     'GF_PATHS_PROVISIONING': '/opt/monitoring/provisioning',
-                    'GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH': '/opt/monitoring/dashboards/doclens.json',
+                    'GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH': '/run/doclens-monitoring/dashboards/doclens.json',
                     'GF_SECURITY_ADMIN_PASSWORD': secrets.token_urlsafe(48),
                     'GF_SECURITY_SECRET_KEY': grafana_key,
                     'GF_AUTH_PROXY_ENABLED': 'true', 'GF_AUTH_PROXY_HEADER_NAME': 'X-DocLens-Grafana-User',

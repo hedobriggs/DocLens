@@ -4,9 +4,14 @@ Only a fixed loopback frontend is reachable. Raw Grafana/Prometheus are never
 proxied directly, and this process never reads configuration or session secrets.
 """
 import http.client
+import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import os
+import re
 import signal
 import threading
+import tempfile
+from pathlib import Path
 from urllib.parse import urlsplit
 
 HOP = {'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization',
@@ -27,6 +32,61 @@ try{const response=await fetch('/api/auth/login',{method:'POST',headers:{'Conten
 if(response.ok){location.replace('/');return;}
 document.querySelector('#error').textContent=response.status===401?'Invalid email or password.':'Unable to sign in. Please try again.';
 }catch{document.querySelector('#error').textContent='Connection failed. Please try again.';}finally{button.disabled=false;}});'''
+
+
+def doclens_origin():
+    """Use operator/provider configuration, never a request Host or return URL."""
+    configured = os.environ.get('DOCLENS_PUBLIC_ORIGIN', '')
+    if configured:
+        url = urlsplit(configured)
+        loopback = url.hostname in ('localhost', '127.0.0.1', '::1') or (url.hostname or '').endswith('.localhost')
+        if (any(ord(c) <= 32 or ord(c) == 127 for c in configured)
+                or not url.hostname or url.username is not None or url.password is not None
+                or url.path not in ('', '/') or url.query or url.fragment
+                or (url.scheme != 'https' and not (url.scheme == 'http' and loopback))):
+            raise ValueError('Invalid DocLens public origin')
+        if url.port is not None and url.port < 1:
+            raise ValueError('Invalid DocLens public port')
+        return configured.rstrip('/')
+    pod = os.environ.get('RUNPOD_POD_ID', '')
+    if re.fullmatch(r'[a-z0-9]{1,64}', pod):
+        return 'https://' + pod + '-3000.proxy.runpod.net'
+    return None
+
+
+def dashboard_document(template, origin):
+    """RunPod-only copy: absolute navigation escapes Grafana's SPA router."""
+    document = json.loads(template)
+    links = []
+    for link in document.get('links', []):
+        if link.get('title') == 'Back to DocLens':
+            if origin is None:
+                continue  # Never advertise a guessed or broken destination.
+            link = dict(link, url=origin + '/dashboard')
+        links.append(link)
+    document['links'] = links
+    return json.dumps(document, indent=2) + '\n'
+
+
+def prepare_dashboard(template, directory, origin):
+    """Publish only ephemeral presentation configuration, never saved app data."""
+    content = dashboard_document(template, origin)
+    directory = Path(directory)
+    directory.mkdir(mode=0o755, exist_ok=True)
+    os.chmod(directory, 0o755)
+    dashboards = directory / 'dashboards'
+    dashboards.mkdir(mode=0o755, exist_ok=True)
+    os.chmod(dashboards, 0o755)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', dir=dashboards, prefix='.dashboard-', delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(content)
+        os.chmod(temporary, 0o444)
+        temporary.replace(dashboards / 'doclens.json')
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 class Gateway(ThreadingHTTPServer):
