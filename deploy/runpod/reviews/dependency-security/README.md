@@ -1,5 +1,7 @@
 # Dependency security handoff — 28 October 2026
 
+Later backend pin candidates are tracked separately in [backend-remediation.md](backend-remediation.md). The original audit tables below retain their historical baseline scope.
+
 **Disposition: partial remediation; security release gate remains OPEN.**
 Base: `170b3d9817c6892812c450ba71d0dab7129d2949`.
 This candidate is the Git commit containing this document. Review the diff from
