@@ -118,3 +118,13 @@ body {
   .legal-answer { padding: 16px; }
   .legal-question { max-width: 92%; }
 }
+
+/* Native search-source selection retains browser mouse/keyboard semantics. */
+.legal-search-source { flex: 0 1 230px; min-width: 0; color: #39534a; }
+.legal-search-source label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+.legal-search-source select { width: 100%; max-width: 100%; border: 1px solid #879a90; border-radius: 5px; background: #fffefa; color: #243d32; padding: 7px; font-size: 12px; }
+.legal-search-source p { margin-top: 5px; font-size: 11px; line-height: 1.4; }
+@media (max-width: 640px) {
+  .legal-toolbar { flex-wrap: wrap; }
+  .legal-search-source { flex-basis: 100%; }
+}

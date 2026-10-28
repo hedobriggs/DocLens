@@ -436,9 +436,15 @@ export default function Dashboard() {
               </p>
             </div>
 
-            <p className="ml-4 shrink-0 text-xs text-slate-300">
-              Search source: documents only
-            </p>
+            <div className="legal-search-source">
+              <label htmlFor="search-source">Search source</label>
+              <select id="search-source" defaultValue="documents" aria-describedby="web-mode-help">
+                <option value="documents">Documents only</option>
+                <option value="web" disabled>Web only — unavailable</option>
+                <option value="combined" disabled>Documents + Web — unavailable</option>
+              </select>
+              <p id="web-mode-help">Web search is not available in this version.</p>
+            </div>
           </div>
 
           {/* CONVERSATION */}

@@ -49,7 +49,22 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser,re
  behavior='network';await input.setInputFiles(file);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await expect(page.getByRole('button',{name:/synthetic-contract.pdf/})).toBeVisible();
  behavior='success';await input.setInputFiles(file);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
  await page.evaluate(()=>{window.savedFormData=window.FormData;window.FormData=class{constructor(){throw Error('Synthetic FormData failure')}}});await input.setInputFiles(file);await expect(page.getByText('Synthetic FormData failure',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await page.evaluate(()=>window.FormData=window.savedFormData);behavior='success';await input.setInputFiles(file);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();
- const text=page.getByRole('textbox');if(mode==='after'){await expect(page.getByText('Text-based PDFs · up to 32 MiB · 300 pages',{exact:true})).toBeVisible();await expect(text).toHaveAccessibleName('Question about the selected document');await expect(page.getByText(/questions and retrieved passages are sent to Google Gemini/i)).toBeVisible();await expect(page.getByRole('combobox')).toHaveCount(0);}
+ const text=page.getByRole('textbox');if(mode==='after'){await expect(page.getByText('Text-based PDFs · up to 32 MiB · 300 pages',{exact:true})).toBeVisible();await expect(text).toHaveAccessibleName('Question about the selected document');await expect(page.getByText(/questions and retrieved passages are sent to Google Gemini/i)).toBeVisible();const source=page.getByRole('combobox',{name:'Search source',exact:true});
+  await expect(source).toHaveValue('documents');
+  await expect(source.locator('option')).toHaveText(['Documents only','Web only — unavailable','Documents + Web — unavailable']);
+  await expect(source.locator('option[value=web]')).toBeDisabled();
+  await expect(source.locator('option[value=combined]')).toBeDisabled();
+  await expect(page.getByText('Web search is not available in this version.',{exact:true})).toBeVisible();
+  await source.click();await page.keyboard.press('Escape');await expect(source).toBeFocused();
+  await source.selectOption('documents');await expect(source).toHaveValue('documents');
+  await page.keyboard.press('ArrowDown');await page.keyboard.press('End');await page.keyboard.press('Escape');
+  await expect(source).toHaveValue('documents');
+  await page.keyboard.press('Tab');await expect(text).toBeFocused();
+  await page.keyboard.press('Shift+Tab');await expect(source).toBeFocused();
+  const sourceFocus=await source.evaluate(el=>({style:getComputedStyle(el).outlineStyle,width:parseFloat(getComputedStyle(el).outlineWidth)}));
+  if(sourceFocus.style!=='solid'||sourceFocus.width<3)throw Error('Search source missing keyboard focus indicator');
+  keyboard.push('Mouse opens native source selector; Tab/Shift+Tab reaches it; keyboard skips unavailable Web modes');
+  await shot('search-source');await measure('search-source');}
  await text.fill('What notice is required?');await page.getByRole('button',{name:'Send question'}).click();await expect(page.getByText('written notice',{exact:true})).toBeVisible();if(askBody.document_name!=='synthetic-contract.pdf'||askBody.question!=='What notice is required?')throw Error('Search scope changed');await shot('answer-citations');await measure('answer-citations');
  if(mode==='after'){
   const summary=page.locator('summary').filter({hasText:'Show source reference'});await expect(summary).toHaveCount(1);await summary.focus();await page.keyboard.press('Enter');await expect(page.getByText(/Original-page viewing is not available/)).toBeVisible();keyboard.push('Enter expands deduplicated citation reference');await shot('citation-expanded');await measure('citation-expanded');
