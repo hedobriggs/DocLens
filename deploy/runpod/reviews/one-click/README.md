@@ -2,8 +2,8 @@
 
 Application baseline: `d9095402cf393aa75f790c8e13b15ee215575412`.
 Git parent: evidence-only `30db78736a292c525ab1cadf1daf9773e32075e2`.
-Branch: `fix/runpod-monitoring-links`. The exact candidate commit is the commit
-containing this report; maintainer handoff supplies its full SHA.
+Branch: `fix/runpod-monitoring-links`. Application commit: `f8577fa6237852db48bb4b8450484b7e3b8688ec`.
+Subsequent report updates are evidence-only; application source is unchanged.
 
 ## Behavior and boundary
 
@@ -89,10 +89,32 @@ finish final-image acceptance with sufficient disk, inspect its failures/reruns,
 and review actual RunPod validation as a separate explicit gate. Main, published
 images, the Mac installation and existing application data are unchanged.
 
+## Follow-up after approved image archiving
+
+The user approved archiving exactly two unused local test images. Both archives
+were SHA-256/config-ID verified before their local tags were removed. This
+released negligible physical space because this host retains lower filesystem
+layers. **Both original tags and IDs have now been restored and verified.**
+
+A candidate-only /tmp backing relocation preserved all file contents, ownership,
+modes and symlink targets, but Docker VFS refused to clone that symlink. The
+second direct-image attempt therefore also failed before application startup;
+`acceptance-rerun.log` retains its actual Docker error. A proposed privileged
+host bind-mount was rejected by automatic approval review before execution due
+to daemon disruption/recovery risk beyond the testing authorization. It was not
+bypassed. The original candidate backing directory was restored and verified,
+and the temporary copy removed. The candidate image ID remains unchanged.
+
+There is **no new runtime acceptance pass**. All browser/asset/restart/recreation
+and actual RunPod gates above remain pending. No code changed in this follow-up,
+and no published image, application volume, main branch, Mac or Pod was changed.
+Finish on an existing clean Docker host with at least **10 GiB free after the
+candidate image is available**. This does not authorize paid provisioning.
+
 ## Transferable evidence
 
 Download [evidence.zip](evidence.zip). It contains safe commands, complete saved
 logs/outcomes (including initial failures), image/source hashes and build details.
 No secret values or customer documents are included.
 
-SHA-256: `71b38245fc4d72d3c1ddf9b0b4a705f14504fa2da4e069841186c867a2aba8bc`.
+SHA-256: `2051553ac724930eeb06a69d12a5c8b27a0b3f212658f51b9682ffb444e6d98c`.
