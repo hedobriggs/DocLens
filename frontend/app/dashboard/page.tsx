@@ -10,6 +10,8 @@ import {
 } from "react";
 
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
+import { useSessionState } from "../../lib/session-state";
 
 type Document = {
   name: string;
@@ -32,12 +34,14 @@ type Message = {
 const subscribeToClientReady = () => () => {};
 
 export default function Dashboard() {
+  const { expired, expire } = useSessionState();
+  const [home, setHome] = useState(true);
   const isClientReady = useSyncExternalStore(subscribeToClientReady, () => true, () => false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const askAbortRef = useRef<AbortController | null>(null);
   const uploadAbortRef = useRef<AbortController | null>(null);
   const conversationRef = useRef<HTMLDivElement>(null);
-  useEffect(() => () => uploadAbortRef.current?.abort(), []);
+  useEffect(() => () => { uploadAbortRef.current?.abort(); askAbortRef.current?.abort(); }, []);
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedDocument, setSelectedDocument] =
@@ -59,6 +63,13 @@ export default function Dashboard() {
       conversation.scrollTo({ top: conversation.scrollHeight, behavior: "instant" });
     }
   }, [messages, isAsking]);
+
+  useEffect(() => {
+    if (expired) {
+      uploadAbortRef.current?.abort("session-expired");
+      askAbortRef.current?.abort("session-expired");
+    }
+  }, [expired]);
 
   // Open file picker
   function openFilePicker() {
@@ -86,18 +97,21 @@ export default function Dashboard() {
   async function handleFileUpload(
     event: ChangeEvent<HTMLInputElement>
   ) {
-    const file = event.target.files?.[0];
+    await processFile(event.target.files?.[0]);
+  }
 
+  async function processFile(file?: File) {
+    if (expired) { setUploadError("Please sign in again."); return; }
     if (!file || uploadAbortRef.current) return;
     setUploadNotice("");
     if (file.size > 32 * 1024 * 1024 || file.size === 0) {
       setUploadError("PDF must contain 1 byte to 32 MiB.");
-      event.target.value = "";
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
     if (file.type !== "application/pdf") {
       setUploadError("Please choose a PDF file.");
-      event.target.value = "";
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
@@ -122,6 +136,7 @@ export default function Dashboard() {
         }
       );
 
+      if (response.status === 401) { expire(); throw new Error("Please sign in again."); }
       let data;
       try { data = await response.json(); } catch { throw new Error("The document service returned an unreadable response."); }
       if (!data || typeof data !== "object") throw new Error("Invalid upload response.");
@@ -156,10 +171,11 @@ export default function Dashboard() {
       });
 
       setSelectedDocument(data.filename);
+      setHome(false);
       setUploadNotice(`${data.filename} is ready for questions.`);
     } catch (error) {
       if (controller.signal.aborted) {
-        setUploadError(timedOut ? "Upload timed out. Check document status before retrying." : "Upload cancelled. Check document status before retrying.");
+        setUploadError(controller.signal.reason === "session-expired" ? "Please sign in again." : timedOut ? "Upload timed out. Check document status before retrying." : "Upload cancelled. Check document status before retrying.");
       } else if (error instanceof Error) {
         setUploadError(error.message);
       } else {
@@ -185,10 +201,12 @@ export default function Dashboard() {
 
     const cleanQuestion = question.trim();
 
+    if (expired) { setChatError("Please sign in again."); return; }
     if (!cleanQuestion || isAsking) {
       return;
     }
 
+    setHome(false);
     setChatError("");
     setQuestion("");
 
@@ -219,6 +237,11 @@ export default function Dashboard() {
         }),
       });
 
+      if (response.status === 401) {
+        expire();
+        setQuestion(current => current || cleanQuestion);
+        throw new Error("Please sign in again.");
+      }
       const data = await response.json();
 
       if (controller.signal.aborted) return;
@@ -241,7 +264,13 @@ export default function Dashboard() {
         assistantMessage,
       ]);
     } catch (error) {
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted) {
+        if (controller.signal.reason === "session-expired") {
+          setChatError("Please sign in again.");
+          setQuestion(current => current || cleanQuestion);
+        }
+        return;
+      }
       if (error instanceof Error) {
         setChatError(error.message);
       } else {
@@ -279,8 +308,8 @@ export default function Dashboard() {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
-        <button
+        <div className="legal-session-control flex items-center gap-3">
+        {expired ? <Link href="/" prefetch={false} className="legal-sign-in">Sign in</Link> : <button
           type="button"
           onClick={async () => {
             try {
@@ -306,7 +335,7 @@ export default function Dashboard() {
           className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10"
         >
           Log out
-        </button>
+        </button>}
         </div>
       </header>
 
@@ -315,6 +344,10 @@ export default function Dashboard() {
         {/* DOCUMENT SIDEBAR */}
         <aside aria-label="Document workspace" className="legal-sidebar hidden w-72 flex-col overflow-y-auto border-r border-white/10 bg-slate-950 p-4 md:flex">
 
+          <nav aria-label="Workspace navigation" className="legal-workspace-nav">
+            <button type="button" aria-label="Home" aria-current={home ? "page" : undefined} onClick={() => setHome(true)}><svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3Z" /></svg><span>Home</span></button>
+            <a href="#session-documents" aria-label="Documents in this tab"><svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 2h8l4 4v16H6Z M14 2v5h4 M9 11h6 M9 15h6" /></svg><span>Documents in this tab</span></a>
+          </nav>
           <input
             ref={fileInputRef}
             type="file"
@@ -335,7 +368,7 @@ export default function Dashboard() {
               type="button"
               onClick={openFilePicker}
               aria-describedby="upload-limits"
-              disabled={!isClientReady || isUploading}
+              disabled={!isClientReady || isUploading || expired}
               className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isUploading
@@ -359,12 +392,12 @@ export default function Dashboard() {
             )}
             {uploadError && (
               <p role="alert" className="mt-2 text-xs leading-5 text-red-300">
-                {uploadError}
+                {expired ? <>Please sign in again. <Link href="/" prefetch={false}>Sign in</Link></> : uploadError}
               </p>
             )}
           </div>
 
-          <div className="mb-3 flex items-center justify-between">
+          <div id="session-documents" className="mb-3 flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Choose a document
             </h2>
@@ -395,9 +428,7 @@ export default function Dashboard() {
                   type="button"
                   aria-pressed={isSelected}
                   title={document.name}
-                  onClick={() =>
-                    setSelectedDocument(document.name)
-                  }
+                  onClick={() => { setSelectedDocument(document.name); setHome(false); }}
                   className={
                     isSelected
                       ? "w-full rounded-xl border border-blue-500/30 bg-blue-500/10 p-3 text-left"
@@ -449,8 +480,8 @@ export default function Dashboard() {
 
           {/* CONVERSATION */}
           <div ref={conversationRef} aria-label="Conversation" className="legal-conversation flex-1 overflow-y-auto px-5 py-4">
-            {messages.length === 0 ? (
-              <div className="flex h-full items-center justify-center">
+            {home || messages.length === 0 ? (
+              <div className="legal-home">
                 <div className="legal-welcome max-w-xl text-center">
                   <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-xl text-blue-400">
                     D
@@ -458,15 +489,25 @@ export default function Dashboard() {
 
                   <p className="legal-eyebrow">DOCUMENT INTELLIGENCE</p>
                   <h2 className="text-2xl font-semibold tracking-tight">
-                    Clarity in every document.
+                    Ask your documents.<br />Get clear, cited answers.
                   </h2>
 
-                  <p className="mt-2 leading-6 text-slate-400">
-                    Upload a PDF, select it, and ask a
-                    question. DocLens will retrieve relevant
-                    information and generate an answer from
-                    the document.
-                  </p>
+                  <p className="mt-2 leading-6 text-slate-400">Upload a text-based PDF and ask a question. Find relevant information with references you can check.</p>
+                  <div className="legal-dropzone"
+                    onDragOver={event => event.preventDefault()}
+                    onDrop={event => {
+                      event.preventDefault();
+                      if (event.dataTransfer.files.length !== 1) { setUploadError("Choose one PDF at a time."); return; }
+                      void processFile(event.dataTransfer.files[0]);
+                    }}>
+                    <svg aria-hidden="true" className="legal-upload-icon" viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 30H9a7 7 0 0 1-1-14 12 12 0 0 1 23-1 8 8 0 0 1 1 15h-4 M20 35V18m-6 6 6-6 6 6" /></svg>
+                    <h3>Upload a PDF</h3>
+                    <p>Drop one text-based PDF here, or browse your files.</p>
+                    <button type="button" onClick={openFilePicker} disabled={!isClientReady || isUploading || expired}>Choose PDF</button>
+                    <p>PDF only · Up to 32 MiB · 300 pages</p>
+                  </div>
+                  <p className="legal-support-note">Scanned PDFs require OCR, which is not supported. This list shows files uploaded in this tab, not a persistent document history.</p>
+                  {messages.length > 0 && <button className="legal-return" type="button" onClick={() => setHome(false)}>Return to conversation</button>}
                 </div>
               </div>
             ) : (
@@ -486,6 +527,7 @@ export default function Dashboard() {
                           : "flex justify-start"
                       }
                     >
+                      {message.role === "assistant" && <div aria-hidden="true" className="legal-answer-avatar">D</div>}
                       <div
                         className={
                           message.role === "user"
@@ -611,6 +653,7 @@ export default function Dashboard() {
             )}
           </div>
 
+          {expired && !uploadError && !chatError && <p role="alert" className="legal-session-notice">Your session has expired. Please sign in again. <Link href="/" prefetch={false}>Sign in</Link></p>}
           {/* QUESTION INPUT */}
           <div className="legal-composer border-t border-white/10 p-4">
             <form
@@ -631,7 +674,7 @@ export default function Dashboard() {
                     : "Upload and select a document first..."
                 }
                 disabled={
-                  !selectedDocument || isAsking
+                  !selectedDocument || isAsking || expired
                 }
                 className="max-h-40 min-h-11 flex-1 resize-none bg-transparent px-2 py-3 text-sm text-white outline-none placeholder:text-slate-400 disabled:cursor-not-allowed"
               />
@@ -650,7 +693,7 @@ export default function Dashboard() {
               <button
                 type="submit"
                 disabled={
-                  !selectedDocument ||
+                  expired || !selectedDocument ||
                   !question.trim() ||
                   isAsking
                 }
@@ -663,7 +706,7 @@ export default function Dashboard() {
 
             {chatError && (
               <p role="alert" className="mt-2 text-center text-xs text-red-300">
-                {chatError}
+                {expired ? <>Please sign in again. <Link href="/" prefetch={false}>Sign in</Link></> : chatError}
               </p>
             )}
 

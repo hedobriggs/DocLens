@@ -35,3 +35,4 @@
 !app/prometheus/
 !app/prometheus/\[\[...path\]\]/
 !app/prometheus/\[\[...path\]\]/route.ts
+!lib/session-state.tsx

@@ -1,3 +1,5 @@
+import { decodeJwt } from "jose";
+import { SessionStateProvider } from "../../lib/session-state";
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -20,6 +22,7 @@ export default async function DashboardLayout({
     redirect("/");
   }
 
-  return <div>{children}</div>;
+  const expiresAt = (decodeJwt(token!).exp || 0) * 1000;
+  return <SessionStateProvider expiresAt={expiresAt}>{children}</SessionStateProvider>;
 }
 

@@ -36,9 +36,17 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser,re
   return results;
  },state));}
  await page.goto(origin+'/dashboard');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeEnabled();await page.bringToFront();await expect.poll(()=>page.evaluate(()=>document.hasFocus())).toBe(true);await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeVisible();await shot('empty');await measure('empty');
+ if(mode==='after'){
+  for(const size of [{width:1280,height:800},{width:1440,height:900}]){
+   await page.setViewportSize(size);
+   await expect(page.getByRole('button',{name:'Choose PDF',exact:true})).toBeInViewport({ratio:1});
+   await expect(page.locator('.legal-support-note')).toBeInViewport({ratio:1});
+   await shot(`home-${size.width}x${size.height}`);await measure(`home-${size.width}x${size.height}`);
+  }
+ }
  const keyboard=[];
  await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Log out',exact:true})).toBeFocused();keyboard.push('Tab reaches Log out');
- await page.keyboard.press('Tab');await expect(page.locator('summary').filter({hasText:'Text processing limits'})).toBeFocused();await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeFocused();keyboard.push('Tab traverses limits disclosure to Upload');
+ await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:/Home/})).toBeFocused();await page.keyboard.press('Tab');await expect(page.getByRole('link',{name:'Documents in this tab',exact:true})).toBeFocused();await page.keyboard.press('Tab');await expect(page.locator('summary').filter({hasText:'Text processing limits'})).toBeFocused();await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeFocused();keyboard.push('Tab traverses limits disclosure to Upload');
  const focus=await page.evaluate(()=>{const s=getComputedStyle(document.activeElement);return {style:s.outlineStyle,width:s.outlineWidth,color:s.outlineColor}});
  await shot('keyboard-focus');await measure('keyboard-focus');await expect(page.getByRole('button',{name:'+ Upload PDF',exact:true})).toBeFocused();const chooser=page.waitForEvent('filechooser');await page.keyboard.press('Enter');await (await chooser).setFiles([]);keyboard.push('Enter opens file chooser after hydration');
  const input=page.locator('input[type=file]'),file={name:'synthetic-contract.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF controlled browser fixture')};
@@ -59,8 +67,8 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser,re
   await source.selectOption('documents');await expect(source).toHaveValue('documents');
   await page.keyboard.press('ArrowDown');await page.keyboard.press('End');await page.keyboard.press('Escape');
   await expect(source).toHaveValue('documents');
-  await page.keyboard.press('Tab');await expect(text).toBeFocused();
-  await page.keyboard.press('Shift+Tab');await expect(source).toBeFocused();
+  await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Choose PDF',exact:true})).toBeFocused();await page.keyboard.press('Tab');await expect(text).toBeFocused();
+  await page.keyboard.press('Shift+Tab');await expect(page.getByRole('button',{name:'Choose PDF',exact:true})).toBeFocused();await page.keyboard.press('Shift+Tab');await expect(source).toBeFocused();
   const sourceFocus=await source.evaluate(el=>({style:getComputedStyle(el).outlineStyle,width:parseFloat(getComputedStyle(el).outlineWidth)}));
   if(sourceFocus.style!=='solid'||sourceFocus.width<3)throw Error('Search source missing keyboard focus indicator');
   keyboard.push('Mouse opens native source selector; Tab/Shift+Tab reaches it; keyboard skips unavailable Web modes');
@@ -70,6 +78,27 @@ fs.mkdirSync(path.join(out,'screenshots'),{recursive:true});let child,browser,re
   const summary=page.locator('summary').filter({hasText:'Show source reference'});await expect(summary).toHaveCount(1);await summary.focus();await page.keyboard.press('Enter');await expect(page.getByText(/Original-page viewing is not available/)).toBeVisible();keyboard.push('Enter expands deduplicated citation reference');await shot('citation-expanded');await measure('citation-expanded');
   await text.fill('A follow-up question');await expect(page.getByRole('button',{name:'Send question'})).toBeEnabled();await text.focus();await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Send question'})).toBeFocused();keyboard.push('Tab reaches Send question from question field');
   for(const size of [{width:1280,height:800},{width:1440,height:900}]){await page.setViewportSize(size);const geometry=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,height:innerHeight,send:document.querySelector('button[aria-label="Send question"]').getBoundingClientRect().bottom}));if(geometry.width>geometry.viewport||geometry.send>geometry.height)throw Error('Viewport overflow: '+JSON.stringify(geometry));await shot(`answer-${size.width}x${size.height}`);}
+  await page.getByRole('button',{name:'Home',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Return to conversation',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Return to conversation',exact:true}).click();
+  await expect(page.getByText('written notice',{exact:true})).toBeVisible();
+  await expect(text).toHaveValue('A follow-up question');
+  await page.getByRole('button',{name:'Home',exact:true}).click();
+  const drop=page.locator('.legal-dropzone');
+  async function dropFiles(files){
+   const dataTransfer=await page.evaluateHandle(files=>{const transfer=new DataTransfer();for(const f of files)transfer.items.add(new File(['synthetic'],f.name,{type:f.type}));return transfer;},files);
+   await drop.dispatchEvent('drop',{dataTransfer});await dataTransfer.dispose();
+  }
+  const beforeRejectedDrop=calls;
+  await dropFiles([{name:'unsupported.docx',type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}]);
+  await expect(page.getByText('Please choose a PDF file.',{exact:true})).toBeVisible();
+  await dropFiles([{name:'one.pdf',type:'application/pdf'},{name:'two.pdf',type:'application/pdf'}]);
+  await expect(page.getByText('Choose one PDF at a time.',{exact:true})).toBeVisible();
+  if(calls!==beforeRejectedDrop)throw Error('Unsupported/multiple drop reached upload API');
+  await dropFiles([{name:'synthetic-contract.pdf',type:'application/pdf'}]);
+  await expect(page.getByRole('status')).toHaveText('synthetic-contract.pdf is ready for questions.');
+  await expect(page.getByText('written notice',{exact:true})).toBeVisible();
+  keyboard.push('Home/return preserves conversation and draft; Word/multiple drops rejected; single PDF drop uploads');
   if(focus.style!=='solid'||parseFloat(focus.width)<3)throw Error('Missing visible focus ring');
  }
  const clipping=[];
