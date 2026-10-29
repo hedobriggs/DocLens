@@ -1,0 +1,10 @@
+test_failed_probe_retains_evidence (__main__.CollectorSafety.test_failed_probe_retains_evidence) ... Evidence folder: /tmp/tmp8_jyeumd/native-assessment.eyo11mz9
+ok
+test_missing_folder_stops (__main__.CollectorSafety.test_missing_folder_stops) ... ok
+test_wrong_image_stops (__main__.CollectorSafety.test_wrong_image_stops) ... ok
+test_wrong_source_stops (__main__.CollectorSafety.test_wrong_source_stops) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK

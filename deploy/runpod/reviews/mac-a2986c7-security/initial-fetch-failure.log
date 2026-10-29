@@ -1,0 +1,1 @@
+Initial metadata fetch failed before network access: system Python has no requests module (ModuleNotFoundError). Corrected to standard-library urllib; no dependency installed.
