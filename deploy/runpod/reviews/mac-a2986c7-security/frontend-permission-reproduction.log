@@ -1,0 +1,13 @@
+Independent local reproduction: clone/checkout exact a2986c7 under umask 077; no candidate Docker run.
+{
+  "frontend/package.json": {
+    "mode": "0o600",
+    "uid": 1000,
+    "bytes": 717
+  },
+  "frontend/next.config.ts": {
+    "mode": "0o600",
+    "uid": 1000,
+    "bytes": 133
+  }
+}

@@ -1,0 +1,3 @@
+PASS: probe syntax.
+PASS: synthetic owner-only text files read and correctly classified non-ELF, content hashes verified.
+Not an exact-image execution or a reproduced UID-0 permission failure.
