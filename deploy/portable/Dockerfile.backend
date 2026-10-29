@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM python:3.11-slim-bookworm@sha256:0a310eeecf4e1f5a0743f9a6520c90c88d089c903ca5fd283f501e3a805f5f89
+FROM python:3.11-slim-trixie@sha256:6d10e720318bd84cc3d88af92bb5a47189222e17620a2fd214da6445e4afb679
+# Fail closed if the pinned base regresses to the SQLite CVE-2025-7458 range.
+RUN python -c "import sqlite3, sys; assert sys.version_info[:2] == (3, 11); assert sqlite3.sqlite_version_info >= (3, 41, 2), sqlite3.sqlite_version"
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HF_HOME=/opt/models HF_HUB_ENABLE_HF_TRANSFER=0 HF_HUB_DISABLE_IMPLICIT_TOKEN=1
 COPY requirements.txt /app/requirements.txt
