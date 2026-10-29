@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build from a hash-checked, source-only context; never copy local data/secrets."""
+import argparse
 import hashlib
 import json
 import os
@@ -12,7 +13,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 
 
-def main():
+def main(no_cache=False):
     manifest = json.loads((HERE / 'application-manifest.json').read_text())
     trust = os.environ.get('BUILD_CA_BUNDLE')
     if trust and not Path(trust).is_file():
@@ -39,6 +40,8 @@ def main():
             shutil.copyfile(HERE / dockerfile.name, dockerfile)
             tag = os.environ.get(service.upper() + '_IMAGE', 'doclens-portable-' + service + ':doclens-release')
             command = ['docker', 'build', '--platform', 'linux/amd64', '-f', str(dockerfile), '-t', tag]
+            if no_cache:
+                command.append('--no-cache')
             if trust:
                 command += ['--secret', 'id=build_ca,src=' + str(Path(trust).resolve())]
             subprocess.run(command + [str(context / service)], check=True)
@@ -46,4 +49,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--no-cache', action='store_true', help='Run fresh dependency installation/build layers for both images.')
+    main(no_cache=parser.parse_args().no_cache)

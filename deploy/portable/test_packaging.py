@@ -60,6 +60,7 @@ class Packaging(unittest.TestCase):
         build = module('build')
         checked = []
         def inspect_context(command, **kwargs):
+            self.assertNotIn('--no-cache', command)
             context = Path(command[-1])
             files = [p for p in context.rglob('*') if p.is_file()]
             self.assertTrue(files)
@@ -77,8 +78,18 @@ class Packaging(unittest.TestCase):
             root = Path(temporary); here = root / 'deploy/portable'; here.mkdir(parents=True); (root / 'backend').mkdir(); (root / 'backend/main.py').write_text('modified')
             (here / 'application-manifest.json').write_text(json.dumps({'sha256': {'backend/main.py': hashlib.sha256(b'approved').hexdigest()}}))
             with patch.object(build, 'HERE', here), patch.object(build, 'ROOT', root), patch.object(build.subprocess, 'run') as docker, patch.dict('os.environ', {'BUILD_CA_BUNDLE': ''}):
-                with self.assertRaises(SystemExit): build.main()
+                for no_cache in (False, True):
+                    with self.subTest(no_cache=no_cache), self.assertRaises(SystemExit):
+                        build.main(no_cache=no_cache)
                 docker.assert_not_called()
+
+    def test_no_cache_reinstalls_both_dependency_images(self):
+        build = module('build')
+        commands = []
+        with patch.object(build.subprocess, 'run', side_effect=lambda command, **kwargs: commands.append(command)), patch.dict('os.environ', {'BUILD_CA_BUNDLE': ''}), contextlib.redirect_stdout(io.StringIO()):
+            build.main(no_cache=True)
+        self.assertEqual(len(commands), 2)
+        self.assertTrue(all(command.count('--no-cache') == 1 for command in commands))
 
     def test_build_context_excludes_untracked_credentials(self):
         build = module('build')
