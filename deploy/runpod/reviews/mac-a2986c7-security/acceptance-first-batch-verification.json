@@ -1,0 +1,18 @@
+{
+  "zip_sha256": "a611b5f31ac4857fa1fb4a1025c2391f1914d533a0202b2cbc0966a0a04d0719",
+  "zip_integrity": "PASS",
+  "driver_source_match": "b68a50f8b738f338cfe7acf566f9b8a28c36482a",
+  "test_module_source_match": "299f3b48bbcd1058845ce14f528fba553d68a783",
+  "all_recorded_stage_exits_zero": true,
+  "live_answers_requested": true,
+  "pre_post_inventory_equal": true,
+  "independent_image_execution": false,
+  "all_acceptance_complete": false,
+  "pending": [
+    "baked UI expiry/recovery",
+    "Grafana final render evidence",
+    "full Compose monitoring",
+    "actual RunPod"
+  ],
+  "security_release": "BLOCKED"
+}
