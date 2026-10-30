@@ -35,7 +35,7 @@ def main():
         raise SystemExit('Use a new focus.* folder under the isolated review folder.')
     if (OUT/'host-results.json').exists():
         raise SystemExit('Attempt already has results; use a NEW folder, preserve this attempt.')
-    state = {'image': IMAGE, 'source': COMMIT, 'scope': 'Selector-only rerun: question 401/clock recovery and Grafana; prior upload and Prometheus passes retained', 'limitations': ['Held requests are before backend admission, not proof of cancelling accepted processing.', 'Clock scenarios simulate browser time using a valid server-verified short session.', 'Full Compose and actual RunPod/Safari/VoiceOver remain outside this batch.', 'Grafana Go provenance and remaining 137 open original security entries unchanged.']}
+    state = {'image': IMAGE, 'source': COMMIT, 'scope': 'Monitoring-only collector correction; prior question/upload/Prometheus passes retained', 'limitations': ['Held requests are before backend admission, not proof of cancelling accepted processing.', 'Clock scenarios simulate browser time using a valid server-verified short session.', 'Full Compose and actual RunPod/Safari/VoiceOver remain outside this batch.', 'Grafana Go provenance and remaining 137 open original security entries unchanged.']}
     key = os.environ.get('GEMINI_API_KEY', '')
     try:
         original = ROOT/'focus.66Jlsq.zip'
@@ -46,6 +46,10 @@ def main():
         if not second.is_file() or hashlib.sha256(second.read_bytes()).hexdigest() != 'f44a1f1cfedd91268caca2c7a89c5849173a4e0f46f9aa57e11bfca5be0a6adc':
             raise RuntimeError('Second failed-run archive missing or checksum mismatch; nothing started.')
         shutil.copyfile(second, OUT/'original-focus.d0yA5Q.zip')
+        third = ROOT/'focus.xMLqet.zip'
+        if not third.is_file() or hashlib.sha256(third.read_bytes()).hexdigest() != '66bc705a5d6390d3e591473bd8bb018aa673569c31a07d631abf5719b8bdc804':
+            raise RuntimeError('Third archive absent or changed; nothing started.')
+        shutil.copyfile(third, OUT/'original-focus.xMLqet.zip')
         state['original_evidence_sha256'] = hashlib.sha256(original.read_bytes()).hexdigest()
         if platform.system() != 'Darwin' or platform.machine() != 'x86_64':
             raise RuntimeError('Expected Intel Mac.')
@@ -86,7 +90,7 @@ def main():
         state['status'] = 'PASS' if result.returncode == 0 else 'FAIL'
         if result.returncode == 0:
             details = json.loads((OUT/'results.json').read_text())
-            expected = {'question-401', 'question-clock'}
+            expected = set()
             if details.get('image') != IMAGE or {x.get('scenario') for x in details.get('scenarios', [])} != expected or any(x.get('status') != 'PASS' for x in details['scenarios']):
                 raise RuntimeError('Missing or inconsistent expiry evidence despite process exit zero.')
             if details.get('monitoring', {}).get('grafana', {}).get('status') != 'PASS' or details.get('monitoring', {}).get('prometheus', {}).get('status') != 'PREVIOUSLY_PASSED':

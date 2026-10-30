@@ -1,0 +1,11 @@
+# Monitoring-only collector correction
+
+Same unchanged image sha256:4e3a0339cb5e1465701f757ca136039c369ab96fa672401a938e3efa0e5467d8. Application source remains 299f3b48bbcd1058845ce14f528fba553d68a783.
+
+External collector only: each query request gets an immutable navigation epoch and unique ID at request creation. URL, method, body/query identity, start timestamp, request timing, response timestamp and HTTP status are persisted before body retrieval. Each epoch has its own records. Body errors and request failures are retained on the same identified record. Before reload a bounded condition waits until outstanding requests and body reads finish. No fixed sleep, array clearing or discarded failures.
+
+Monitoring-only execution: no upload/question expiry scenarios run. One synthetic PDF upload and live answer plus login traffic populate monitoring metrics; these are fixtures, not repeats of accepted question recovery. Existing selectors/render assertions remain. All twelve panels require captured DOM/screenshots and matching successful query expressions with finite numeric metric values; generated panel-query map identifies response IDs. Both epochs must be free of collection/request errors. Source/image/runtime files unchanged.
+
+Host wrapper checksum-verifies and includes all three previous Mac archives before starting a fresh synthetic trial. Original FAIL outcomes remain unchanged. Earlier question/upload/Prometheus acceptance remains historical evidence. Existing inventory preservation checks remain. No rebuild.
+
+Executed here: syntax checks, deterministic collector event tests, wrapper mock tests; source/complete outputs in monitoring-collector-checks.zip. Tests prove pre-body metadata persistence, pending-read drainage, distinct epoch records/identities, explicit error retention, archive/failure/redaction checks. These do not establish Mac monitoring acceptance. The actual exact image is on the Mac, which is not remotely accessible here; execute the supplied pinned harness there and return the resulting ZIP/checksum. No deployment, merge or registry publication. Security clearance remains blocked; 137 original entries stay open. Actual RunPod HTTPS/storage acceptance is separate.

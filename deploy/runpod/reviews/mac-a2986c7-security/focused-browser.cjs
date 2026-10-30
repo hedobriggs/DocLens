@@ -15,6 +15,17 @@ function tokenFor(s,seconds){const enc=x=>Buffer.from(JSON.stringify(x)).toStrin
 function token(seconds){const t=tokenFor(secret,seconds);tokens.add(t);return t;}
 function records(){return docker('exec',name,'python','-c',`import json,urllib.request;o=urllib.request.build_opener(urllib.request.ProxyHandler({}));out={}\nfor c in ['document_chunks','doclens_document_publications']:\n r=o.open(urllib.request.Request('http://127.0.0.1:6333/collections/'+c+'/points/scroll',data=b'{"limit":1000,"with_payload":true}',headers={'Content-Type':'application/json'}));out[c]=sorted(json.load(r)['result']['points'],key=lambda p:str(p['id']))\nprint(json.dumps(out,sort_keys=True))`);}
 async function unusedPort(){const server=net.createServer();await new Promise((r,j)=>{server.once('error',j);server.listen(0,'127.0.0.1',r);});const p=server.address().port;await new Promise(r=>server.close(r));return p;}
+function monitoringCollector(page,saveRecord){
+ const epochs={initial:[], 'post-reload':[]},requests=new Map(),pending=new Set();let epoch='initial',sequence=0;
+ const persist=e=>saveRecord('grafana-'+e+'-query-responses.json',epochs[e]);
+ page.on('request',request=>{if(!new URL(request.url()).pathname.endsWith('/api/ds/query'))return;const record={id:'query-'+(++sequence),epoch,url:request.url(),method:request.method(),startedAt:new Date().toISOString(),timing:request.timing(),requestBody:request.postData(),state:'requested'};epochs[epoch].push(record);requests.set(request,record);persist(epoch);});
+ page.on('response',response=>{const request=response.request(),record=requests.get(request);if(!record)return;record.status=response.status();record.responseAt=new Date().toISOString();record.timing=request.timing();record.state='reading';persist(record.epoch);
+ const read=response.json().then(body=>{record.body=body;record.state='complete';}).catch(error=>{record.error=String(error.message);record.state='collection-error';}).finally(()=>{record.timing=request.timing();pending.delete(read);persist(record.epoch);});pending.add(read);
+ });
+ page.on('requestfinished',request=>{const r=requests.get(request);if(r){r.finished=true;r.timing=request.timing();persist(r.epoch);}});
+ page.on('requestfailed',request=>{const r=requests.get(request);if(r){r.finished=true;r.requestFailure=request.failure();r.state='request-failed';persist(r.epoch);}});
+ return {epochs,async drain(expect){await expect.poll(()=>pending.size+Object.values(epochs).flat().filter(r=>!r.finished).length,{timeout:90000}).toBe(0);},next(){epoch='post-reload';}};
+}
 async function main(){
  const req=createRequire(path.join(source,'frontend/package.json')),{chromium}=req('playwright'),{expect}=req('@playwright/test');
  const fixture={name:'synthetic-focus.pdf',mimeType:'application/pdf',buffer:fs.readFileSync(process.env.DOCLENS_FOCUS_PDF)};
@@ -36,7 +47,9 @@ async function main(){
   results.browserVersion=browser.version();results.urls={doc,grafana,prom};
   // Seed one genuine failed auth event for the failed-login metric, not a fake series.
   context=await browser.newContext();let seed=await context.newPage();await seed.goto(doc+'/');const negative=await seed.evaluate(async()=>{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'trial@synthetic.invalid',password:'wrong-synthetic'})});return r.status;});if(negative!==401)throw Error('Negative auth seed expected 401');await context.close();context=null;
-  for(const kind of ['question-401','question-clock']){
+  // Monitoring fixture traffic only, not repeated expiry/recovery tests.
+  context=await browser.newContext();seed=await context.newPage();await login(seed,doc);await seed.waitForURL('**/dashboard');await upload(seed);const metricAnswer=await seed.evaluate(async()=>{const r=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:'Which organization employed Alex?',document_name:'synthetic-focus.pdf',search_source:'documents'})});return {status:r.status(),body:await r.text()};});save('monitoring-fixture-answer.json',metricAnswer);if(metricAnswer.status!==200)throw Error('Synthetic monitoring fixture question failed');await context.close();context=null;
+  for(const kind of []){
    const result={scenario:kind,status:'RUNNING'},isQuestion=kind.startsWith('question');let page,pending;
    try{
     context=await browser.newContext({viewport:{width:1280,height:800}});page=await context.newPage();
@@ -70,11 +83,10 @@ async function main(){
   }
   // New context, real clock: observe data AFTER reload and each panel's rendering.
   try{
-   context=await browser.newContext({viewport:{width:1280,height:800}});const page=await context.newPage(),responses=[],reads=[];let phase='initial';
-   page.on('response',r=>{if(new URL(r.url()).pathname.endsWith('/api/ds/query')){const epoch=phase;const p=r.json().then(body=>{responses.push({status:r.status(),body});save('grafana-'+epoch+'-query-responses.json',responses);}).catch(e=>{responses.push({error:clean(e.message)});save('grafana-'+epoch+'-query-responses.json',responses);});reads.push(p);}});
+   context=await browser.newContext({viewport:{width:1280,height:800}});const page=await context.newPage();const collector=monitoringCollector(page,save);
    await login(page,grafana);await expect(page.getByText('DocLens Operations',{exact:true}).first()).toBeVisible({timeout:90000});
    // Synchronize first load before defining the post-reload evidence epoch.
-   await expect(page.getByText('qdrant',{exact:true}).first()).toBeVisible({timeout:90000});await Promise.all(reads);responses.length=0;reads.length=0;phase='post-reload';
+   await expect(page.getByText('qdrant',{exact:true}).first()).toBeVisible({timeout:90000});await collector.drain(expect);collector.next();
    await page.reload();await expect(page.getByText('DocLens Operations',{exact:true}).first()).toBeVisible({timeout:90000});await expect(page.getByText('qdrant',{exact:true}).first()).toBeVisible({timeout:90000});await expect(page.getByText('doclens',{exact:true}).first()).toBeVisible({timeout:90000});
    const model=await page.evaluate(async()=>{const r=await fetch('/monitoring/api/dashboards/uid/doclens');if(!r.ok)throw Error('Dashboard API '+r.status);return r.json();});save('grafana-dashboard-model.json',model);
    const panels=[];
@@ -92,8 +104,9 @@ async function main(){
     const content=panel.locator('[data-focus-content="'+p.id+'"]');await expect(content).toBeVisible({timeout:90000});
     await expect.poll(async()=>{if((await content.innerText()).includes('No data'))return false;if(p.type==='stat')return (await content.innerText()).includes('qdrant');return content.locator('canvas').evaluateAll(nodes=>nodes.some(n=>n.width>0&&n.height>0));},{timeout:90000}).toBe(true);
     await expect(page.getByRole('button',{name:'Cancel',exact:true})).toHaveCount(0,{timeout:90000});await panel.screenshot({path:path.join(out,'grafana-panel-'+p.id+'.png')});panels.push({id:p.id,title:p.title,type:p.type,text:await content.innerText(),visibleCanvasCount:await content.locator('canvas').count()});}
-   await Promise.all(reads);if(!responses.length||responses.some(x=>x.error||x.status!==200||Object.values(x.body.results||{}).some(v=>v.error)))throw Error('Grafana query response failure');
+   await collector.drain(expect);const responses=collector.epochs['post-reload'];if(Object.values(collector.epochs).flat().some(x=>x.error||x.requestFailure))throw Error('Grafana collection/request errors retained; see epoch records');if(!responses.length||responses.some(x=>x.error||x.status!==200||Object.values(x.body.results||{}).some(v=>v.error)))throw Error('Grafana query response failure');
    if(!responses.some(x=>Object.values(x.body.results||{}).some(v=>(v.frames||[]).some(f=>(f.data?.values||[]).some(a=>Array.isArray(a)&&a.length)))))throw Error('No Grafana data frames after reload');
+   const queryMap=model.dashboard.panels.map(p=>{const expression=p.targets[0].expr;const matches=responses.filter(r=>r.status===200&&Object.values(r.body?.results||{}).some(v=>(v.frames||[]).some(f=>{const executed=f.schema?.meta?.executedQueryString?.split('\n')[0]?.replace(/^Expr: /,'');return executed&&executed.replace(/\[(?:\d+(?:ms|s|m|h))+\]/g,'[RATE]')===expression.replace('[$__rate_interval]','[RATE]')&&(f.data?.values||[]).some((a,i)=>f.schema?.fields?.[i]?.type==='number'&&Array.isArray(a)&&a.some(v=>typeof v==='number'&&Number.isFinite(v)));})));if(!matches.length)throw Error('Missing corresponding successful data query for panel '+p.id);return {panel:p.id,title:p.title,responseIds:matches.map(x=>x.id),dom:'grafana-panel-'+p.id+'-dom.html',screenshot:'grafana-panel-'+p.id+'.png'};});if(queryMap.length!==12||panels.length!==12)throw Error('Expected all 12 panels');save('grafana-panel-query-map.json',queryMap);
    save('grafana-post-reload-query-responses.json',responses);save('grafana-panels.json',panels);results.monitoring.grafana={status:'PASS',panels:panels.length,conditions:'Post-reload qdrant/doclens visible; per-panel loading hidden; nonempty stat or visible canvas; no No data; actual query frames.'};
   }catch(e){results.monitoring.grafana={status:'FAIL',error:clean(e.stack||e)};if(context){const p=context.pages()[0];if(p){save('grafana-failure-dom.html',await p.content());await p.screenshot({path:path.join(out,'grafana-failure.png'),fullPage:true}).catch(()=>{});}}}
   finally{save('results.json',results);if(context)await context.close();context=null;}
@@ -105,6 +118,6 @@ async function main(){
   if(volumeCreated){try{if(docker('volume','inspect','--format','{{ index .Labels "doclens.acceptance.run" }}',volume)!==runId)throw Error('Volume ownership mismatch; not removed');docker('volume','rm',volume);}catch(e){results.cleanupVolume=clean(e.message);}}
   save('results.json',results);console.log(clean(JSON.stringify({scenarios:results.scenarios.map(x=>({scenario:x.scenario,status:x.status})),monitoring:results.monitoring,blocked:results.blocked},null,2)));
  }
- process.exitCode=results.blocked||results.cleanupContainer||results.cleanupVolume||results.scenarios.length!==2||results.scenarios.some(x=>x.status!=='PASS')||results.monitoring.grafana?.status!=='PASS'||results.monitoring.prometheus?.status!=='PREVIOUSLY_PASSED'?1:0;
+ process.exitCode=results.blocked||results.cleanupContainer||results.cleanupVolume||results.scenarios.length!==0||results.scenarios.some(x=>x.status!=='PASS')||results.monitoring.grafana?.status!=='PASS'||results.monitoring.prometheus?.status!=='PREVIOUSLY_PASSED'?1:0;
 }
-module.exports={tokenFor};if(require.main===module)main().catch(e=>{console.error(clean(e.stack||e));process.exitCode=1;});
+module.exports={tokenFor,monitoringCollector};if(require.main===module)main().catch(e=>{console.error(clean(e.stack||e));process.exitCode=1;});
