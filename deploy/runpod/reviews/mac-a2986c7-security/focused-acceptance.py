@@ -50,6 +50,10 @@ def main():
         if not third.is_file() or hashlib.sha256(third.read_bytes()).hexdigest() != '66bc705a5d6390d3e591473bd8bb018aa673569c31a07d631abf5719b8bdc804':
             raise RuntimeError('Third archive absent or changed; nothing started.')
         shutil.copyfile(third, OUT/'original-focus.xMLqet.zip')
+        fourth = ROOT/'focus.JBlwqI.zip'
+        if not fourth.is_file() or hashlib.sha256(fourth.read_bytes()).hexdigest() != '5158d0478257a440d58c1f7d11fd41e76681459033cca4e70ad3f75ecef807e2':
+            raise RuntimeError('Fourth failed archive absent or changed; nothing started.')
+        shutil.copyfile(fourth, OUT/'original-focus.JBlwqI.zip')
         state['original_evidence_sha256'] = hashlib.sha256(original.read_bytes()).hexdigest()
         if platform.system() != 'Darwin' or platform.machine() != 'x86_64':
             raise RuntimeError('Expected Intel Mac.')
@@ -74,7 +78,7 @@ def main():
         exec(compile(ast.Module(body=[n for n in fixture.body if isinstance(n, ast.FunctionDef) and n.name == 'pdf'], type_ignores=[]), '<synthetic fixture>', 'exec'), namespace)
         pdf = OUT/'synthetic-focus.pdf'
         pdf.write_bytes(namespace['pdf'](['Aster Research employed Alex as a research analyst.']))
-        key = key or getpass.getpass('Gemini key locally (hidden, needed for real question recovery): ')
+        key = key or getpass.getpass('Gemini key locally (hidden; synthetic monitoring traffic only): ')
         if not key or any(c in key for c in '\r\n\0'):
             raise RuntimeError('Valid private key binding required; no trial started.')
         env = dict(os.environ)
