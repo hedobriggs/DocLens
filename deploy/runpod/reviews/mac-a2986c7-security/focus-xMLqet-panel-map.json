@@ -1,0 +1,173 @@
+{
+  "archive_sha256": "66bc705a5d6390d3e591473bd8bb018aa673569c31a07d631abf5719b8bdc804",
+  "overall_status": "FAIL (unchanged)",
+  "panel_mapping_method": "Exact panel expression expanded $__rate_interval to recorded 1m0s, matched response frame schema.meta.executedQueryString; not inferred from array order. JSON pointers use zero-based array indices.",
+  "panels": [
+    {
+      "panel_id": 1,
+      "title": "Service scrape status",
+      "dom": "grafana-panel-1-dom.html",
+      "screenshot": "grafana-panel-1.png",
+      "query_pointer": "/2/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "up{job=~\"doclens|qdrant\"}",
+      "artifact_sha256": {
+        "grafana-panel-1-dom.html": "da1d995aca9576d6d79be6895c6ab69cbfd57e9527cd0c98bfd8063750b2500a",
+        "grafana-panel-1.png": "7600aff1508f9fb456ed1b2b9627f73258f99aeb9a2cd54b48b3863c3bf5afed"
+      }
+    },
+    {
+      "panel_id": 2,
+      "title": "Backend HTTP requests / second",
+      "dom": "grafana-panel-2-dom.html",
+      "screenshot": "grafana-panel-2.png",
+      "query_pointer": "/3/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "sum(rate(http_requests_total{job=\"doclens\"}[1m0s]))",
+      "artifact_sha256": {
+        "grafana-panel-2-dom.html": "808872b36914fd4ace376aac0c40057e5cbb9b6e8eb37eb0996163478404228e",
+        "grafana-panel-2.png": "d95b5abcf350a26a1b81f2ebc096b7ed6bf7cbcf2e4e301f5568e281275bfeff"
+      }
+    },
+    {
+      "panel_id": 3,
+      "title": "Upload responses by status / second",
+      "dom": "grafana-panel-3-dom.html",
+      "screenshot": "grafana-panel-3.png",
+      "query_pointer": "/4/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "sum by (status) (rate(http_requests_total{job=\"doclens\",handler=\"/documents/process\"}[1m0s]))",
+      "artifact_sha256": {
+        "grafana-panel-3-dom.html": "37aed9b297ffc800e72d3627577c3db613d24c2725c56805361509de2e6915d7",
+        "grafana-panel-3.png": "1257b78feaae809653d783be80893bf2a25998c4abfb8aa20e7298e31525dd30"
+      }
+    },
+    {
+      "panel_id": 4,
+      "title": "Upload request duration p95",
+      "dom": "grafana-panel-4-dom.html",
+      "screenshot": "grafana-panel-4.png",
+      "query_pointer": "/5/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{job=\"doclens\",handler=\"/documents/process\"}[1m0s])))",
+      "artifact_sha256": {
+        "grafana-panel-4-dom.html": "60af938ac379492fbc943f4ccd4572f7429d640a7a0032d40fdb542d36ac88e1",
+        "grafana-panel-4.png": "deea91f75f802790c6352e8f6344b178b551b050bf249890686d303af4588a75"
+      }
+    },
+    {
+      "panel_id": 5,
+      "title": "Successful logins / second",
+      "dom": "grafana-panel-5-dom.html",
+      "screenshot": "grafana-panel-5.png",
+      "query_pointer": "/6/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "rate(doclens_auth_login_success_total{job=\"doclens\"}[1m0s])",
+      "artifact_sha256": {
+        "grafana-panel-5-dom.html": "331812caeb8008e5e5cca020534b5888120987d0fe9d7871df157cdde6bf70af",
+        "grafana-panel-5.png": "18714caa50ba363ec7a9db0cfe9d99fce28f44b0508e959e1086fc033296b078"
+      }
+    },
+    {
+      "panel_id": 6,
+      "title": "Failed logins / second",
+      "dom": "grafana-panel-6-dom.html",
+      "screenshot": "grafana-panel-6.png",
+      "query_pointer": "/7/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "rate(doclens_auth_login_failure_total{job=\"doclens\"}[1m0s])",
+      "artifact_sha256": {
+        "grafana-panel-6-dom.html": "d495b858f3df3cd5e5a7fc038dbce33834d8905388bac12e9c6e9739a16a2fec",
+        "grafana-panel-6.png": "b774d7683cfbd4546e1838e7bfcd8e87480ae4b0ebbc3ac7821cd4a69dfd1574"
+      }
+    },
+    {
+      "panel_id": 7,
+      "title": "Retrieval duration p95",
+      "dom": "grafana-panel-7-dom.html",
+      "screenshot": "grafana-panel-7.png",
+      "query_pointer": "/8/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "histogram_quantile(0.95, sum by (le) (rate(doclens_rag_retrieval_duration_seconds_bucket{job=\"doclens\"}[1m0s])))",
+      "artifact_sha256": {
+        "grafana-panel-7-dom.html": "9944879150a0bdaeacacf065ac0c2b5855a17061837f6786fb8a6b33345943e9",
+        "grafana-panel-7.png": "4a491b9aed9c71a7da60b6088fe857376949f898ea12cc3e7b863705263eb8f6"
+      }
+    },
+    {
+      "panel_id": 8,
+      "title": "Gemini requests by outcome / second",
+      "dom": "grafana-panel-8-dom.html",
+      "screenshot": "grafana-panel-8.png",
+      "query_pointer": "/11/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "sum by (status) (rate(doclens_gemini_requests_total{job=\"doclens\"}[1m0s]))",
+      "artifact_sha256": {
+        "grafana-panel-8-dom.html": "e8f55b08ee3ce763a12608258a03f20a3f14e840b05a32e025678568a44d00cf",
+        "grafana-panel-8.png": "fdd77cc0c2abefb68b244961d929974d0c497f83502096c922d0e21a7ad038a8"
+      }
+    },
+    {
+      "panel_id": 9,
+      "title": "Gemini duration p95",
+      "dom": "grafana-panel-9-dom.html",
+      "screenshot": "grafana-panel-9.png",
+      "query_pointer": "/9/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "histogram_quantile(0.95, sum by (le) (rate(doclens_gemini_duration_seconds_bucket{job=\"doclens\"}[1m0s])))",
+      "artifact_sha256": {
+        "grafana-panel-9-dom.html": "0af57fcc1658f259b5972f7f85841d3978bcdebc07033721ae5334ce0c7b7a5a",
+        "grafana-panel-9.png": "53445e0d3e828b5c6805f8f3722f7cb2ded5be1479460647f6ff8eba34fa6313"
+      }
+    },
+    {
+      "panel_id": 10,
+      "title": "Gemini reported tokens / second",
+      "dom": "grafana-panel-10-dom.html",
+      "screenshot": "grafana-panel-10.png",
+      "query_pointer": "/10/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "sum by (type) (rate(doclens_gemini_tokens_total{job=\"doclens\"}[1m0s]))",
+      "artifact_sha256": {
+        "grafana-panel-10-dom.html": "c67ed0833c4ec9a39bee6479eebc2a49d680d6c7e271305491f840bb61cc7bf6",
+        "grafana-panel-10.png": "9a3687a11ff84d2f38d8ccffbed005c8d2aa59bed780cf2187e04438694ea5d2"
+      }
+    },
+    {
+      "panel_id": 11,
+      "title": "Backend process memory",
+      "dom": "grafana-panel-11-dom.html",
+      "screenshot": "grafana-panel-11.png",
+      "query_pointer": "/12/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "process_resident_memory_bytes{job=\"doclens\"}",
+      "artifact_sha256": {
+        "grafana-panel-11-dom.html": "11e634bdd4fabcc923315dad5f6356ab4d5caf76007546bdf1e44d198c13c716",
+        "grafana-panel-11.png": "4716f070c078c0be26ae7b173e3e3a124977adc07ec09c8c638304a59b0ec8fe"
+      }
+    },
+    {
+      "panel_id": 12,
+      "title": "Backend process CPU",
+      "dom": "grafana-panel-12-dom.html",
+      "screenshot": "grafana-panel-12.png",
+      "query_pointer": "/13/body/results/A",
+      "response_file": "grafana-post-reload-query-responses.json",
+      "expanded_expression": "rate(process_cpu_seconds_total{job=\"doclens\"}[1m0s])",
+      "artifact_sha256": {
+        "grafana-panel-12-dom.html": "5562fadd6053e09d1d7c8969a674f8413333f744d180af8874d0031599e531e1",
+        "grafana-panel-12.png": "82ca8220aa857104d68182cf3c905ad9e578776be3eed065b267fe40b28c9345"
+      }
+    }
+  ],
+  "collection_errors": [
+    {
+      "pointer": "/0/error",
+      "message": "response.json: Protocol error (Network.getResponseBody): No resource with given identifier found\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+    },
+    {
+      "pointer": "/1/error",
+      "message": "response.json: Protocol error (Network.getResponseBody): No resource with given identifier found\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+    }
+  ]
+}
