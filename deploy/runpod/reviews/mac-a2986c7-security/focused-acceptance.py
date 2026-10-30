@@ -35,7 +35,7 @@ def main():
         raise SystemExit('Use a new focus.* folder under the isolated review folder.')
     if (OUT/'host-results.json').exists():
         raise SystemExit('Attempt already has results; use a NEW folder, preserve this attempt.')
-    state = {'image': IMAGE, 'source': COMMIT, 'scope': 'Monitoring-only collector correction; prior question/upload/Prometheus passes retained', 'limitations': ['Held requests are before backend admission, not proof of cancelling accepted processing.', 'Clock scenarios simulate browser time using a valid server-verified short session.', 'Full Compose and actual RunPod/Safari/VoiceOver remain outside this batch.', 'Grafana Go provenance and remaining 137 open original security entries unchanged.']}
+    state = {'image': IMAGE, 'source': COMMIT, 'scope': 'Monitoring-only scraped-baseline fixture correction; accepted recovery tests not repeated', 'limitations': ['Held requests are before backend admission, not proof of cancelling accepted processing.', 'Clock scenarios simulate browser time using a valid server-verified short session.', 'Full Compose and actual RunPod/Safari/VoiceOver remain outside this batch.', 'Grafana Go provenance and remaining 137 open original security entries unchanged.']}
     key = os.environ.get('GEMINI_API_KEY', '')
     try:
         original = ROOT/'focus.66Jlsq.zip'
@@ -54,6 +54,14 @@ def main():
         if not fourth.is_file() or hashlib.sha256(fourth.read_bytes()).hexdigest() != '5158d0478257a440d58c1f7d11fd41e76681459033cca4e70ad3f75ecef807e2':
             raise RuntimeError('Fourth failed archive absent or changed; nothing started.')
         shutil.copyfile(fourth, OUT/'original-focus.JBlwqI.zip')
+        extra = ROOT/'focus.0YI2RZ.zip'
+        if not extra.is_file() or hashlib.sha256(extra.read_bytes()).hexdigest() != 'c0da0e75256475f8e82aef7d977d4aa5894fbefb140b13fdb67d20fd1eeba6d2':
+            raise RuntimeError('Missing or changed prior evidence: focus.0YI2RZ.zip')
+        shutil.copyfile(extra, OUT/'original-focus.0YI2RZ.zip')
+        extra = ROOT/'focus.DDYfOA.zip'
+        if not extra.is_file() or hashlib.sha256(extra.read_bytes()).hexdigest() != 'b3d379133303c710f9b218d18ee8a2392c9f7453434321d4833ae1b7f2f956df':
+            raise RuntimeError('Missing or changed prior evidence: focus.DDYfOA.zip')
+        shutil.copyfile(extra, OUT/'original-focus.DDYfOA.zip')
         state['original_evidence_sha256'] = hashlib.sha256(original.read_bytes()).hexdigest()
         if platform.system() != 'Darwin' or platform.machine() != 'x86_64':
             raise RuntimeError('Expected Intel Mac.')
@@ -99,6 +107,9 @@ def main():
                 raise RuntimeError('Missing or inconsistent expiry evidence despite process exit zero.')
             if details.get('monitoring', {}).get('grafana', {}).get('status') != 'PASS' or details.get('monitoring', {}).get('prometheus', {}).get('status') != 'PREVIOUSLY_PASSED':
                 raise RuntimeError('Missing successful rendered monitoring evidence.')
+            panel_map = json.loads((OUT/'grafana-panel-query-map.json').read_text())
+            if len(panel_map) != 12 or {p.get('panel') for p in panel_map} != set(range(1, 13)) or any(not p.get('responseIds') for p in panel_map):
+                raise RuntimeError('Incomplete 12-panel query mapping despite exit zero.')
         print('Focused tests:', state['status'])
         if result.returncode:
             print((OUT/'browser.log').read_text(errors='replace')[-6000:].replace(key, '[REDACTED]'))
