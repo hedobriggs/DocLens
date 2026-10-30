@@ -35,9 +35,14 @@ def main():
         raise SystemExit('Use a new focus.* folder under the isolated review folder.')
     if (OUT/'host-results.json').exists():
         raise SystemExit('Attempt already has results; use a NEW folder, preserve this attempt.')
-    state = {'image': IMAGE, 'source': COMMIT, 'scope': 'Four baked expiry/recovery scenarios; Grafana after reload; Prometheus browser up query', 'limitations': ['Held requests are before backend admission, not proof of cancelling accepted processing.', 'Clock scenarios simulate browser time using a valid server-verified short session.', 'Full Compose and actual RunPod/Safari/VoiceOver remain outside this batch.', 'Grafana Go provenance and remaining 137 open original security entries unchanged.']}
+    state = {'image': IMAGE, 'source': COMMIT, 'scope': 'Corrective rerun: upload/question 401, question clock recovery, Grafana after reload; prior upload clock and Prometheus retained', 'limitations': ['Held requests are before backend admission, not proof of cancelling accepted processing.', 'Clock scenarios simulate browser time using a valid server-verified short session.', 'Full Compose and actual RunPod/Safari/VoiceOver remain outside this batch.', 'Grafana Go provenance and remaining 137 open original security entries unchanged.']}
     key = os.environ.get('GEMINI_API_KEY', '')
     try:
+        original = ROOT/'focus.66Jlsq.zip'
+        if not original.is_file() or hashlib.sha256(original.read_bytes()).hexdigest() != '85dd9a97ef9558cdc0efc3f826d2add0c14353a91853ed2592d879e252dc4b26':
+            raise RuntimeError('Original failed-run archive missing or checksum mismatch; nothing started.')
+        shutil.copyfile(original, OUT/'original-focus.66Jlsq.zip')
+        state['original_evidence_sha256'] = hashlib.sha256(original.read_bytes()).hexdigest()
         if platform.system() != 'Darwin' or platform.machine() != 'x86_64':
             raise RuntimeError('Expected Intel Mac.')
         if read(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']) != COMMIT or read(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=no']):
@@ -77,10 +82,10 @@ def main():
         state['status'] = 'PASS' if result.returncode == 0 else 'FAIL'
         if result.returncode == 0:
             details = json.loads((OUT/'results.json').read_text())
-            expected = {'upload-401', 'question-401', 'upload-clock', 'question-clock'}
+            expected = {'upload-401', 'question-401', 'question-clock'}
             if details.get('image') != IMAGE or {x.get('scenario') for x in details.get('scenarios', [])} != expected or any(x.get('status') != 'PASS' for x in details['scenarios']):
                 raise RuntimeError('Missing or inconsistent expiry evidence despite process exit zero.')
-            if any(details.get('monitoring', {}).get(service, {}).get('status') != 'PASS' for service in ['grafana', 'prometheus']):
+            if details.get('monitoring', {}).get('grafana', {}).get('status') != 'PASS' or details.get('monitoring', {}).get('prometheus', {}).get('status') != 'PREVIOUSLY_PASSED':
                 raise RuntimeError('Missing successful rendered monitoring evidence.')
         print('Focused tests:', state['status'])
         if result.returncode:
