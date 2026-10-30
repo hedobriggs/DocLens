@@ -1,0 +1,7 @@
+Review of 6cfb68e: approve two narrowly scoped dispositions; keep the remaining 137 entries open. Security release approval remains blocked.
+Original occurrenceDecisionSQLite CVE-2025-7458, system libsqlite3-0Addressed in the rebuilt candidate. Recorded version 3.46.1 is outside the documented affected range. Other SQLite advisories remain open.MiniZip CVE-2023-45853, original Debian zlib1gNot affected for the exact assessed core-libz copy. Package/build evidence supports that it does not ship the affected MiniZip writer. This excludes bundled or unidentified copies.Remaining 137 occurrencesKeep open. Scanner absence or a missing package record is insufficient for closure.
+I independently verified all 139 original rows map exactly to the proposals, recalculated 112 still reported / 20 not reported / seven package gaps, checked evidence ZIP checksums, and extracted the Debian library to verify its hash and exports.
+Two follow-ups matter:
+- Map renamed packages explicitly: the candidate records libssl3t64, so missing libssl3 does not establish removal.
+- Provide advisory-specific version/backport evidence for the other 18 “not reported” entries.
+Limitations: I did not execute the rebuilt image. Independent signature rechecking was unavailable because this host lacks gpgv; supplied signature-verification records were inspected. Baked-image functional acceptance remains pending, and 120 high occurrences remain in the candidate scan.

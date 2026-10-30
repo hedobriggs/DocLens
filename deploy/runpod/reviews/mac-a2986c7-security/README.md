@@ -1,5 +1,9 @@
 # Intel Mac candidate security evidence
 
+## Current status — 30 October 2026
+
+Two reviewer-scoped dispositions recorded; remaining 137 original entries OPEN. See [current ledger](original-ledger-current.csv), [decision history](review-decision-history.jsonl) and [advisory follow-up](review-followup-20261030.md). Original ledger/proposals and earlier evidence remain unchanged; their older 139-open status is historical. Security and execution approval remain blocked; baked-image acceptance results are still unavailable.
+
 Application source: `a2986c786ed50d271fb99ad787218695e9fd4d82`.
 Mac-reported Docker image identifier: `sha256:a16cdbc1657012fd60dc1ac67b44ce9c643d16e2912e8ad4ff146a304e06bbee`.
 Underlying image configuration: `sha256:162232f0b3fe2d0ad9948c387a37b97f25b79c4af256271fdf6bce5037dd6fd4`.

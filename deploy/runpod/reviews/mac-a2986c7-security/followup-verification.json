@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-30",
+  "original_rows": 139,
+  "current_status_counts": {
+    "OPEN": 137,
+    "ADDRESSED_SCOPED_REVIEW_ACCEPTED": 1,
+    "NOT_AFFECTED_EXACT_COPY_REVIEW_ACCEPTED": 1
+  },
+  "original_source_ledger_and_proposals_unchanged": true,
+  "advisory_specific_unreported_rows": 18,
+  "mapped_package_gap_rows": 7,
+  "both_suite_gpg_signature_checks_exit": 0,
+  "exact_authenticated_sources": [
+    "gzip",
+    "sqlite3",
+    "openssl",
+    "util-linux"
+  ],
+  "baked_image_acceptance": "NOT_RUN_NO_RESULTS_AVAILABLE",
+  "security_clearance": "BLOCKED"
+}
