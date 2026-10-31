@@ -1,0 +1,233 @@
+{
+  "archive_sha256": "47aac7dde925edff3a02235dc1e1152710036a7ede9271f1aa803fe99e424998",
+  "archive_bytes": 53068743,
+  "zip_crc_check": "PASS",
+  "harness_files_match_commit": "2e3cd6ab003f7decd0b2514cfe6bdd82eea44308",
+  "image": "sha256:4e3a0339cb5e1465701f757ca136039c369ab96fa672401a938e3efa0e5467d8",
+  "application_source": "299f3b48bbcd1058845ce14f528fba553d68a783",
+  "baseline": {
+    "counter": 1,
+    "histogram_count": 1,
+    "sample_timestamp": 1793404111.808
+  },
+  "increased": {
+    "counter": 2,
+    "histogram_count": 2,
+    "sample_timestamp": 1793404126.819
+  },
+  "initial_queries": 6,
+  "post_reload_queries": 12,
+  "collector_errors": 0,
+  "visual_inspection": "All 12 screenshots inspected; all show real plotted data/stat values. Sparse synthetic samples are not performance evidence.",
+  "panels": [
+    {
+      "panel": 1,
+      "title": "Service scrape status",
+      "responseIds": [
+        "query-7"
+      ],
+      "dom": "grafana-panel-1-dom.html",
+      "screenshot": "grafana-panel-1.png",
+      "verified_response_ids": [
+        "query-7"
+      ],
+      "sha256": {
+        "grafana-panel-1-dom.html": "da1d995aca9576d6d79be6895c6ab69cbfd57e9527cd0c98bfd8063750b2500a",
+        "grafana-panel-1.png": "71f60b1fc41ce52bc4af0047f42b8f58b4919d6f73aac58e15dba5e07c8ed03f"
+      }
+    },
+    {
+      "panel": 2,
+      "title": "Backend HTTP requests / second",
+      "responseIds": [
+        "query-8"
+      ],
+      "dom": "grafana-panel-2-dom.html",
+      "screenshot": "grafana-panel-2.png",
+      "verified_response_ids": [
+        "query-8"
+      ],
+      "sha256": {
+        "grafana-panel-2-dom.html": "808872b36914fd4ace376aac0c40057e5cbb9b6e8eb37eb0996163478404228e",
+        "grafana-panel-2.png": "2d312c1504d7751ed7c9f67bf250ddb3ccfb1a25823813f46cfb8b0f16b40989"
+      }
+    },
+    {
+      "panel": 3,
+      "title": "Upload responses by status / second",
+      "responseIds": [
+        "query-9"
+      ],
+      "dom": "grafana-panel-3-dom.html",
+      "screenshot": "grafana-panel-3.png",
+      "verified_response_ids": [
+        "query-9"
+      ],
+      "sha256": {
+        "grafana-panel-3-dom.html": "0455802cae6309f2d8416f89955398fb4cf0e639d0db46e93f3c86ffd883346a",
+        "grafana-panel-3.png": "50c15938620749fd858b4ea27ef2b37d8b60cd2084b9aa22c7a2f3c837eccbb5"
+      }
+    },
+    {
+      "panel": 4,
+      "title": "Upload request duration p95",
+      "responseIds": [
+        "query-10"
+      ],
+      "dom": "grafana-panel-4-dom.html",
+      "screenshot": "grafana-panel-4.png",
+      "verified_response_ids": [
+        "query-10"
+      ],
+      "sha256": {
+        "grafana-panel-4-dom.html": "60af938ac379492fbc943f4ccd4572f7429d640a7a0032d40fdb542d36ac88e1",
+        "grafana-panel-4.png": "39c32d7e62202a72f3b0c0ec07251db8a61990f76b6ac0b16b768aebd6dab0e9"
+      }
+    },
+    {
+      "panel": 5,
+      "title": "Successful logins / second",
+      "responseIds": [
+        "query-11"
+      ],
+      "dom": "grafana-panel-5-dom.html",
+      "screenshot": "grafana-panel-5.png",
+      "verified_response_ids": [
+        "query-11"
+      ],
+      "sha256": {
+        "grafana-panel-5-dom.html": "331812caeb8008e5e5cca020534b5888120987d0fe9d7871df157cdde6bf70af",
+        "grafana-panel-5.png": "c9dbbdecbdecfec16496778bfbd55723d6ee8803d0a306eaca446c528479d01f"
+      }
+    },
+    {
+      "panel": 6,
+      "title": "Failed logins / second",
+      "responseIds": [
+        "query-12"
+      ],
+      "dom": "grafana-panel-6-dom.html",
+      "screenshot": "grafana-panel-6.png",
+      "verified_response_ids": [
+        "query-12"
+      ],
+      "sha256": {
+        "grafana-panel-6-dom.html": "98364bf7b9027da622e8df7995a2985185a20df8066b6bf86932a8904d635df1",
+        "grafana-panel-6.png": "dcf598f720ba2ce8458bcc28b9ae475da294ea8b0f92305d9a28a829163fb651"
+      }
+    },
+    {
+      "panel": 7,
+      "title": "Retrieval duration p95",
+      "responseIds": [
+        "query-13"
+      ],
+      "dom": "grafana-panel-7-dom.html",
+      "screenshot": "grafana-panel-7.png",
+      "verified_response_ids": [
+        "query-13"
+      ],
+      "sha256": {
+        "grafana-panel-7-dom.html": "9944879150a0bdaeacacf065ac0c2b5855a17061837f6786fb8a6b33345943e9",
+        "grafana-panel-7.png": "aa1463b5908895acf31ac5af2ee13b5bf892007249b006059ada0e58f96d6388"
+      }
+    },
+    {
+      "panel": 8,
+      "title": "Gemini requests by outcome / second",
+      "responseIds": [
+        "query-14"
+      ],
+      "dom": "grafana-panel-8-dom.html",
+      "screenshot": "grafana-panel-8.png",
+      "verified_response_ids": [
+        "query-14"
+      ],
+      "sha256": {
+        "grafana-panel-8-dom.html": "3c147eac4976a798db95cb26c932350b5b0d7b4244f5a775eeea92eaf477d29f",
+        "grafana-panel-8.png": "c01f3241567ace4dc9d5f1b5c9a3b72d2db7e12f43ad97f95c0588a1093a6aa7"
+      }
+    },
+    {
+      "panel": 9,
+      "title": "Gemini duration p95",
+      "responseIds": [
+        "query-15"
+      ],
+      "dom": "grafana-panel-9-dom.html",
+      "screenshot": "grafana-panel-9.png",
+      "verified_response_ids": [
+        "query-15"
+      ],
+      "sha256": {
+        "grafana-panel-9-dom.html": "4c071fb3879378a0dbea99ba5e348326ee849c783df85fc4769e4293de57558c",
+        "grafana-panel-9.png": "622fb177968bca32b74a096dc283b902edab2e9d1a157d94880d9d4e0986ef81"
+      }
+    },
+    {
+      "panel": 10,
+      "title": "Gemini reported tokens / second",
+      "responseIds": [
+        "query-16"
+      ],
+      "dom": "grafana-panel-10-dom.html",
+      "screenshot": "grafana-panel-10.png",
+      "verified_response_ids": [
+        "query-16"
+      ],
+      "sha256": {
+        "grafana-panel-10-dom.html": "114892811753b2a01a2311da5a91d623b0771c429808b2874349a51bf065c03d",
+        "grafana-panel-10.png": "974127931498fbda2d5999508d08552ae4666d1bddd303b91cd92edc3aec638e"
+      }
+    },
+    {
+      "panel": 11,
+      "title": "Backend process memory",
+      "responseIds": [
+        "query-17"
+      ],
+      "dom": "grafana-panel-11-dom.html",
+      "screenshot": "grafana-panel-11.png",
+      "verified_response_ids": [
+        "query-17"
+      ],
+      "sha256": {
+        "grafana-panel-11-dom.html": "11e634bdd4fabcc923315dad5f6356ab4d5caf76007546bdf1e44d198c13c716",
+        "grafana-panel-11.png": "40d0ba9058f1ade2d09d2bc800f762b7e73fd44b55e606cc3faba542b488cb99"
+      }
+    },
+    {
+      "panel": 12,
+      "title": "Backend process CPU",
+      "responseIds": [
+        "query-18"
+      ],
+      "dom": "grafana-panel-12-dom.html",
+      "screenshot": "grafana-panel-12.png",
+      "verified_response_ids": [
+        "query-18"
+      ],
+      "sha256": {
+        "grafana-panel-12-dom.html": "5562fadd6053e09d1d7c8969a674f8413333f744d180af8874d0031599e531e1",
+        "grafana-panel-12.png": "e23336e79c76205720e1fafea2257460697490d2f2d3adb3c2c179bf1cc53795"
+      }
+    }
+  ],
+  "prior_archives": {
+    "original-focus.0YI2RZ.zip": "c0da0e75256475f8e82aef7d977d4aa5894fbefb140b13fdb67d20fd1eeba6d2",
+    "original-focus.66Jlsq.zip": "85dd9a97ef9558cdc0efc3f826d2add0c14353a91853ed2592d879e252dc4b26",
+    "original-focus.DDYfOA.zip": "b3d379133303c710f9b218d18ee8a2392c9f7453434321d4833ae1b7f2f956df",
+    "original-focus.JBlwqI.zip": "5158d0478257a440d58c1f7d11fd41e76681459033cca4e70ad3f75ecef807e2",
+    "original-focus.d0yA5Q.zip": "f44a1f1cfedd91268caca2c7a89c5849173a4e0f46f9aa57e11bfca5be0a6adc",
+    "original-focus.xMLqet.zip": "66bc705a5d6390d3e591473bd8bb018aa673569c31a07d631abf5719b8bdc804"
+  },
+  "inventory": {
+    "containers": true,
+    "volumes": true
+  },
+  "no_remaining_trial_objects": {
+    "containers": [],
+    "volumes": []
+  },
+  "execution_attribution": "Mac user executed; Team Codex independently inspected artifacts, not rerun."
+}
