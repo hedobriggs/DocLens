@@ -1,0 +1,26 @@
+{
+  "event": "CONSOLIDATED_LOCAL_FUNCTIONAL_ACCEPTANCE",
+  "recorded_date": "2026-10-31",
+  "authority": "User instruction in this chat: Record consolidated local functional acceptance for exact image 4e3a0339\u2026 from evidence commit 20f497f.",
+  "image": "sha256:4e3a0339cb5e1465701f757ca136039c369ab96fa672401a938e3efa0e5467d8",
+  "application_source": "299f3b48bbcd1058845ce14f528fba553d68a783",
+  "evidence_commit": "20f497f70f040fe7aaa3c42371dc3570cb85d793",
+  "harness_commit": "2e3cd6ab003f7decd0b2514cfe6bdd82eea44308",
+  "evidence_archive": "focus.6LtEu2.zip",
+  "sha256": "47aac7dde925edff3a02235dc1e1152710036a7ede9271f1aa803fe99e424998",
+  "milestone": "CLOSED \u2014 scoped local synthetic functional acceptance",
+  "scope": "Previously accepted local baked-image functional checks, upload/question session recovery, Prometheus browser query, and final12-panel Grafana rendering/query evidence consolidated within FINAL-LOCAL-READINESS.md limitations.",
+  "exclusions": [
+    "Security clearance",
+    "Full Compose stack acceptance",
+    "Actual RunPod HTTPS and attached-storage acceptance",
+    "Large-document capacity/performance",
+    "Safari/VoiceOver",
+    "Historical HTML/JSON incident root cause",
+    "Merge/publication/deployment authorization"
+  ],
+  "preservation": "All six prior archives and original FAIL outcomes remain unchanged; earlier scoped approvals remain unchanged.",
+  "repeat_policy": "No rebuild or repeated passed checks without a specific defect, relevant change or release-security validation reason. Accepted image evidence is not automatically transferred to a changed image.",
+  "security": "BLOCKED \u2014 137 original entries remain open; scan reports120high, a different population.",
+  "execution": "No tests rerun, rebuild, merge, registry publication or deployment during recording."
+}
